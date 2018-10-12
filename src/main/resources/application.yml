@@ -1,0 +1,20 @@
+#开发配置
+server:
+  #默认端口
+  port: 8080
+  tomcat:
+    #tomcat-URI-编码
+    uri-encoding: UTF-8
+#日志配置
+logging:
+  level:
+    com.suma: debug
+    org.springframework: WARN
+    org.spring.springboot.dao: debug
+#数据源配置
+spring:
+  datasource:
+    driver-class-name: com.mysql.jdbc.Driver
+    url: jdbc:mysql://192.166.65.174:3306/adv1?useUnicode=true&characterEncoding=utf8&&useSSL=false
+    username: root
+    password: root
