@@ -13,7 +13,7 @@ public interface AdvInfoMapper {
 
     AdvInfo selectByAdvInfoId(@Param("id") Long id);
 
-    List<AdvInfo> selectAdvInfos();
+  
 
     int updateAdvInfo(AdvInfo record);
 
