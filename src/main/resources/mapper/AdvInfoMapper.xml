@@ -1,0 +1,284 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.suma.dao.AdvInfoMapper" >
+  <resultMap id="BaseResultMap" type="com.suma.pojo.AdvInfo" >
+    <id column="ID" property="id" jdbcType="BIGINT" />
+    <result column="ADV_LOCATION_ID" property="advLocationId" jdbcType="BIGINT" />
+    <result column="ADV_TYPE_ID" property="advTypeId" jdbcType="BIGINT" />
+    <result column="NAME" property="name" jdbcType="VARCHAR" />
+    <result column="MATERIAL_TYPE" property="materialType" jdbcType="INTEGER" />
+    <result column="STATUS" property="status" jdbcType="INTEGER" />
+    <result column="START_DATE" property="startDate" jdbcType="DATE" />
+    <result column="END_DATE" property="endDate" jdbcType="DATE" />
+    <result column="PERIOD_TIME_START" property="periodTimeStart" jdbcType="TIME" />
+    <result column="PERIOD_TIME_END" property="periodTimeEnd" jdbcType="TIME" />
+    <result column="CHECK_USER" property="checkUser" jdbcType="VARCHAR" />
+    <result column="CHECK_NOTE" property="checkNote" jdbcType="VARCHAR" />
+    <result column="CHECK_TIME" property="checkTime" jdbcType="TIMESTAMP" />
+    <result column="CREATED_USER" property="createdUser" jdbcType="VARCHAR" />
+    <result column="CREATED_TIME" property="createdTime" jdbcType="TIMESTAMP" />
+    <result column="LAST_EDIT_TIME" property="lastEditTime" jdbcType="TIMESTAMP" />
+    <result column="LAST_EDIT_USER" property="lastEditUser" jdbcType="VARCHAR" />
+    <result column="LAST_EDIT_MODULE" property="lastEditModule" jdbcType="VARCHAR" />
+    <result column="REGION" property="region" jdbcType="INTEGER" />
+    <result column="RESERVED_STRING" property="reservedString" jdbcType="VARCHAR" />
+    <result column="RESERVED_INT" property="reservedInt" jdbcType="BIGINT" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    ID, ADV_LOCATION_ID, ADV_TYPE_ID, NAME, MATERIAL_TYPE, STATUS, START_DATE, END_DATE, 
+    PERIOD_TIME_START, PERIOD_TIME_END, CHECK_USER, CHECK_NOTE, CHECK_TIME, CREATED_USER, 
+    CREATED_TIME, LAST_EDIT_TIME, LAST_EDIT_USER, LAST_EDIT_MODULE, REGION, RESERVED_STRING, 
+    RESERVED_INT
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Long" >
+    select 
+    <include refid="Base_Column_List" />
+    from adv_info
+    where ID = #{id,jdbcType=BIGINT}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long" >
+    delete from adv_info
+    where ID = #{id,jdbcType=BIGINT}
+  </delete>
+  <insert id="insert" parameterType="com.suma.pojo.AdvInfo" >
+    insert into adv_info (ID, ADV_LOCATION_ID, ADV_TYPE_ID, 
+      NAME, MATERIAL_TYPE, STATUS, 
+      START_DATE, END_DATE, PERIOD_TIME_START, 
+      PERIOD_TIME_END, CHECK_USER, CHECK_NOTE, 
+      CHECK_TIME, CREATED_USER, CREATED_TIME, 
+      LAST_EDIT_TIME, LAST_EDIT_USER, LAST_EDIT_MODULE, 
+      REGION, RESERVED_STRING, RESERVED_INT
+      )
+    values (#{id,jdbcType=BIGINT}, #{advLocationId,jdbcType=BIGINT}, #{advTypeId,jdbcType=BIGINT}, 
+      #{name,jdbcType=VARCHAR}, #{materialType,jdbcType=INTEGER}, #{status,jdbcType=INTEGER}, 
+      #{startDate,jdbcType=DATE}, #{endDate,jdbcType=DATE}, #{periodTimeStart,jdbcType=TIME}, 
+      #{periodTimeEnd,jdbcType=TIME}, #{checkUser,jdbcType=VARCHAR}, #{checkNote,jdbcType=VARCHAR}, 
+      #{checkTime,jdbcType=TIMESTAMP}, #{createdUser,jdbcType=VARCHAR}, #{createdTime,jdbcType=TIMESTAMP}, 
+      #{lastEditTime,jdbcType=TIMESTAMP}, #{lastEditUser,jdbcType=VARCHAR}, #{lastEditModule,jdbcType=VARCHAR}, 
+      #{region,jdbcType=INTEGER}, #{reservedString,jdbcType=VARCHAR}, #{reservedInt,jdbcType=BIGINT}
+      )
+  </insert>
+  <insert id="insertSelective" parameterType="com.suma.pojo.AdvInfo" >
+    insert into adv_info
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        ID,
+      </if>
+      <if test="advLocationId != null" >
+        ADV_LOCATION_ID,
+      </if>
+      <if test="advTypeId != null" >
+        ADV_TYPE_ID,
+      </if>
+      <if test="name != null" >
+        NAME,
+      </if>
+      <if test="materialType != null" >
+        MATERIAL_TYPE,
+      </if>
+      <if test="status != null" >
+        STATUS,
+      </if>
+      <if test="startDate != null" >
+        START_DATE,
+      </if>
+      <if test="endDate != null" >
+        END_DATE,
+      </if>
+      <if test="periodTimeStart != null" >
+        PERIOD_TIME_START,
+      </if>
+      <if test="periodTimeEnd != null" >
+        PERIOD_TIME_END,
+      </if>
+      <if test="checkUser != null" >
+        CHECK_USER,
+      </if>
+      <if test="checkNote != null" >
+        CHECK_NOTE,
+      </if>
+      <if test="checkTime != null" >
+        CHECK_TIME,
+      </if>
+      <if test="createdUser != null" >
+        CREATED_USER,
+      </if>
+      <if test="createdTime != null" >
+        CREATED_TIME,
+      </if>
+      <if test="lastEditTime != null" >
+        LAST_EDIT_TIME,
+      </if>
+      <if test="lastEditUser != null" >
+        LAST_EDIT_USER,
+      </if>
+      <if test="lastEditModule != null" >
+        LAST_EDIT_MODULE,
+      </if>
+      <if test="region != null" >
+        REGION,
+      </if>
+      <if test="reservedString != null" >
+        RESERVED_STRING,
+      </if>
+      <if test="reservedInt != null" >
+        RESERVED_INT,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        #{id,jdbcType=BIGINT},
+      </if>
+      <if test="advLocationId != null" >
+        #{advLocationId,jdbcType=BIGINT},
+      </if>
+      <if test="advTypeId != null" >
+        #{advTypeId,jdbcType=BIGINT},
+      </if>
+      <if test="name != null" >
+        #{name,jdbcType=VARCHAR},
+      </if>
+      <if test="materialType != null" >
+        #{materialType,jdbcType=INTEGER},
+      </if>
+      <if test="status != null" >
+        #{status,jdbcType=INTEGER},
+      </if>
+      <if test="startDate != null" >
+        #{startDate,jdbcType=DATE},
+      </if>
+      <if test="endDate != null" >
+        #{endDate,jdbcType=DATE},
+      </if>
+      <if test="periodTimeStart != null" >
+        #{periodTimeStart,jdbcType=TIME},
+      </if>
+      <if test="periodTimeEnd != null" >
+        #{periodTimeEnd,jdbcType=TIME},
+      </if>
+      <if test="checkUser != null" >
+        #{checkUser,jdbcType=VARCHAR},
+      </if>
+      <if test="checkNote != null" >
+        #{checkNote,jdbcType=VARCHAR},
+      </if>
+      <if test="checkTime != null" >
+        #{checkTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="createdUser != null" >
+        #{createdUser,jdbcType=VARCHAR},
+      </if>
+      <if test="createdTime != null" >
+        #{createdTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="lastEditTime != null" >
+        #{lastEditTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="lastEditUser != null" >
+        #{lastEditUser,jdbcType=VARCHAR},
+      </if>
+      <if test="lastEditModule != null" >
+        #{lastEditModule,jdbcType=VARCHAR},
+      </if>
+      <if test="region != null" >
+        #{region,jdbcType=INTEGER},
+      </if>
+      <if test="reservedString != null" >
+        #{reservedString,jdbcType=VARCHAR},
+      </if>
+      <if test="reservedInt != null" >
+        #{reservedInt,jdbcType=BIGINT},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.suma.pojo.AdvInfo" >
+    update adv_info
+    <set >
+      <if test="advLocationId != null" >
+        ADV_LOCATION_ID = #{advLocationId,jdbcType=BIGINT},
+      </if>
+      <if test="advTypeId != null" >
+        ADV_TYPE_ID = #{advTypeId,jdbcType=BIGINT},
+      </if>
+      <if test="name != null" >
+        NAME = #{name,jdbcType=VARCHAR},
+      </if>
+      <if test="materialType != null" >
+        MATERIAL_TYPE = #{materialType,jdbcType=INTEGER},
+      </if>
+      <if test="status != null" >
+        STATUS = #{status,jdbcType=INTEGER},
+      </if>
+      <if test="startDate != null" >
+        START_DATE = #{startDate,jdbcType=DATE},
+      </if>
+      <if test="endDate != null" >
+        END_DATE = #{endDate,jdbcType=DATE},
+      </if>
+      <if test="periodTimeStart != null" >
+        PERIOD_TIME_START = #{periodTimeStart,jdbcType=TIME},
+      </if>
+      <if test="periodTimeEnd != null" >
+        PERIOD_TIME_END = #{periodTimeEnd,jdbcType=TIME},
+      </if>
+      <if test="checkUser != null" >
+        CHECK_USER = #{checkUser,jdbcType=VARCHAR},
+      </if>
+      <if test="checkNote != null" >
+        CHECK_NOTE = #{checkNote,jdbcType=VARCHAR},
+      </if>
+      <if test="checkTime != null" >
+        CHECK_TIME = #{checkTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="createdUser != null" >
+        CREATED_USER = #{createdUser,jdbcType=VARCHAR},
+      </if>
+      <if test="createdTime != null" >
+        CREATED_TIME = #{createdTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="lastEditTime != null" >
+        LAST_EDIT_TIME = #{lastEditTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="lastEditUser != null" >
+        LAST_EDIT_USER = #{lastEditUser,jdbcType=VARCHAR},
+      </if>
+      <if test="lastEditModule != null" >
+        LAST_EDIT_MODULE = #{lastEditModule,jdbcType=VARCHAR},
+      </if>
+      <if test="region != null" >
+        REGION = #{region,jdbcType=INTEGER},
+      </if>
+      <if test="reservedString != null" >
+        RESERVED_STRING = #{reservedString,jdbcType=VARCHAR},
+      </if>
+      <if test="reservedInt != null" >
+        RESERVED_INT = #{reservedInt,jdbcType=BIGINT},
+      </if>
+    </set>
+    where ID = #{id,jdbcType=BIGINT}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.suma.pojo.AdvInfo" >
+    update adv_info
+    set ADV_LOCATION_ID = #{advLocationId,jdbcType=BIGINT},
+      ADV_TYPE_ID = #{advTypeId,jdbcType=BIGINT},
+      NAME = #{name,jdbcType=VARCHAR},
+      MATERIAL_TYPE = #{materialType,jdbcType=INTEGER},
+      STATUS = #{status,jdbcType=INTEGER},
+      START_DATE = #{startDate,jdbcType=DATE},
+      END_DATE = #{endDate,jdbcType=DATE},
+      PERIOD_TIME_START = #{periodTimeStart,jdbcType=TIME},
+      PERIOD_TIME_END = #{periodTimeEnd,jdbcType=TIME},
+      CHECK_USER = #{checkUser,jdbcType=VARCHAR},
+      CHECK_NOTE = #{checkNote,jdbcType=VARCHAR},
+      CHECK_TIME = #{checkTime,jdbcType=TIMESTAMP},
+      CREATED_USER = #{createdUser,jdbcType=VARCHAR},
+      CREATED_TIME = #{createdTime,jdbcType=TIMESTAMP},
+      LAST_EDIT_TIME = #{lastEditTime,jdbcType=TIMESTAMP},
+      LAST_EDIT_USER = #{lastEditUser,jdbcType=VARCHAR},
+      LAST_EDIT_MODULE = #{lastEditModule,jdbcType=VARCHAR},
+      REGION = #{region,jdbcType=INTEGER},
+      RESERVED_STRING = #{reservedString,jdbcType=VARCHAR},
+      RESERVED_INT = #{reservedInt,jdbcType=BIGINT}
+    where ID = #{id,jdbcType=BIGINT}
+  </update>
+</mapper>

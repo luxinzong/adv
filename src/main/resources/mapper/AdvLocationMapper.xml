@@ -1,0 +1,258 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.suma.dao.AdvLocationMapper">
+  <resultMap id="BaseResultMap" type="com.suma.pojo.AdvLocation">
+    <id column="ID" jdbcType="BIGINT" property="id" />
+    <result column="NAME" jdbcType="VARCHAR" property="name" />
+    <result column="ADV_TYPE_ID" jdbcType="BIGINT" property="advTypeId" />
+    <result column="X_POSITION" jdbcType="BIGINT" property="xPosition" />
+    <result column="Y_POSITION" jdbcType="BIGINT" property="yPosition" />
+    <result column="M_WIDTH" jdbcType="BIGINT" property="mWidth" />
+    <result column="M_HEIGHT" jdbcType="BIGINT" property="mHeight" />
+    <result column="MASK" jdbcType="VARCHAR" property="mask" />
+  </resultMap>
+  <sql id="Example_Where_Clause">
+    <where>
+      <foreach collection="oredCriteria" item="criteria" separator="or">
+        <if test="criteria.valid">
+          <trim prefix="(" prefixOverrides="and" suffix=")">
+            <foreach collection="criteria.criteria" item="criterion">
+              <choose>
+                <when test="criterion.noValue">
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue">
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue">
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue">
+                  and ${criterion.condition}
+                  <foreach close=")" collection="criterion.value" item="listItem" open="(" separator=",">
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Update_By_Example_Where_Clause">
+    <where>
+      <foreach collection="example.oredCriteria" item="criteria" separator="or">
+        <if test="criteria.valid">
+          <trim prefix="(" prefixOverrides="and" suffix=")">
+            <foreach collection="criteria.criteria" item="criterion">
+              <choose>
+                <when test="criterion.noValue">
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue">
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue">
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue">
+                  and ${criterion.condition}
+                  <foreach close=")" collection="criterion.value" item="listItem" open="(" separator=",">
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Base_Column_List">
+    ID, NAME, ADV_TYPE_ID, X_POSITION, Y_POSITION, M_WIDTH, M_HEIGHT, MASK
+  </sql>
+  <select id="selectByExample" parameterType="com.suma.pojo.AdvLocationExample" resultMap="BaseResultMap">
+    select
+    <if test="distinct">
+      distinct
+    </if>
+    <include refid="Base_Column_List" />
+    from adv_location
+    <if test="_parameter != null">
+      <include refid="Example_Where_Clause" />
+    </if>
+    <if test="orderByClause != null">
+      order by ${orderByClause}
+    </if>
+  </select>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from adv_location
+    where ID = #{id,jdbcType=BIGINT}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
+    delete from adv_location
+    where ID = #{id,jdbcType=BIGINT}
+  </delete>
+  <delete id="deleteByExample" parameterType="com.suma.pojo.AdvLocationExample">
+    delete from adv_location
+    <if test="_parameter != null">
+      <include refid="Example_Where_Clause" />
+    </if>
+  </delete>
+  <insert id="insert" parameterType="com.suma.pojo.AdvLocation">
+    insert into adv_location (ID, NAME, ADV_TYPE_ID, 
+      X_POSITION, Y_POSITION, M_WIDTH, 
+      M_HEIGHT, MASK)
+    values (#{id,jdbcType=BIGINT}, #{name,jdbcType=VARCHAR}, #{advTypeId,jdbcType=BIGINT}, 
+      #{xPosition,jdbcType=BIGINT}, #{yPosition,jdbcType=BIGINT}, #{mWidth,jdbcType=BIGINT}, 
+      #{mHeight,jdbcType=BIGINT}, #{mask,jdbcType=VARCHAR})
+  </insert>
+  <insert id="insertSelective" parameterType="com.suma.pojo.AdvLocation">
+    insert into adv_location
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        ID,
+      </if>
+      <if test="name != null">
+        NAME,
+      </if>
+      <if test="advTypeId != null">
+        ADV_TYPE_ID,
+      </if>
+      <if test="xPosition != null">
+        X_POSITION,
+      </if>
+      <if test="yPosition != null">
+        Y_POSITION,
+      </if>
+      <if test="mWidth != null">
+        M_WIDTH,
+      </if>
+      <if test="mHeight != null">
+        M_HEIGHT,
+      </if>
+      <if test="mask != null">
+        MASK,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        #{id,jdbcType=BIGINT},
+      </if>
+      <if test="name != null">
+        #{name,jdbcType=VARCHAR},
+      </if>
+      <if test="advTypeId != null">
+        #{advTypeId,jdbcType=BIGINT},
+      </if>
+      <if test="xPosition != null">
+        #{xPosition,jdbcType=BIGINT},
+      </if>
+      <if test="yPosition != null">
+        #{yPosition,jdbcType=BIGINT},
+      </if>
+      <if test="mWidth != null">
+        #{mWidth,jdbcType=BIGINT},
+      </if>
+      <if test="mHeight != null">
+        #{mHeight,jdbcType=BIGINT},
+      </if>
+      <if test="mask != null">
+        #{mask,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <select id="countByExample" parameterType="com.suma.pojo.AdvLocationExample" resultType="java.lang.Long">
+    select count(*) from adv_location
+    <if test="_parameter != null">
+      <include refid="Example_Where_Clause" />
+    </if>
+  </select>
+  <update id="updateByExampleSelective" parameterType="map">
+    update adv_location
+    <set>
+      <if test="record.id != null">
+        ID = #{record.id,jdbcType=BIGINT},
+      </if>
+      <if test="record.name != null">
+        NAME = #{record.name,jdbcType=VARCHAR},
+      </if>
+      <if test="record.advTypeId != null">
+        ADV_TYPE_ID = #{record.advTypeId,jdbcType=BIGINT},
+      </if>
+      <if test="record.xPosition != null">
+        X_POSITION = #{record.xPosition,jdbcType=BIGINT},
+      </if>
+      <if test="record.yPosition != null">
+        Y_POSITION = #{record.yPosition,jdbcType=BIGINT},
+      </if>
+      <if test="record.mWidth != null">
+        M_WIDTH = #{record.mWidth,jdbcType=BIGINT},
+      </if>
+      <if test="record.mHeight != null">
+        M_HEIGHT = #{record.mHeight,jdbcType=BIGINT},
+      </if>
+      <if test="record.mask != null">
+        MASK = #{record.mask,jdbcType=VARCHAR},
+      </if>
+    </set>
+    <if test="_parameter != null">
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByExample" parameterType="map">
+    update adv_location
+    set ID = #{record.id,jdbcType=BIGINT},
+      NAME = #{record.name,jdbcType=VARCHAR},
+      ADV_TYPE_ID = #{record.advTypeId,jdbcType=BIGINT},
+      X_POSITION = #{record.xPosition,jdbcType=BIGINT},
+      Y_POSITION = #{record.yPosition,jdbcType=BIGINT},
+      M_WIDTH = #{record.mWidth,jdbcType=BIGINT},
+      M_HEIGHT = #{record.mHeight,jdbcType=BIGINT},
+      MASK = #{record.mask,jdbcType=VARCHAR}
+    <if test="_parameter != null">
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByPrimaryKeySelective" parameterType="com.suma.pojo.AdvLocation">
+    update adv_location
+    <set>
+      <if test="name != null">
+        NAME = #{name,jdbcType=VARCHAR},
+      </if>
+      <if test="advTypeId != null">
+        ADV_TYPE_ID = #{advTypeId,jdbcType=BIGINT},
+      </if>
+      <if test="xPosition != null">
+        X_POSITION = #{xPosition,jdbcType=BIGINT},
+      </if>
+      <if test="yPosition != null">
+        Y_POSITION = #{yPosition,jdbcType=BIGINT},
+      </if>
+      <if test="mWidth != null">
+        M_WIDTH = #{mWidth,jdbcType=BIGINT},
+      </if>
+      <if test="mHeight != null">
+        M_HEIGHT = #{mHeight,jdbcType=BIGINT},
+      </if>
+      <if test="mask != null">
+        MASK = #{mask,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where ID = #{id,jdbcType=BIGINT}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.suma.pojo.AdvLocation">
+    update adv_location
+    set NAME = #{name,jdbcType=VARCHAR},
+      ADV_TYPE_ID = #{advTypeId,jdbcType=BIGINT},
+      X_POSITION = #{xPosition,jdbcType=BIGINT},
+      Y_POSITION = #{yPosition,jdbcType=BIGINT},
+      M_WIDTH = #{mWidth,jdbcType=BIGINT},
+      M_HEIGHT = #{mHeight,jdbcType=BIGINT},
+      MASK = #{mask,jdbcType=VARCHAR}
+    where ID = #{id,jdbcType=BIGINT}
+  </update>
+</mapper>

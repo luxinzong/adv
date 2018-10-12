@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.suma.dao.AdvTypeMapper" >
+  <resultMap id="BaseResultMap" type="com.suma.pojo.AdvType" >
+    <id column="id" property="id" jdbcType="BIGINT" />
+    <result column="advType" property="advtype" jdbcType="VARCHAR" />
+    <result column="advTypeName" property="advtypename" jdbcType="VARCHAR" />
+    <result column="advSubType" property="advsubtype" jdbcType="VARCHAR" />
+    <result column="advSubTypeName" property="advsubtypename" jdbcType="VARCHAR" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    id, advType, advTypeName, advSubType, advSubTypeName
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Long" >
+    select 
+    <include refid="Base_Column_List" />
+    from adv_type
+    where id = #{id,jdbcType=BIGINT}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long" >
+    delete from adv_type
+    where id = #{id,jdbcType=BIGINT}
+  </delete>
+  <insert id="insert" parameterType="com.suma.pojo.AdvType" >
+    insert into adv_type (id, advType, advTypeName, 
+      advSubType, advSubTypeName)
+    values (#{id,jdbcType=BIGINT}, #{advtype,jdbcType=VARCHAR}, #{advtypename,jdbcType=VARCHAR}, 
+      #{advsubtype,jdbcType=VARCHAR}, #{advsubtypename,jdbcType=VARCHAR})
+  </insert>
+  <insert id="insertSelective" parameterType="com.suma.pojo.AdvType" >
+    insert into adv_type
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        id,
+      </if>
+      <if test="advtype != null" >
+        advType,
+      </if>
+      <if test="advtypename != null" >
+        advTypeName,
+      </if>
+      <if test="advsubtype != null" >
+        advSubType,
+      </if>
+      <if test="advsubtypename != null" >
+        advSubTypeName,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        #{id,jdbcType=BIGINT},
+      </if>
+      <if test="advtype != null" >
+        #{advtype,jdbcType=VARCHAR},
+      </if>
+      <if test="advtypename != null" >
+        #{advtypename,jdbcType=VARCHAR},
+      </if>
+      <if test="advsubtype != null" >
+        #{advsubtype,jdbcType=VARCHAR},
+      </if>
+      <if test="advsubtypename != null" >
+        #{advsubtypename,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.suma.pojo.AdvType" >
+    update adv_type
+    <set >
+      <if test="advtype != null" >
+        advType = #{advtype,jdbcType=VARCHAR},
+      </if>
+      <if test="advtypename != null" >
+        advTypeName = #{advtypename,jdbcType=VARCHAR},
+      </if>
+      <if test="advsubtype != null" >
+        advSubType = #{advsubtype,jdbcType=VARCHAR},
+      </if>
+      <if test="advsubtypename != null" >
+        advSubTypeName = #{advsubtypename,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.suma.pojo.AdvType" >
+    update adv_type
+    set advType = #{advtype,jdbcType=VARCHAR},
+      advTypeName = #{advtypename,jdbcType=VARCHAR},
+      advSubType = #{advsubtype,jdbcType=VARCHAR},
+      advSubTypeName = #{advsubtypename,jdbcType=VARCHAR}
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+</mapper>
