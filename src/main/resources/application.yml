@@ -15,6 +15,6 @@ logging:
 spring:
   datasource:
     driver-class-name: com.mysql.jdbc.Driver
-    url: jdbc:mysql://192.166.65.174:3306/adv1?useUnicode=true&characterEncoding=utf8&&useSSL=false
+    url: jdbc:mysql://192.166.65.174:3306/adv?useUnicode=true&characterEncoding=utf8&&useSSL=false
     username: root
     password: root
