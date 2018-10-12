@@ -12,7 +12,7 @@ public interface AdvInfoMapper {
     int insertAdvInfo(AdvInfo advInf);
 
     AdvInfo selectByAdvInfoId(@Param("id") Long id);
-    
+
 
     int updateAdvInfo(AdvInfo record);
 
