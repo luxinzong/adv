@@ -1,7 +1,5 @@
 package com.suma.utils;
 
-import lombok.Data;
-
 /**
  * @Autor gaozhongbao
  * @Date 2018/10/11 0011

@@ -11,7 +11,7 @@
     <result column="phone_number" property="phoneNumber" jdbcType="VARCHAR" />
     <result column="status" property="status" jdbcType="CHAR" />
     <result column="create_by" property="createBy" jdbcType="VARCHAR" />
-    <result column="create_time" property="createTime" jdbcType="DATE" />
+    <result column="create_time" property="createTime" jdbcType="TIMESTAMP" />
     <result column="update_by" property="updateBy" jdbcType="VARCHAR" />
     <result column="update_time" property="updateTime" jdbcType="TIMESTAMP" />
   </resultMap>
@@ -24,6 +24,35 @@
     <include refid="Base_Column_List" />
     from adv_dept
     where dept_id = #{deptId,jdbcType=INTEGER}
+  </select>
+  <select id="selectAdvDeptAll" resultMap="BaseResultMap">
+    select <include refid="Base_Column_List"/>
+      from adv_dept;
+  </select>
+  <select id="selectAdvDeptList" parameterType="AdvDept" resultMap="BaseResultMap">
+    select <include refid="Base_Column_List"/>
+      from adv_dept
+    <where>
+      <if test="deptName != null and deptName != ''">
+        AND dept_name like concat ('%',#{deptName},'%')
+      </if>
+      <if test="status != null and status != ''">
+        AND status = #{status}
+      </if>
+    </where>
+  </select>
+  <select id="checkAdvDeptExistUser" parameterType="Integer" resultType="java.lang.Integer">
+      select count(*) from adv_user where dept_id = #{deptId};
+  </select>
+  <select id="selectAdvDeptCount" parameterType="Integer" resultType="java.lang.Integer">
+    select count(*) from adv_dept
+    <where>
+        <if test="parentId != null and parentId != 0 "> and parent_id = #{parentId}</if>
+    </where>
+  </select>
+  <select id="checkAdvDeptNameUnique" parameterType="String" resultType="java.lang.Integer">
+    select count(*) from adv_dept
+    where dept_name = #{deptName};
   </select>
   <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
     delete from adv_dept
@@ -38,7 +67,7 @@
     values (#{deptId,jdbcType=INTEGER}, #{parentId,jdbcType=INTEGER}, #{ancestors,jdbcType=VARCHAR}, 
       #{deptName,jdbcType=VARCHAR}, #{orderNum,jdbcType=INTEGER}, #{leader,jdbcType=VARCHAR}, 
       #{phoneNumber,jdbcType=VARCHAR}, #{status,jdbcType=CHAR}, #{createBy,jdbcType=VARCHAR}, 
-      #{createTime,jdbcType=DATE}, #{updateBy,jdbcType=VARCHAR}, #{updateTime,jdbcType=TIMESTAMP}
+      sysdate(), #{updateBy,jdbcType=VARCHAR}, #{updateTime,jdbcType=TIMESTAMP}
       )
   </insert>
   <insert id="insertSelective" parameterType="com.suma.pojo.AdvDept" >
@@ -71,9 +100,7 @@
       <if test="createBy != null" >
         create_by,
       </if>
-      <if test="createTime != null" >
         create_time,
-      </if>
       <if test="updateBy != null" >
         update_by,
       </if>
@@ -109,9 +136,7 @@
       <if test="createBy != null" >
         #{createBy,jdbcType=VARCHAR},
       </if>
-      <if test="createTime != null" >
-        #{createTime,jdbcType=DATE},
-      </if>
+        sysdate(),
       <if test="updateBy != null" >
         #{updateBy,jdbcType=VARCHAR},
       </if>
@@ -153,9 +178,7 @@
       <if test="updateBy != null" >
         update_by = #{updateBy,jdbcType=VARCHAR},
       </if>
-      <if test="updateTime != null" >
-        update_time = #{updateTime,jdbcType=TIMESTAMP},
-      </if>
+        update_time = sysdate(),
     </set>
     where dept_id = #{deptId,jdbcType=INTEGER}
   </update>
@@ -171,7 +194,7 @@
       create_by = #{createBy,jdbcType=VARCHAR},
       create_time = #{createTime,jdbcType=DATE},
       update_by = #{updateBy,jdbcType=VARCHAR},
-      update_time = #{updateTime,jdbcType=TIMESTAMP}
+      update_time = sysdate()
     where dept_id = #{deptId,jdbcType=INTEGER}
   </update>
 </mapper>

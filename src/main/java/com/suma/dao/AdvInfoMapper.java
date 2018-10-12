@@ -1,17 +1,19 @@
 package com.suma.dao;
 
 import com.suma.pojo.AdvInfo;
+import org.apache.ibatis.annotations.Param;
+
+import java.util.List;
 
 public interface AdvInfoMapper {
-    int deleteByPrimaryKey(Long id);
 
-    int insert(AdvInfo record);
+    int deleteByAdvInfoId(@Param("id") Long id);
 
-    int insertSelective(AdvInfo record);
+    int insertAdvInfo(AdvInfo advInf);
 
-    AdvInfo selectByPrimaryKey(Long id);
+    AdvInfo selectByAdvInfoId(@Param("id") Long id);
+    
 
-    int updateByPrimaryKeySelective(AdvInfo record);
+    int updateAdvInfo(AdvInfo record);
 
-    int updateByPrimaryKey(AdvInfo record);
 }

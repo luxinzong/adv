@@ -20,8 +20,8 @@ spring:
     url: jdbc:mysql://192.166.65.174:3306/adv?useUnicode=true&characterEncoding=utf8&&useSSL=false
     username: root
     password: root
+
 #映射文件
 mybatis:
   mapper-locations: classpath*:/mapper/*.xml
-  configuration:
-    map-underscore-to-camel-case: true
+  type-aliases-package: com.suma.pojo
