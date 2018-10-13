@@ -39,6 +39,28 @@
     where ID = #{id}
   </select>
 
+  <!--查询所有广告信息-->
+  <select id="">
+    select
+    <include refid="columnList"/>
+    from adv_info
+  </select>
+
+  <!--根据广告名称、有效期、状态进行查询-->
+  <select id="">
+    select
+    <include refid="columnList"/>
+    from adv_info
+    where
+    <if test="name != null">name = #{name,jdbcType=VARCHAR}</if>
+    and
+    <if test="status != null">status = #{status,jdbcType=INTEGER}</if>
+    between
+    <if test="startDate != null">startDate = #{startDate,jdbcType=DATE}</if>
+    and
+    <if test="endDate != null">endDate = #{endDate,jdbcType=DATE}</if>
+  </select>
+
   <!--删除广告信息-->
   <delete id="deleteByAdvInfoId" parameterType="java.lang.Long" >
     delete from adv_info

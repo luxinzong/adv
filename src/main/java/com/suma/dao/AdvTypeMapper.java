@@ -1,17 +1,21 @@
 package com.suma.dao;
 
 import com.suma.pojo.AdvType;
+import org.apache.ibatis.annotations.Param;
+
+import java.util.List;
 
 public interface AdvTypeMapper {
-    int deleteByPrimaryKey(Long id);
 
-    int insert(AdvType record);
+    void deleteByAdvTypeId(@Param("id") Long id);
 
-    int insertSelective(AdvType record);
+    void insertAdvType(AdvType advType);
 
-    AdvType selectByPrimaryKey(Long id);
+    AdvType selectByAdvTypeId(@Param("id") Long id);
 
-    int updateByPrimaryKeySelective(AdvType record);
+    List<AdvType> selectAdvTypes();
 
-    int updateByPrimaryKey(AdvType record);
+    List<AdvType> selectAdvTypesByAdvType(@Param("advType") String advType);
+
+    void updateAdvType(AdvType advType);
 }
