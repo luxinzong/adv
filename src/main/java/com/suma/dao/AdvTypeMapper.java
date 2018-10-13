@@ -15,7 +15,7 @@ public interface AdvTypeMapper {
 
     List<AdvType> selectAdvTypes();
 
-    List<AdvType> selectAdvTypesByAdvType(@Param("advType") String advType);
+    List<AdvType> selectAdvTypesByType(@Param("advType") String advType);
 
     void updateAdvType(AdvType advType);
 }

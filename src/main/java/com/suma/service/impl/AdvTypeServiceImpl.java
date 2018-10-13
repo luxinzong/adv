@@ -39,8 +39,8 @@ public class AdvTypeServiceImpl implements AdvTypeService {
     }
 
     @Override
-    public List<AdvType> selectAdvTypesByAdvType(String advType) {
-        return advTypeMapper.selectAdvTypesByAdvType(advType);
+    public List<AdvType> selectAdvTypesByType(String advType) {
+        return advTypeMapper.selectAdvTypesByType(advType);
     }
 
     @Override

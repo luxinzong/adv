@@ -30,7 +30,7 @@
   </select>
 
   <!--根据广告位类型查询-->
-  <select id="selectAdvTypesByAdvType" resultMap="BaseResultType">
+  <select id="selectAdvTypesByType" resultMap="BaseResultType">
     select <include refid="Base_Column_List"/>
     from adv_type
     where

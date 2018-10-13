@@ -17,7 +17,7 @@ public interface AdvTypeService {
 
     List<AdvType> selectAdvTypes();
 
-    List<AdvType> selectAdvTypesByAdvType(String advType);
+    List<AdvType> selectAdvTypesByType(String advType);
 
     void updateAdvType(AdvType advType);
 }
