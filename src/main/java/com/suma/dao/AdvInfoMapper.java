@@ -1,23 +1,30 @@
 package com.suma.dao;
 
 import com.suma.pojo.AdvInfo;
+import com.suma.pojo.AdvInfoExample;
+import java.util.List;
 import org.apache.ibatis.annotations.Param;
 
-import java.util.Date;
-import java.util.List;
-
 public interface AdvInfoMapper {
+    int countByExample(AdvInfoExample example);
 
-    void deleteByAdvInfoId(@Param("id") Long id);
+    int deleteByExample(AdvInfoExample example);
 
-    void insertAdvInfo(AdvInfo advInf);
+    int deleteByPrimaryKey(Long id);
 
-    AdvInfo selectByAdvInfoId(@Param("id") Long id);
+    int insert(AdvInfo record);
 
-    List<AdvInfo> selectAdvInfos();
+    int insertSelective(AdvInfo record);
 
-    List<AdvInfo> selectByNameAndStatusAndDate(String Name, Integer status, Date startDate, Date endDate);
+    List<AdvInfo> selectByExample(AdvInfoExample example);
 
-    void updateAdvInfo(AdvInfo record);
+    AdvInfo selectByPrimaryKey(Long id);
 
+    int updateByExampleSelective(@Param("record") AdvInfo record, @Param("example") AdvInfoExample example);
+
+    int updateByExample(@Param("record") AdvInfo record, @Param("example") AdvInfoExample example);
+
+    int updateByPrimaryKeySelective(AdvInfo record);
+
+    int updateByPrimaryKey(AdvInfo record);
 }
