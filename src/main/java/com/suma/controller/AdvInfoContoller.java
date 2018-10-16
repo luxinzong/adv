@@ -3,19 +3,15 @@ package com.suma.controller;
 import com.github.pagehelper.PageHelper;
 import com.suma.pojo.*;
 import com.suma.service.AdvInfoService;
-import com.suma.service.AdvMaterialService;
-import com.suma.service.InfoMaterialService;
+
 import com.suma.utils.Result;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.propertyeditors.CustomDateEditor;
-import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.context.request.WebRequest;
 
-import java.text.DateFormat;
+import java.sql.Date;
 import java.text.SimpleDateFormat;
-import java.util.Date;
 import java.util.List;
+import java.util.Map;
 
 /**
  * @auther: luxinzong
@@ -29,20 +25,23 @@ public class AdvInfoContoller{
     private AdvInfoService advInfoService;
 
     /**
-     *  查询广告信息
-     * @param status 状态码
-     * @param name 广告名称
-     * @param startDate 广告起始日期
-     * @param endDate 广告结束日期
-     * @param pageNum  页码
-     * @param pageSize 每页数量
+     * 查询广告信息
+     * @param requestMap
      * @return
      */
     @RequestMapping(value = "query",method = RequestMethod.POST)
-    public Result queryAdvInfo(@RequestBody Integer status, String name,
-                               Date startDate, Date endDate, Integer pageNum, Integer pageSize) {
-        Result result = new Result();
+    public Result queryAdvInfo(@RequestBody Map<String,Object> requestMap){
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+        Integer status = (Integer) requestMap.get("status");
+        String name = (String) requestMap.get("name");
+        String start = (String) requestMap.get("startDate");
+        String end = (String) requestMap.get("endDate");
+        Integer pageNum = (Integer) requestMap.get("pageNum");
+        Integer pageSize = (Integer) requestMap.get("pageSize");
+                Result result = new Result();
         try {
+            Date startDate = (Date) sdf.parse(start);
+            Date endDate = (Date) sdf.parse(end);
             if (pageNum == null || pageSize == null) {
                 result.setResultCode(1);
                 result.setResultDesc("缺少页码");
@@ -69,7 +68,7 @@ public class AdvInfoContoller{
      * @return
      */
     @RequestMapping(value = "delete", method = RequestMethod.POST)
-    public Result deleteAdvInfo(List<Long> ids) {
+    public Result deleteAdvInfo(@RequestBody List<Long> ids) {
         Result result = new Result();
         try {
             if (ids == null) {
@@ -96,7 +95,7 @@ public class AdvInfoContoller{
      * @return
      */
     @RequestMapping(value = "insert", method = RequestMethod.POST)
-    public Result insertAdvInfo(AdvInfo advInfo) {
+    public Result insertAdvInfo(@RequestBody AdvInfo advInfo) {
         Result result = new Result();
         try {
             System.out.println(advInfo);
@@ -135,7 +134,7 @@ public class AdvInfoContoller{
      * @return
      */
     @RequestMapping(value = "update", method = RequestMethod.POST)
-    public Result updateAdvInfo(AdvInfo advInfo) {
+    public Result updateAdvInfo(@RequestBody AdvInfo advInfo) {
         Result result = new Result();
         try {
             if (advInfo != null) {

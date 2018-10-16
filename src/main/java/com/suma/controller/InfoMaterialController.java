@@ -9,6 +9,7 @@ import com.suma.service.InfoMaterialService;
 import com.suma.utils.Result;
 import com.suma.vo.InfoMaterialVO;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
@@ -37,7 +38,7 @@ public class InfoMaterialController {
      * @return
      */
     @RequestMapping(value = "add", method = RequestMethod.POST)
-    public Result addInfoMaterial(InfoMaterial infoMaterial) {
+    public Result addInfoMaterial(@RequestBody InfoMaterial infoMaterial) {
         Result result = new Result();
         try {
             if (infoMaterial != null) {
@@ -66,7 +67,7 @@ public class InfoMaterialController {
      * @return
      */
     @RequestMapping(value = "query", method = RequestMethod.POST)
-    public Result queryInfoMaterial(Long advInfoId) {
+    public Result queryInfoMaterial(@RequestBody Long advInfoId) {
         Result result = new Result();
         try {
             InfoMaterialExample example = new InfoMaterialExample();
@@ -108,7 +109,7 @@ public class InfoMaterialController {
      * @return
      */
     @RequestMapping(value = "delete", method = RequestMethod.POST)
-    public Result deleteInfoMaterial(InfoMaterial infoMaterial) {
+    public Result deleteInfoMaterial(@RequestBody InfoMaterial infoMaterial) {
         Result result = new Result();
         try {
             InfoMaterialExample example = new InfoMaterialExample();
@@ -138,7 +139,7 @@ public class InfoMaterialController {
      * @return
      */
     @RequestMapping(value = "update")
-    public Result updateInfoMaterial(InfoMaterial infoMaterial) {
+    public Result updateInfoMaterial(@RequestBody InfoMaterial infoMaterial) {
         Result result = new Result();
         try {
             InfoMaterialExample example = new InfoMaterialExample();
