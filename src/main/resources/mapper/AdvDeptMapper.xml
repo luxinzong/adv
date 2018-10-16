@@ -50,9 +50,16 @@
         <if test="parentId != null and parentId != 0 "> and parent_id = #{parentId}</if>
     </where>
   </select>
+  <select id="getAncestorList" resultType="java.lang.String">
+    select ancestors from adv_dept;
+  </select>
   <select id="checkAdvDeptNameUnique" parameterType="String" resultType="java.lang.Integer">
     select count(*) from adv_dept
     where dept_name = #{deptName};
+  </select>
+  <select id="getMaxAdvDeptOrderNum" parameterType="java.lang.Integer" resultType="java.lang.Integer">
+    select IFNULL(MAX(order_num),0) from adv_dept
+    where parent_id=#{parentId};
   </select>
   <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
     delete from adv_dept

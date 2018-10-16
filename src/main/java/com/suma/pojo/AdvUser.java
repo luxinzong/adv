@@ -1,11 +1,13 @@
 package com.suma.pojo;
 
 import lombok.Data;
+import lombok.ToString;
 
 import java.util.Date;
 
 @Data
 public class AdvUser {
+
     private Integer userId;
 
     private Integer deptId;
@@ -23,5 +25,7 @@ public class AdvUser {
     private String loginIp;
 
     private Date loginDate;
+
+
 
 }

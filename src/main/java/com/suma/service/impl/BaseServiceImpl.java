@@ -76,4 +76,13 @@ public class BaseServiceImpl<T, Ex, PK extends Serializable> implements BaseServ
 		return baseDAO.selectByExample(ex);
 	}
 
+	@Override
+	public int deleteByExample(Ex ex) {
+		return baseDAO.deleteByExample(ex);
+	}
+
+	@Override
+	public int updateByExample(T t, Ex ex) {
+		return baseDAO.updateByExample(t,ex);
+	}
 }

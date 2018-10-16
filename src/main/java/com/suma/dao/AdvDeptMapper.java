@@ -13,7 +13,7 @@ import java.util.List;
 public interface AdvDeptMapper {
 
     /**
-     * 查询部门人数
+     * 查询部门通过父类id
      *
      * @param parentId
      * @return 结果
@@ -33,8 +33,7 @@ public interface AdvDeptMapper {
      * @param advDept 部门信息
      * @return 部门信息集合
      */
-    // TODO: 2018/10/12 0012 参数还没确定
-//    List<AdvDept> selectAdvDeptList(AdvDept advDept);
+    List<AdvDept> selectAdvDeptList(AdvDept advDept);
 
     /**
      * 查询部门所有数据
@@ -95,4 +94,15 @@ public interface AdvDeptMapper {
      * @return 结果
      */
     int updateByPrimaryKey(AdvDept record);
+
+    /**
+     * 根据deptId查询当前部门最大的orderNum
+     *
+     * @param parentId
+     * @return
+     */
+    int getMaxAdvDeptOrderNum(@Param("parentId") Integer parentId);
+
+    List<String> getAncestorList();
+
 }

@@ -1,6 +1,9 @@
 package com.suma.pojo;
 
 import lombok.Data;
+import lombok.ToString;
+
+import javax.validation.constraints.NotNull;
 
 /**
  * @Autor gaozhongbao
@@ -12,20 +15,23 @@ public class AdvDept extends BasePojo{
     //序列化ID
     private static final long serialVersionUID = 1L;
     //部门ID
+    @NotNull
     private Integer deptId;
     //父部门ID
     private Integer parentId;
     //祖级列表
     private String ancestors;
     //部门名称
+    @NotNull
     private String deptName;
     //显示顺序
     private Integer orderNum;
     //负责人
     private String leader;
-    //练习电话
+    //电话
     private String phoneNumber;
     //部门状态：0正常,1停用
+    @NotNull
     private String status;
 
 }

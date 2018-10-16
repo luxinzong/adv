@@ -1,9 +1,9 @@
 package com.suma.pojo;
 
 import lombok.Data;
+import lombok.ToString;
 
 import java.util.Date;
-
 @Data
 public class AdvRole {
     private Integer roleId;
@@ -25,5 +25,6 @@ public class AdvRole {
     private Date updateTime;
 
     private String remark;
+
 
 }

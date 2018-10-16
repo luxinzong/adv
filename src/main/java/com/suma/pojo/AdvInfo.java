@@ -1,27 +1,34 @@
 package com.suma.pojo;
 
-import java.util.Date;
+import com.fasterxml.jackson.annotation.JsonFormat;
+import lombok.Data;
 
+import java.sql.Date;
+import java.sql.Time;
+import java.sql.Timestamp;
+
+
+@Data
 public class AdvInfo {
     private Long id;
 
-    private Long advLocationId;
+    private Long advLocationId;//广告位ID
 
-    private Long advTypeId;
+    private Long advTypeId;// 广告类型ID
 
-    private String name;
+    private String name;//广告名称
 
-    private Integer materialType;
+    private Integer materialType;//素材类型
 
-    private Integer status;
+    private Integer status;//广告状态
 
-    private Date startDate;
+    private Date startDate;//起始日期
 
-    private Date endDate;
+    private Date endDate;//终止日期
 
-    private Date periodTimeStart;
+    private Time periodTimeStart;//有效期生效日期
 
-    private Date periodTimeEnd;
+    private Time periodTimeEnd;//有效期结束日期
 
     private String checkUser;
 
@@ -33,7 +40,7 @@ public class AdvInfo {
 
     private Date createdTime;
 
-    private Date lastEditTime;
+    private Timestamp lastEditTime;
 
     private String lastEditUser;
 
@@ -45,171 +52,4 @@ public class AdvInfo {
 
     private Long reservedInt;
 
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public Long getAdvLocationId() {
-        return advLocationId;
-    }
-
-    public void setAdvLocationId(Long advLocationId) {
-        this.advLocationId = advLocationId;
-    }
-
-    public Long getAdvTypeId() {
-        return advTypeId;
-    }
-
-    public void setAdvTypeId(Long advTypeId) {
-        this.advTypeId = advTypeId;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name == null ? null : name.trim();
-    }
-
-    public Integer getMaterialType() {
-        return materialType;
-    }
-
-    public void setMaterialType(Integer materialType) {
-        this.materialType = materialType;
-    }
-
-    public Integer getStatus() {
-        return status;
-    }
-
-    public void setStatus(Integer status) {
-        this.status = status;
-    }
-
-    public Date getStartDate() {
-        return startDate;
-    }
-
-    public void setStartDate(Date startDate) {
-        this.startDate = startDate;
-    }
-
-    public Date getEndDate() {
-        return endDate;
-    }
-
-    public void setEndDate(Date endDate) {
-        this.endDate = endDate;
-    }
-
-    public Date getPeriodTimeStart() {
-        return periodTimeStart;
-    }
-
-    public void setPeriodTimeStart(Date periodTimeStart) {
-        this.periodTimeStart = periodTimeStart;
-    }
-
-    public Date getPeriodTimeEnd() {
-        return periodTimeEnd;
-    }
-
-    public void setPeriodTimeEnd(Date periodTimeEnd) {
-        this.periodTimeEnd = periodTimeEnd;
-    }
-
-    public String getCheckUser() {
-        return checkUser;
-    }
-
-    public void setCheckUser(String checkUser) {
-        this.checkUser = checkUser == null ? null : checkUser.trim();
-    }
-
-    public String getCheckNote() {
-        return checkNote;
-    }
-
-    public void setCheckNote(String checkNote) {
-        this.checkNote = checkNote == null ? null : checkNote.trim();
-    }
-
-    public Date getCheckTime() {
-        return checkTime;
-    }
-
-    public void setCheckTime(Date checkTime) {
-        this.checkTime = checkTime;
-    }
-
-    public String getCreatedUser() {
-        return createdUser;
-    }
-
-    public void setCreatedUser(String createdUser) {
-        this.createdUser = createdUser == null ? null : createdUser.trim();
-    }
-
-    public Date getCreatedTime() {
-        return createdTime;
-    }
-
-    public void setCreatedTime(Date createdTime) {
-        this.createdTime = createdTime;
-    }
-
-    public Date getLastEditTime() {
-        return lastEditTime;
-    }
-
-    public void setLastEditTime(Date lastEditTime) {
-        this.lastEditTime = lastEditTime;
-    }
-
-    public String getLastEditUser() {
-        return lastEditUser;
-    }
-
-    public void setLastEditUser(String lastEditUser) {
-        this.lastEditUser = lastEditUser == null ? null : lastEditUser.trim();
-    }
-
-    public String getLastEditModule() {
-        return lastEditModule;
-    }
-
-    public void setLastEditModule(String lastEditModule) {
-        this.lastEditModule = lastEditModule == null ? null : lastEditModule.trim();
-    }
-
-    public Integer getRegion() {
-        return region;
-    }
-
-    public void setRegion(Integer region) {
-        this.region = region;
-    }
-
-    public String getReservedString() {
-        return reservedString;
-    }
-
-    public void setReservedString(String reservedString) {
-        this.reservedString = reservedString == null ? null : reservedString.trim();
-    }
-
-    public Long getReservedInt() {
-        return reservedInt;
-    }
-
-    public void setReservedInt(Long reservedInt) {
-        this.reservedInt = reservedInt;
-    }
 }

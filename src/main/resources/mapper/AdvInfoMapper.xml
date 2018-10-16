@@ -92,6 +92,7 @@
     select
     <if test="distinct" >
       distinct
+      distinct
     </if>
     'true' as QUERYID,
     <include refid="Base_Column_List" />
@@ -132,8 +133,8 @@
       #{name,jdbcType=VARCHAR}, #{materialType,jdbcType=INTEGER}, #{status,jdbcType=INTEGER}, 
       #{startDate,jdbcType=DATE}, #{endDate,jdbcType=DATE}, #{periodTimeStart,jdbcType=TIME}, 
       #{periodTimeEnd,jdbcType=TIME}, #{checkUser,jdbcType=VARCHAR}, #{checkNote,jdbcType=VARCHAR}, 
-      #{checkTime,jdbcType=TIMESTAMP}, #{createdUser,jdbcType=VARCHAR}, #{createdTime,jdbcType=TIMESTAMP}, 
-      #{lastEditTime,jdbcType=TIMESTAMP}, #{lastEditUser,jdbcType=VARCHAR}, #{lastEditModule,jdbcType=VARCHAR}, 
+      #{checkTime,jdbcType=TIMESTAMP}, #{createdUser,jdbcType=VARCHAR}, #{createdTime,jdbcType=TIMESTAMP},
+     sysdate(), #{lastEditUser,jdbcType=VARCHAR}, #{lastEditModule,jdbcType=VARCHAR},
       #{region,jdbcType=INTEGER}, #{reservedString,jdbcType=VARCHAR}, #{reservedInt,jdbcType=BIGINT}
       )
   </insert>

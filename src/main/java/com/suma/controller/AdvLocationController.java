@@ -1,29 +1,54 @@
 package com.suma.controller;
 
+import com.alibaba.fastjson.JSON;
 import com.github.pagehelper.PageHelper;
 import com.suma.pojo.AdvLocation;
 import com.suma.pojo.AdvLocationExample;
-import com.suma.pojo.PageBean;
 import com.suma.service.AdvLocationService;
 import com.suma.utils.Result;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
 
+
 /**
  * @auther: zhangzhaoyuan
  * @date: 2018/10/12
- * @description:
+ * @description: 广告位置增删改查
  */
 @RestController
 @RequestMapping("location")
-public class AdvLocationController {
+public class AdvLocationController extends BaseController {
+    private Logger logger = LoggerFactory.getLogger(AdvLocationController.class);
 
     @Autowired
     private AdvLocationService advLocationService;
 
+    /**
+     * 获取location总数，方便分页显示
+     *
+     * @return
+     */
+    @RequestMapping("getLocationNum")
+    public Result getLocationNum() {
+        Result result = new Result();
+        long count = advLocationService.countByExample(null);
+        result.setResultCode(0);
+        result.setResultData(count);
+        return result;
+    }
+
+
+    /**
+     * @param advTypeId 广告位ID
+     * @param pageNum   页码
+     * @param pageSize  每页数量
+     * @return
+     */
     @RequestMapping("queryLocation")
     public Result queryLocation(Long advTypeId, Integer pageNum, Integer pageSize) {
         Result result = new Result();
@@ -32,16 +57,18 @@ public class AdvLocationController {
             result.setResultDesc("缺少参数");
             return result;
         }
+
         AdvLocationExample example = new AdvLocationExample();
         if (advTypeId != null) {
             example.createCriteria().andAdvTypeIdEqualTo(advTypeId);
         }
+        //分页
         PageHelper.startPage(pageNum, pageSize);
         List<AdvLocation> advLocations = advLocationService.selectByExample(example);
-        PageBean<AdvLocation> pageData = new PageBean<>(pageNum, pageSize, advLocations.size());
-        pageData.setItems(advLocations);
+
+
         result.setResultCode(0);
-        result.setResultData(pageData.getItems());
+        result.setResultData(advLocations);
         return result;
     }
 
@@ -51,15 +78,39 @@ public class AdvLocationController {
         if (location.getAdvTypeId() == null || location.getName() == null ||
                 location.getxPosition() == null || location.getyPosition() == null ||
                 location.getmHeight() == null || location.getmWidth() == null) {
+            logger.info(JSON.toJSON(location).toString());
             result.setResultCode(1);
             result.setResultDesc("缺少参数");
             return result;
         }
-        int save = advLocationService.save(location);
-        if (save == 0) {
+        return toResult(advLocationService.save(location));
+    }
+
+    @RequestMapping("editLocation")
+    public Result editLocation(AdvLocation location) {
+        Result result = new Result();
+        if (location.getId() == null || location.getAdvTypeId() == null || location.getName() == null ||
+                location.getxPosition() == null || location.getyPosition() == null ||
+                location.getmHeight() == null || location.getmWidth() == null) {
             result.setResultCode(1);
-            result.setResultDesc("添加失败");
+            result.setResultDesc("缺少参数");
             return result;
+        }
+        return toResult(advLocationService.update(location));
+    }
+
+
+    @RequestMapping("deleteLocations")
+    public Result deleLocations(String ids) {
+        Result result = new Result();
+        if (ids == null) {
+            result.setResultCode(1);
+            result.setResultDesc("缺少参数");
+            return result;
+        }
+        String[] idsSplit = ids.split(",");
+        for (String id : idsSplit) {
+            advLocationService.deleteByPK(Long.valueOf(id));
         }
         result.setResultCode(0);
         return result;

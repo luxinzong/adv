@@ -22,4 +22,8 @@ public interface BaseService<T, Ex, PK extends Serializable> {
 	long countByExample(Ex ex);
 	
 	List<T> selectByExample(Ex ex);
+
+	int deleteByExample(Ex ex);
+
+	int updateByExample(T t, Ex ex);
 }
