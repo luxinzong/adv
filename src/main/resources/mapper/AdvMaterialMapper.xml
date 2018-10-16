@@ -1,0 +1,401 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.suma.dao.AdvMaterialMapper">
+  <resultMap id="BaseResultMap" type="com.suma.pojo.AdvMaterial">
+    <id column="ID" jdbcType="BIGINT" property="id" />
+    <result column="FILE_NAME" jdbcType="VARCHAR" property="fileName" />
+    <result column="FILE_TYPE" jdbcType="VARCHAR" property="fileType" />
+    <result column="FILE_SAVE_NAME" jdbcType="VARCHAR" property="fileSaveName" />
+    <result column="FILE_PATH" jdbcType="VARCHAR" property="filePath" />
+    <result column="FILE_URL" jdbcType="VARCHAR" property="fileUrl" />
+    <result column="HREF" jdbcType="VARCHAR" property="href" />
+    <result column="MD5" jdbcType="VARCHAR" property="md5" />
+    <result column="MARK" jdbcType="VARCHAR" property="mark" />
+    <result column="CHECK_USER" jdbcType="VARCHAR" property="checkUser" />
+    <result column="CHECK_TIME" jdbcType="TIMESTAMP" property="checkTime" />
+    <result column="CREATED_USER" jdbcType="VARCHAR" property="createdUser" />
+    <result column="CREATED_TIME" jdbcType="TIMESTAMP" property="createdTime" />
+    <result column="LAST_EDIT_USER" jdbcType="VARCHAR" property="lastEditUser" />
+    <result column="LAST_EDIT_TIME" jdbcType="TIMESTAMP" property="lastEditTime" />
+    <result column="FILE_LENGTH" jdbcType="BIGINT" property="fileLength" />
+    <result column="REGION" jdbcType="INTEGER" property="region" />
+  </resultMap>
+  <sql id="Example_Where_Clause">
+    <where>
+      <foreach collection="oredCriteria" item="criteria" separator="or">
+        <if test="criteria.valid">
+          <trim prefix="(" prefixOverrides="and" suffix=")">
+            <foreach collection="criteria.criteria" item="criterion">
+              <choose>
+                <when test="criterion.noValue">
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue">
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue">
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue">
+                  and ${criterion.condition}
+                  <foreach close=")" collection="criterion.value" item="listItem" open="(" separator=",">
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Update_By_Example_Where_Clause">
+    <where>
+      <foreach collection="example.oredCriteria" item="criteria" separator="or">
+        <if test="criteria.valid">
+          <trim prefix="(" prefixOverrides="and" suffix=")">
+            <foreach collection="criteria.criteria" item="criterion">
+              <choose>
+                <when test="criterion.noValue">
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue">
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue">
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue">
+                  and ${criterion.condition}
+                  <foreach close=")" collection="criterion.value" item="listItem" open="(" separator=",">
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Base_Column_List">
+    ID, FILE_NAME, FILE_TYPE, FILE_SAVE_NAME, FILE_PATH, FILE_URL, HREF, MD5, MARK, CHECK_USER, 
+    CHECK_TIME, CREATED_USER, CREATED_TIME, LAST_EDIT_USER, LAST_EDIT_TIME, FILE_LENGTH, 
+    REGION
+  </sql>
+  <select id="selectByExample" parameterType="com.suma.pojo.AdvMaterialExample" resultMap="BaseResultMap">
+    select
+    <if test="distinct">
+      distinct
+    </if>
+    <include refid="Base_Column_List" />
+    from adv_material
+    <if test="_parameter != null">
+      <include refid="Example_Where_Clause" />
+    </if>
+    <if test="orderByClause != null">
+      order by ${orderByClause}
+    </if>
+  </select>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from adv_material
+    where ID = #{id,jdbcType=BIGINT}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
+    delete from adv_material
+    where ID = #{id,jdbcType=BIGINT}
+  </delete>
+  <delete id="deleteByExample" parameterType="com.suma.pojo.AdvMaterialExample">
+    delete from adv_material
+    <if test="_parameter != null">
+      <include refid="Example_Where_Clause" />
+    </if>
+  </delete>
+  <insert id="insert" parameterType="com.suma.pojo.AdvMaterial">
+    insert into adv_material (ID, FILE_NAME, FILE_TYPE, 
+      FILE_SAVE_NAME, FILE_PATH, FILE_URL, 
+      HREF, MD5, MARK, CHECK_USER, 
+      CHECK_TIME, CREATED_USER, CREATED_TIME, 
+      LAST_EDIT_USER, LAST_EDIT_TIME, FILE_LENGTH, 
+      REGION)
+    values (#{id,jdbcType=BIGINT}, #{fileName,jdbcType=VARCHAR}, #{fileType,jdbcType=VARCHAR}, 
+      #{fileSaveName,jdbcType=VARCHAR}, #{filePath,jdbcType=VARCHAR}, #{fileUrl,jdbcType=VARCHAR}, 
+      #{href,jdbcType=VARCHAR}, #{md5,jdbcType=VARCHAR}, #{mark,jdbcType=VARCHAR}, #{checkUser,jdbcType=VARCHAR}, 
+      #{checkTime,jdbcType=TIMESTAMP}, #{createdUser,jdbcType=VARCHAR}, #{createdTime,jdbcType=TIMESTAMP}, 
+      #{lastEditUser,jdbcType=VARCHAR}, #{lastEditTime,jdbcType=TIMESTAMP}, #{fileLength,jdbcType=BIGINT}, 
+      #{region,jdbcType=INTEGER})
+  </insert>
+  <insert id="insertSelective" parameterType="com.suma.pojo.AdvMaterial">
+    insert into adv_material
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        ID,
+      </if>
+      <if test="fileName != null">
+        FILE_NAME,
+      </if>
+      <if test="fileType != null">
+        FILE_TYPE,
+      </if>
+      <if test="fileSaveName != null">
+        FILE_SAVE_NAME,
+      </if>
+      <if test="filePath != null">
+        FILE_PATH,
+      </if>
+      <if test="fileUrl != null">
+        FILE_URL,
+      </if>
+      <if test="href != null">
+        HREF,
+      </if>
+      <if test="md5 != null">
+        MD5,
+      </if>
+      <if test="mark != null">
+        MARK,
+      </if>
+      <if test="checkUser != null">
+        CHECK_USER,
+      </if>
+      <if test="checkTime != null">
+        CHECK_TIME,
+      </if>
+      <if test="createdUser != null">
+        CREATED_USER,
+      </if>
+      <if test="createdTime != null">
+        CREATED_TIME,
+      </if>
+      <if test="lastEditUser != null">
+        LAST_EDIT_USER,
+      </if>
+      <if test="lastEditTime != null">
+        LAST_EDIT_TIME,
+      </if>
+      <if test="fileLength != null">
+        FILE_LENGTH,
+      </if>
+      <if test="region != null">
+        REGION,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        #{id,jdbcType=BIGINT},
+      </if>
+      <if test="fileName != null">
+        #{fileName,jdbcType=VARCHAR},
+      </if>
+      <if test="fileType != null">
+        #{fileType,jdbcType=VARCHAR},
+      </if>
+      <if test="fileSaveName != null">
+        #{fileSaveName,jdbcType=VARCHAR},
+      </if>
+      <if test="filePath != null">
+        #{filePath,jdbcType=VARCHAR},
+      </if>
+      <if test="fileUrl != null">
+        #{fileUrl,jdbcType=VARCHAR},
+      </if>
+      <if test="href != null">
+        #{href,jdbcType=VARCHAR},
+      </if>
+      <if test="md5 != null">
+        #{md5,jdbcType=VARCHAR},
+      </if>
+      <if test="mark != null">
+        #{mark,jdbcType=VARCHAR},
+      </if>
+      <if test="checkUser != null">
+        #{checkUser,jdbcType=VARCHAR},
+      </if>
+      <if test="checkTime != null">
+        #{checkTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="createdUser != null">
+        #{createdUser,jdbcType=VARCHAR},
+      </if>
+      <if test="createdTime != null">
+        #{createdTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="lastEditUser != null">
+        #{lastEditUser,jdbcType=VARCHAR},
+      </if>
+      <if test="lastEditTime != null">
+        #{lastEditTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="fileLength != null">
+        #{fileLength,jdbcType=BIGINT},
+      </if>
+      <if test="region != null">
+        #{region,jdbcType=INTEGER},
+      </if>
+    </trim>
+  </insert>
+  <select id="countByExample" parameterType="com.suma.pojo.AdvMaterialExample" resultType="java.lang.Long">
+    select count(*) from adv_material
+    <if test="_parameter != null">
+      <include refid="Example_Where_Clause" />
+    </if>
+  </select>
+  <update id="updateByExampleSelective" parameterType="map">
+    update adv_material
+    <set>
+      <if test="record.id != null">
+        ID = #{record.id,jdbcType=BIGINT},
+      </if>
+      <if test="record.fileName != null">
+        FILE_NAME = #{record.fileName,jdbcType=VARCHAR},
+      </if>
+      <if test="record.fileType != null">
+        FILE_TYPE = #{record.fileType,jdbcType=VARCHAR},
+      </if>
+      <if test="record.fileSaveName != null">
+        FILE_SAVE_NAME = #{record.fileSaveName,jdbcType=VARCHAR},
+      </if>
+      <if test="record.filePath != null">
+        FILE_PATH = #{record.filePath,jdbcType=VARCHAR},
+      </if>
+      <if test="record.fileUrl != null">
+        FILE_URL = #{record.fileUrl,jdbcType=VARCHAR},
+      </if>
+      <if test="record.href != null">
+        HREF = #{record.href,jdbcType=VARCHAR},
+      </if>
+      <if test="record.md5 != null">
+        MD5 = #{record.md5,jdbcType=VARCHAR},
+      </if>
+      <if test="record.mark != null">
+        MARK = #{record.mark,jdbcType=VARCHAR},
+      </if>
+      <if test="record.checkUser != null">
+        CHECK_USER = #{record.checkUser,jdbcType=VARCHAR},
+      </if>
+      <if test="record.checkTime != null">
+        CHECK_TIME = #{record.checkTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="record.createdUser != null">
+        CREATED_USER = #{record.createdUser,jdbcType=VARCHAR},
+      </if>
+      <if test="record.createdTime != null">
+        CREATED_TIME = #{record.createdTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="record.lastEditUser != null">
+        LAST_EDIT_USER = #{record.lastEditUser,jdbcType=VARCHAR},
+      </if>
+      <if test="record.lastEditTime != null">
+        LAST_EDIT_TIME = #{record.lastEditTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="record.fileLength != null">
+        FILE_LENGTH = #{record.fileLength,jdbcType=BIGINT},
+      </if>
+      <if test="record.region != null">
+        REGION = #{record.region,jdbcType=INTEGER},
+      </if>
+    </set>
+    <if test="_parameter != null">
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByExample" parameterType="map">
+    update adv_material
+    set ID = #{record.id,jdbcType=BIGINT},
+      FILE_NAME = #{record.fileName,jdbcType=VARCHAR},
+      FILE_TYPE = #{record.fileType,jdbcType=VARCHAR},
+      FILE_SAVE_NAME = #{record.fileSaveName,jdbcType=VARCHAR},
+      FILE_PATH = #{record.filePath,jdbcType=VARCHAR},
+      FILE_URL = #{record.fileUrl,jdbcType=VARCHAR},
+      HREF = #{record.href,jdbcType=VARCHAR},
+      MD5 = #{record.md5,jdbcType=VARCHAR},
+      MARK = #{record.mark,jdbcType=VARCHAR},
+      CHECK_USER = #{record.checkUser,jdbcType=VARCHAR},
+      CHECK_TIME = #{record.checkTime,jdbcType=TIMESTAMP},
+      CREATED_USER = #{record.createdUser,jdbcType=VARCHAR},
+      CREATED_TIME = #{record.createdTime,jdbcType=TIMESTAMP},
+      LAST_EDIT_USER = #{record.lastEditUser,jdbcType=VARCHAR},
+      LAST_EDIT_TIME = #{record.lastEditTime,jdbcType=TIMESTAMP},
+      FILE_LENGTH = #{record.fileLength,jdbcType=BIGINT},
+      REGION = #{record.region,jdbcType=INTEGER}
+    <if test="_parameter != null">
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByPrimaryKeySelective" parameterType="com.suma.pojo.AdvMaterial">
+    update adv_material
+    <set>
+      <if test="fileName != null">
+        FILE_NAME = #{fileName,jdbcType=VARCHAR},
+      </if>
+      <if test="fileType != null">
+        FILE_TYPE = #{fileType,jdbcType=VARCHAR},
+      </if>
+      <if test="fileSaveName != null">
+        FILE_SAVE_NAME = #{fileSaveName,jdbcType=VARCHAR},
+      </if>
+      <if test="filePath != null">
+        FILE_PATH = #{filePath,jdbcType=VARCHAR},
+      </if>
+      <if test="fileUrl != null">
+        FILE_URL = #{fileUrl,jdbcType=VARCHAR},
+      </if>
+      <if test="href != null">
+        HREF = #{href,jdbcType=VARCHAR},
+      </if>
+      <if test="md5 != null">
+        MD5 = #{md5,jdbcType=VARCHAR},
+      </if>
+      <if test="mark != null">
+        MARK = #{mark,jdbcType=VARCHAR},
+      </if>
+      <if test="checkUser != null">
+        CHECK_USER = #{checkUser,jdbcType=VARCHAR},
+      </if>
+      <if test="checkTime != null">
+        CHECK_TIME = #{checkTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="createdUser != null">
+        CREATED_USER = #{createdUser,jdbcType=VARCHAR},
+      </if>
+      <if test="createdTime != null">
+        CREATED_TIME = #{createdTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="lastEditUser != null">
+        LAST_EDIT_USER = #{lastEditUser,jdbcType=VARCHAR},
+      </if>
+      <if test="lastEditTime != null">
+        LAST_EDIT_TIME = #{lastEditTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="fileLength != null">
+        FILE_LENGTH = #{fileLength,jdbcType=BIGINT},
+      </if>
+      <if test="region != null">
+        REGION = #{region,jdbcType=INTEGER},
+      </if>
+    </set>
+    where ID = #{id,jdbcType=BIGINT}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.suma.pojo.AdvMaterial">
+    update adv_material
+    set FILE_NAME = #{fileName,jdbcType=VARCHAR},
+      FILE_TYPE = #{fileType,jdbcType=VARCHAR},
+      FILE_SAVE_NAME = #{fileSaveName,jdbcType=VARCHAR},
+      FILE_PATH = #{filePath,jdbcType=VARCHAR},
+      FILE_URL = #{fileUrl,jdbcType=VARCHAR},
+      HREF = #{href,jdbcType=VARCHAR},
+      MD5 = #{md5,jdbcType=VARCHAR},
+      MARK = #{mark,jdbcType=VARCHAR},
+      CHECK_USER = #{checkUser,jdbcType=VARCHAR},
+      CHECK_TIME = #{checkTime,jdbcType=TIMESTAMP},
+      CREATED_USER = #{createdUser,jdbcType=VARCHAR},
+      CREATED_TIME = #{createdTime,jdbcType=TIMESTAMP},
+      LAST_EDIT_USER = #{lastEditUser,jdbcType=VARCHAR},
+      LAST_EDIT_TIME = #{lastEditTime,jdbcType=TIMESTAMP},
+      FILE_LENGTH = #{fileLength,jdbcType=BIGINT},
+      REGION = #{region,jdbcType=INTEGER}
+    where ID = #{id,jdbcType=BIGINT}
+  </update>
+</mapper>

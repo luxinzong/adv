@@ -1,0 +1,211 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.suma.dao.AdvTypeMapper">
+  <resultMap id="BaseResultMap" type="com.suma.pojo.AdvType">
+    <id column="id" jdbcType="BIGINT" property="id" />
+    <result column="advType" jdbcType="VARCHAR" property="advtype" />
+    <result column="advTypeName" jdbcType="VARCHAR" property="advtypename" />
+    <result column="advSubType" jdbcType="VARCHAR" property="advsubtype" />
+    <result column="advSubTypeName" jdbcType="VARCHAR" property="advsubtypename" />
+  </resultMap>
+  <sql id="Example_Where_Clause">
+    <where>
+      <foreach collection="oredCriteria" item="criteria" separator="or">
+        <if test="criteria.valid">
+          <trim prefix="(" prefixOverrides="and" suffix=")">
+            <foreach collection="criteria.criteria" item="criterion">
+              <choose>
+                <when test="criterion.noValue">
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue">
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue">
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue">
+                  and ${criterion.condition}
+                  <foreach close=")" collection="criterion.value" item="listItem" open="(" separator=",">
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Update_By_Example_Where_Clause">
+    <where>
+      <foreach collection="example.oredCriteria" item="criteria" separator="or">
+        <if test="criteria.valid">
+          <trim prefix="(" prefixOverrides="and" suffix=")">
+            <foreach collection="criteria.criteria" item="criterion">
+              <choose>
+                <when test="criterion.noValue">
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue">
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue">
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue">
+                  and ${criterion.condition}
+                  <foreach close=")" collection="criterion.value" item="listItem" open="(" separator=",">
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Base_Column_List">
+    id, advType, advTypeName, advSubType, advSubTypeName
+  </sql>
+  <select id="selectByExample" parameterType="com.suma.pojo.AdvTypeExample" resultMap="BaseResultMap">
+    select
+    <if test="distinct">
+      distinct
+    </if>
+    <include refid="Base_Column_List" />
+    from adv_type
+    <if test="_parameter != null">
+      <include refid="Example_Where_Clause" />
+    </if>
+    <if test="orderByClause != null">
+      order by ${orderByClause}
+    </if>
+  </select>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from adv_type
+    where id = #{id,jdbcType=BIGINT}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
+    delete from adv_type
+    where id = #{id,jdbcType=BIGINT}
+  </delete>
+  <delete id="deleteByExample" parameterType="com.suma.pojo.AdvTypeExample">
+    delete from adv_type
+    <if test="_parameter != null">
+      <include refid="Example_Where_Clause" />
+    </if>
+  </delete>
+  <insert id="insert" parameterType="com.suma.pojo.AdvType">
+    insert into adv_type (id, advType, advTypeName, 
+      advSubType, advSubTypeName)
+    values (#{id,jdbcType=BIGINT}, #{advtype,jdbcType=VARCHAR}, #{advtypename,jdbcType=VARCHAR}, 
+      #{advsubtype,jdbcType=VARCHAR}, #{advsubtypename,jdbcType=VARCHAR})
+  </insert>
+  <insert id="insertSelective" parameterType="com.suma.pojo.AdvType">
+    insert into adv_type
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        id,
+      </if>
+      <if test="advtype != null">
+        advType,
+      </if>
+      <if test="advtypename != null">
+        advTypeName,
+      </if>
+      <if test="advsubtype != null">
+        advSubType,
+      </if>
+      <if test="advsubtypename != null">
+        advSubTypeName,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        #{id,jdbcType=BIGINT},
+      </if>
+      <if test="advtype != null">
+        #{advtype,jdbcType=VARCHAR},
+      </if>
+      <if test="advtypename != null">
+        #{advtypename,jdbcType=VARCHAR},
+      </if>
+      <if test="advsubtype != null">
+        #{advsubtype,jdbcType=VARCHAR},
+      </if>
+      <if test="advsubtypename != null">
+        #{advsubtypename,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <select id="countByExample" parameterType="com.suma.pojo.AdvTypeExample" resultType="java.lang.Long">
+    select count(*) from adv_type
+    <if test="_parameter != null">
+      <include refid="Example_Where_Clause" />
+    </if>
+  </select>
+  <update id="updateByExampleSelective" parameterType="map">
+    update adv_type
+    <set>
+      <if test="record.id != null">
+        id = #{record.id,jdbcType=BIGINT},
+      </if>
+      <if test="record.advtype != null">
+        advType = #{record.advtype,jdbcType=VARCHAR},
+      </if>
+      <if test="record.advtypename != null">
+        advTypeName = #{record.advtypename,jdbcType=VARCHAR},
+      </if>
+      <if test="record.advsubtype != null">
+        advSubType = #{record.advsubtype,jdbcType=VARCHAR},
+      </if>
+      <if test="record.advsubtypename != null">
+        advSubTypeName = #{record.advsubtypename,jdbcType=VARCHAR},
+      </if>
+    </set>
+    <if test="_parameter != null">
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByExample" parameterType="map">
+    update adv_type
+    set id = #{record.id,jdbcType=BIGINT},
+      advType = #{record.advtype,jdbcType=VARCHAR},
+      advTypeName = #{record.advtypename,jdbcType=VARCHAR},
+      advSubType = #{record.advsubtype,jdbcType=VARCHAR},
+      advSubTypeName = #{record.advsubtypename,jdbcType=VARCHAR}
+    <if test="_parameter != null">
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByPrimaryKeySelective" parameterType="com.suma.pojo.AdvType">
+    update adv_type
+    <set>
+      <if test="advtype != null">
+        advType = #{advtype,jdbcType=VARCHAR},
+      </if>
+      <if test="advtypename != null">
+        advTypeName = #{advtypename,jdbcType=VARCHAR},
+      </if>
+      <if test="advsubtype != null">
+        advSubType = #{advsubtype,jdbcType=VARCHAR},
+      </if>
+      <if test="advsubtypename != null">
+        advSubTypeName = #{advsubtypename,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.suma.pojo.AdvType">
+    update adv_type
+    set advType = #{advtype,jdbcType=VARCHAR},
+      advTypeName = #{advtypename,jdbcType=VARCHAR},
+      advSubType = #{advsubtype,jdbcType=VARCHAR},
+      advSubTypeName = #{advsubtypename,jdbcType=VARCHAR}
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+</mapper>
