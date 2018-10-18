@@ -12,8 +12,4 @@ public class InfoMaterial {
     private Integer sequence;
 
     private Integer duration;
-
-
-
-
 }

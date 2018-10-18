@@ -36,10 +36,7 @@ public class AdvLocationController extends BaseController {
     @RequestMapping("getLocationNum")
     public Result getLocationNum() {
         Result result = new Result();
-        long count = advLocationService.countByExample(null);
-        result.setResultCode(0);
-        result.setResultData(count);
-        return result;
+        return Result.success(advLocationService.countByExample(null));
     }
 
 
@@ -66,10 +63,7 @@ public class AdvLocationController extends BaseController {
         PageHelper.startPage(pageNum, pageSize);
         List<AdvLocation> advLocations = advLocationService.selectByExample(example);
 
-
-        result.setResultCode(0);
-        result.setResultData(advLocations);
-        return result;
+        return Result.success(advLocations);
     }
 
     @RequestMapping("addLocation")

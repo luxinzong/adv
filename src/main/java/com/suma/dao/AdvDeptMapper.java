@@ -103,6 +103,8 @@ public interface AdvDeptMapper {
      */
     int getMaxAdvDeptOrderNum(@Param("parentId") Integer parentId);
 
+    int getAdvDeptCount();
+
     List<String> getAncestorList();
 
 }

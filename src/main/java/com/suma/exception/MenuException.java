@@ -9,7 +9,7 @@ public class MenuException extends RuntimeException {
 
     private static final long serialVersionUID = 1L;
 
-    public MenuException(){};
+    public MenuException(){}
 
     public MenuException(String errorMsg){
         super(errorMsg);

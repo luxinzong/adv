@@ -1,6 +1,9 @@
 package com.suma.config;
 
+import org.springframework.context.annotation.Configuration;
 import org.springframework.core.convert.converter.Converter;
+import org.springframework.stereotype.Component;
+
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -12,17 +15,15 @@ import java.util.List;
  * @date: 2018/10/16 0016
  * @description
  */
-
 public class DateConvertConfig implements Converter<String, Date> {
-
     private static final List<String> formats = new ArrayList<>(2);
     static {
         formats.add("yyyy-MM-dd");
         formats.add("HH:mm:ss");
     }
     @Override
-
     public Date convert(String source) {
+        System.out.println("哈哈哈");
         String value = source.trim();
         if ("".equals(value)) {
             return null;

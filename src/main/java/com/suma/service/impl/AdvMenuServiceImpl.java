@@ -1,16 +1,26 @@
 package com.suma.service.impl;
 
+import com.google.common.base.Strings;
+import com.google.common.collect.ArrayListMultimap;
+import com.google.common.collect.Lists;
+import com.google.common.collect.Maps;
+import com.google.common.collect.Multimap;
 import com.suma.constants.CommonConstants;
 import com.suma.constants.ExceptionConstants;
 import com.suma.dao.AdvMenuMapper;
+import com.suma.dto.AdvMenuDto;
 import com.suma.exception.MenuException;
 import com.suma.pojo.AdvMenu;
 import com.suma.service.iAdvMenuService;
 import com.suma.utils.AncestorUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.util.CollectionUtils;
 
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
+import java.util.Map;
 
 /**
  * @Autor gaozhongbao
@@ -59,7 +69,7 @@ public class AdvMenuServiceImpl implements iAdvMenuService {
             advMenu.setAncestors(AncestorUtil.ROOT);
         }
         //默认状态为显示
-        advMenu.setVisible(CommonConstants.NORMAL_STATUS);
+        advMenu.setStatus(CommonConstants.NORMAL_STATUS);
         //todo 登录工具添加用户名
         return advMenuMapper.insertSelective(advMenu);
     }
@@ -89,11 +99,190 @@ public class AdvMenuServiceImpl implements iAdvMenuService {
         return advMenuMapper.updateByPrimaryKeySelective(advMenu);
     }
 
+    /**
+     * 查询所有部门
+     *
+     * @return
+     */
+    @Override
+    public List<AdvMenu> selectMenuAll() {
+        //获取所有部门信息
+        List<AdvMenu> advMenuList = advMenuMapper.selectAdvMenuAll();
+        //进行排序
+        Collections.sort( advMenuList,advMenuComparator );
+        //应前台请求在返回list中，增加无以便前台使用
+        AdvMenu advMenu = new AdvMenu();
+        advMenu.setParentId( 0 );
+        advMenu.setMenuName( "无" );
+
+        return advMenuList;
+    }
+
+    /**
+     * 通过条件查询菜单树
+     *
+     * @param advMenu
+     * @return
+     */
+    @Override
+    public List<AdvMenuDto> selectAdvMenuList(AdvMenu advMenu) {
+        List<AdvMenu> menuList = advMenuMapper.selectAdvMenuList(advMenu);
+        //进行拼装dto
+        return produceAdvMenuDto(menuList);
+    }
+    /**
+     * 查询菜单管理树
+     * 所有状态
+     * @return
+     */
+    public List<AdvMenuDto> selectMenuTree(){
+        //先获取所有部门信息
+        List<AdvMenu> menuList = advMenuMapper.selectAdvMenuAll();
+        return produceAdvMenuTree(menuList,null);
+    }
+
+    /**
+     * 有效菜单管理树
+     */
+    public List<AdvMenuDto> selectMenuTreeStatusIsValid(){
+        //先获取所有部门信息
+        List<AdvMenu> menuList = advMenuMapper.selectAdvMenuAll();
+        return produceAdvMenuTree(menuList,CommonConstants.NORMAL_STATUS);
+    }
+
+    /**
+     * 生产menuDto
+     *
+     * @param advMenuList
+     * @return
+     */
+    private List<AdvMenuDto> produceAdvMenuDto(List<AdvMenu> advMenuList){
+        if(CollectionUtils.isEmpty(advMenuList)){
+            return null;
+        }
+
+        List<AdvMenuDto> advMenuDtoList = Lists.newArrayList();
+        Map<Integer,String> parentNameMap = Maps.newConcurrentMap();
+        advMenuList.forEach(advMenu -> {
+            parentNameMap.put(advMenu.getMenuId(),advMenu.getMenuName());
+        });
+        advMenuList.forEach(advMenu -> {
+            AdvMenuDto advMenuDto = AdvMenuDto.adapt(advMenu);
+            //添加parentName
+            if(advMenu.getParentId() == 0){
+                advMenuDto.setParentName("-");
+            }else{
+                //获取当前父类名称
+                String parentName = parentNameMap.get(advMenu.getParentId());
+                advMenuDto.setParentName(parentName);
+            }
+
+            advMenuDtoList.add(advMenuDto);
+        });
+
+        return advMenuDtoList;
+    }
+
+
+    private List<AdvMenuDto> produceAdvMenuTree(List<AdvMenu> advMenuList,String status){
+        //生产dto
+        List<AdvMenuDto> menuDtoList = produceAdvMenuDto(advMenuList);
+        return advMenuListToTree(menuDtoList,AncestorUtil.ROOT,status);
+    }
+
+
+    /**
+     * 将menuList转化为树形结构
+     *
+     * @param menuDtoList
+     * @param ancestor
+     * @return
+     */
+    private List<AdvMenuDto> advMenuListToTree(List<AdvMenuDto> menuDtoList, String ancestor,String status){
+        //如果menuDtoList为空，直接生成一个List
+        if(CollectionUtils.isEmpty( menuDtoList )){
+            return Lists.newArrayList();
+        }
+
+        //生成可以用一个key存储多个Value的安全map
+        Multimap<String,AdvMenuDto> advMenuDtoMultimap = ArrayListMultimap.create();
+        //生成rootList
+        List<AdvMenuDto> rootList = Lists.newArrayList();
+        //遍历menuDtoList
+        menuDtoList.forEach( advMenuDto -> {
+            //根据ancestor,存储对应menu对象
+            if(Strings.isNullOrEmpty(status)){//如果status为null则不进行状态验证
+                advMenuDtoMultimap.put( advMenuDto.getAncestors(),advMenuDto );
+                if(advMenuDto.getAncestors().equals( ancestor )){
+                    rootList.add( advMenuDto ); }
+            }else{
+                if(advMenuDto.getStatus().equals(status)){
+                    advMenuDtoMultimap.put( advMenuDto.getAncestors(),advMenuDto );
+                }
+                if(advMenuDto.getAncestors().equals( ancestor ) && advMenuDto.getStatus().equals(status)){
+                    rootList.add( advMenuDto ); }
+            }
+
+        });
+        //root进行orderNum排序
+        Collections.sort( rootList,advMenuDtoComparator );
+        //拼装部门树
+        transformAdvMenuTree( rootList,ancestor,advMenuDtoMultimap );
+        return rootList;
+    }
+
+        private void transformAdvMenuTree(List<AdvMenuDto> advMenuDtoList,String ancestor,Multimap<String,AdvMenuDto> advMenuDtoMultimap){
+        advMenuDtoList.forEach( advMenuDto -> {
+            //获取下级ancestor
+            String nextAncestor = AncestorUtil.calculateAncestor( ancestor,advMenuDto.getMenuId() );
+            //获取下级list
+            List<AdvMenuDto> tempAdvMenuDtoList = (List<AdvMenuDto>) advMenuDtoMultimap.get( nextAncestor );
+            if(tempAdvMenuDtoList != null){
+                //排序
+                Collections.sort( tempAdvMenuDtoList,advMenuDtoComparator );
+                //进行递归处理
+                advMenuDto.setMenuDtoList( tempAdvMenuDtoList );
+                transformAdvMenuTree( tempAdvMenuDtoList,nextAncestor,advMenuDtoMultimap );
+            }
+        } );
+    }
+
+
+
+    /**
+     * AdvMenu按照orderNum顺序进行排序
+     */
+    private Comparator<AdvMenu> advMenuComparator = new Comparator<AdvMenu>() {
+        @Override
+        public int compare(AdvMenu o1, AdvMenu o2) {
+            return o1.getOrderNum() - o2.getOrderNum();
+        }
+    };
+
+    private Comparator<AdvMenuDto> advMenuDtoComparator = new Comparator<AdvMenuDto>() {
+        @Override
+        public int compare(AdvMenuDto o1, AdvMenuDto o2) {
+            return o1.getOrderNum() - o2.getOrderNum();
+        }
+    };
+
+    /**
+     * 查询当前父id是否包含子菜单
+     *
+     * @param parentId
+     * @return
+     */
     @Override
     public int selectAdvMenuCountByParentId(Integer parentId) {
         return advMenuMapper.selectAdvMenuCountByParentId(parentId);
     }
 
+    /**
+     * 删除菜单
+     *
+     * @param menuId
+     * @return
+     */
     @Override
     public int deleteMenuById(Integer menuId) {
         //判断当前id是否存在
@@ -104,8 +293,4 @@ public class AdvMenuServiceImpl implements iAdvMenuService {
         return advMenuMapper.deleteByPrimaryKey(menuId);
     }
 
-    @Override
-    public List<AdvMenu> selectMenuAll() {
-        return advMenuMapper.selectAdvMenuAll();
-    }
 }

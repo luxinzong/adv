@@ -8,12 +8,12 @@ package com.suma.constants;
 public class CommonConstants {
 
     /**
-     *UTF-8 字符集
+     * UTF-8 字符集
      */
     public static final String UTF8 = "UTF-8";
 
     /**
-     *通用成功code码
+     * 通用成功code码
      */
     public static final int SUCCESS = 0;
 
@@ -37,4 +37,18 @@ public class CommonConstants {
      */
     public static final String UNUSUAL_STATUS = "1";
 
+    /**
+     * 文件上传路径
+     */
+    public static final String MATERIAL_FILE_PATH = "e:/logs/adv/";
+
+    /**
+     * 文件获取路径
+     */
+    public static final String MATERIAL_FILE_URL = "http://192.166.65.174:80/download/";
+
+    /**
+     *
+     */
+    public static final String REQUEST_START_TIME = "requestStartTime";
 }

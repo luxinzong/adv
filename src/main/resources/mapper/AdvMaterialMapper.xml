@@ -3,6 +3,7 @@
 <mapper namespace="com.suma.dao.AdvMaterialMapper">
   <resultMap id="BaseResultMap" type="com.suma.pojo.AdvMaterial">
     <id column="ID" jdbcType="BIGINT" property="id" />
+    <result column="MATERIAL_TYPE" jdbcType="INTEGER" property="materialType" />
     <result column="FILE_NAME" jdbcType="VARCHAR" property="fileName" />
     <result column="FILE_TYPE" jdbcType="VARCHAR" property="fileType" />
     <result column="FILE_SAVE_NAME" jdbcType="VARCHAR" property="fileSaveName" />
@@ -79,9 +80,9 @@
     </where>
   </sql>
   <sql id="Base_Column_List">
-    ID, FILE_NAME, FILE_TYPE, FILE_SAVE_NAME, FILE_PATH, FILE_URL, HREF, MD5, MARK, CHECK_USER, 
-    CHECK_TIME, CREATED_USER, CREATED_TIME, LAST_EDIT_USER, LAST_EDIT_TIME, FILE_LENGTH, 
-    REGION
+    ID, MATERIAL_TYPE, FILE_NAME, FILE_TYPE, FILE_SAVE_NAME, FILE_PATH, FILE_URL, HREF, 
+    MD5, MARK, CHECK_USER, CHECK_TIME, CREATED_USER, CREATED_TIME, LAST_EDIT_USER, LAST_EDIT_TIME, 
+    FILE_LENGTH, REGION
   </sql>
   <select id="selectByExample" parameterType="com.suma.pojo.AdvMaterialExample" resultMap="BaseResultMap">
     select
@@ -114,24 +115,32 @@
     </if>
   </delete>
   <insert id="insert" parameterType="com.suma.pojo.AdvMaterial">
-    insert into adv_material (ID, FILE_NAME, FILE_TYPE, 
-      FILE_SAVE_NAME, FILE_PATH, FILE_URL, 
-      HREF, MD5, MARK, CHECK_USER, 
-      CHECK_TIME, CREATED_USER, CREATED_TIME, 
-      LAST_EDIT_USER, LAST_EDIT_TIME, FILE_LENGTH, 
-      REGION)
-    values (#{id,jdbcType=BIGINT}, #{fileName,jdbcType=VARCHAR}, #{fileType,jdbcType=VARCHAR}, 
-      #{fileSaveName,jdbcType=VARCHAR}, #{filePath,jdbcType=VARCHAR}, #{fileUrl,jdbcType=VARCHAR}, 
-      #{href,jdbcType=VARCHAR}, #{md5,jdbcType=VARCHAR}, #{mark,jdbcType=VARCHAR}, #{checkUser,jdbcType=VARCHAR}, 
-      #{checkTime,jdbcType=TIMESTAMP}, #{createdUser,jdbcType=VARCHAR}, #{createdTime,jdbcType=TIMESTAMP}, 
-      #{lastEditUser,jdbcType=VARCHAR}, #{lastEditTime,jdbcType=TIMESTAMP}, #{fileLength,jdbcType=BIGINT}, 
-      #{region,jdbcType=INTEGER})
+    <selectKey resultType="java.lang.Long" order="AFTER" keyProperty="id">
+      SELECT LAST_INSERT_ID()
+    </selectKey>
+    insert into adv_material (ID, MATERIAL_TYPE, FILE_NAME, 
+      FILE_TYPE, FILE_SAVE_NAME, FILE_PATH, 
+      FILE_URL, HREF, MD5, 
+      MARK, CHECK_USER, CHECK_TIME, 
+      CREATED_USER, CREATED_TIME, LAST_EDIT_USER, 
+      LAST_EDIT_TIME, FILE_LENGTH, REGION
+      )
+    values (#{id,jdbcType=BIGINT}, #{materialType,jdbcType=INTEGER}, #{fileName,jdbcType=VARCHAR}, 
+      #{fileType,jdbcType=VARCHAR}, #{fileSaveName,jdbcType=VARCHAR}, #{filePath,jdbcType=VARCHAR}, 
+      #{fileUrl,jdbcType=VARCHAR}, #{href,jdbcType=VARCHAR}, #{md5,jdbcType=VARCHAR}, 
+      #{mark,jdbcType=VARCHAR}, #{checkUser,jdbcType=VARCHAR}, #{checkTime,jdbcType=TIMESTAMP}, 
+      #{createdUser,jdbcType=VARCHAR}, #{createdTime,jdbcType=TIMESTAMP}, #{lastEditUser,jdbcType=VARCHAR}, 
+      #{lastEditTime,jdbcType=TIMESTAMP}, #{fileLength,jdbcType=BIGINT}, #{region,jdbcType=INTEGER}
+      )
   </insert>
   <insert id="insertSelective" parameterType="com.suma.pojo.AdvMaterial">
     insert into adv_material
     <trim prefix="(" suffix=")" suffixOverrides=",">
       <if test="id != null">
         ID,
+      </if>
+      <if test="materialType != null">
+        MATERIAL_TYPE,
       </if>
       <if test="fileName != null">
         FILE_NAME,
@@ -185,6 +194,9 @@
     <trim prefix="values (" suffix=")" suffixOverrides=",">
       <if test="id != null">
         #{id,jdbcType=BIGINT},
+      </if>
+      <if test="materialType != null">
+        #{materialType,jdbcType=INTEGER},
       </if>
       <if test="fileName != null">
         #{fileName,jdbcType=VARCHAR},
@@ -248,6 +260,9 @@
       <if test="record.id != null">
         ID = #{record.id,jdbcType=BIGINT},
       </if>
+      <if test="record.materialType != null">
+        MATERIAL_TYPE = #{record.materialType,jdbcType=INTEGER},
+      </if>
       <if test="record.fileName != null">
         FILE_NAME = #{record.fileName,jdbcType=VARCHAR},
       </if>
@@ -304,6 +319,7 @@
   <update id="updateByExample" parameterType="map">
     update adv_material
     set ID = #{record.id,jdbcType=BIGINT},
+      MATERIAL_TYPE = #{record.materialType,jdbcType=INTEGER},
       FILE_NAME = #{record.fileName,jdbcType=VARCHAR},
       FILE_TYPE = #{record.fileType,jdbcType=VARCHAR},
       FILE_SAVE_NAME = #{record.fileSaveName,jdbcType=VARCHAR},
@@ -327,6 +343,9 @@
   <update id="updateByPrimaryKeySelective" parameterType="com.suma.pojo.AdvMaterial">
     update adv_material
     <set>
+      <if test="materialType != null">
+        MATERIAL_TYPE = #{materialType,jdbcType=INTEGER},
+      </if>
       <if test="fileName != null">
         FILE_NAME = #{fileName,jdbcType=VARCHAR},
       </if>
@@ -380,7 +399,8 @@
   </update>
   <update id="updateByPrimaryKey" parameterType="com.suma.pojo.AdvMaterial">
     update adv_material
-    set FILE_NAME = #{fileName,jdbcType=VARCHAR},
+    set MATERIAL_TYPE = #{materialType,jdbcType=INTEGER},
+      FILE_NAME = #{fileName,jdbcType=VARCHAR},
       FILE_TYPE = #{fileType,jdbcType=VARCHAR},
       FILE_SAVE_NAME = #{fileSaveName,jdbcType=VARCHAR},
       FILE_PATH = #{filePath,jdbcType=VARCHAR},

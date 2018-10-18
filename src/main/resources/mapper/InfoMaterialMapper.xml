@@ -82,6 +82,16 @@
       order by ${orderByClause}
     </if>
   </select>
+
+  <!--根据id查询-->
+  <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from info_material
+    where MATERIAL_ID = #{id,jdbcType=BIGINT}
+  </select>
+
+
   <delete id="deleteByExample" parameterType="com.suma.pojo.InfoMaterialExample">
     delete from info_material
     <if test="_parameter != null">

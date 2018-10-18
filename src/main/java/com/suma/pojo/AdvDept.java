@@ -1,8 +1,8 @@
 package com.suma.pojo;
 
 import lombok.Data;
-import lombok.ToString;
 
+import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 
 /**
@@ -22,7 +22,7 @@ public class AdvDept extends BasePojo{
     //祖级列表
     private String ancestors;
     //部门名称
-    @NotNull
+    @NotBlank
     private String deptName;
     //显示顺序
     private Integer orderNum;
@@ -31,7 +31,7 @@ public class AdvDept extends BasePojo{
     //电话
     private String phoneNumber;
     //部门状态：0正常,1停用
-    @NotNull
+    @NotBlank
     private String status;
 
 }

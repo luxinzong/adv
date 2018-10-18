@@ -11,7 +11,6 @@ import org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandl
  * @date: 2018/10/16 0016
  * @description
  */
-@Configuration
 public class WebConfigBeans {
 
     @Autowired

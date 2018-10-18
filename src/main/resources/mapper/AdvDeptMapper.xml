@@ -41,6 +41,9 @@
       </if>
     </where>
   </select>
+  <select id="getAdvDeptCount" resultType="java.lang.Integer">
+    select COUNT(*) FROM adv_dept;
+  </select>
   <select id="checkAdvDeptExistUser" parameterType="Integer" resultType="java.lang.Integer">
       select count(*) from adv_user where dept_id = #{deptId};
   </select>

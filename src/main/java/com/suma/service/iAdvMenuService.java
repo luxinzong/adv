@@ -1,5 +1,6 @@
 package com.suma.service;
 
+import com.suma.dto.AdvMenuDto;
 import com.suma.pojo.AdvMenu;
 
 import java.util.List;
@@ -20,7 +21,15 @@ public interface iAdvMenuService {
 
     public List<AdvMenu> selectMenuAll();
 
+    public List<AdvMenuDto> selectMenuTree();
+
+    public List<AdvMenuDto> selectAdvMenuList(AdvMenu advMenu);
+
+    public List<AdvMenuDto> selectMenuTreeStatusIsValid();
+
     public int selectAdvMenuCountByParentId(Integer parentId);
+
+
 
 
 

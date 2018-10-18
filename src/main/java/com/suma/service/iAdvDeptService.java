@@ -102,6 +102,13 @@ public interface iAdvDeptService {
      */
     public int getMaxAdvDeptOrderNum(Integer deptId);
 
+    /**
+     * 获取部门总数
+     *
+     * @return
+     */
+    public int getAdvDeptCount();
+
 }
 
 

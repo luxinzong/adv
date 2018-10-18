@@ -22,7 +22,7 @@ import java.util.Map;
  * @Description 部门信息controller
  **/
 @RestController
-@RequestMapping(value = "/system/dept")
+@RequestMapping(value = "/system/dept",consumes = "application/json;charset=utf-8")
 public class AdvDeptController extends BaseController{
 
     @Autowired
@@ -80,26 +80,61 @@ public class AdvDeptController extends BaseController{
      * @return list
      */
     @GetMapping("/list")
-    public List<AdvDeptDto> treeData(){
+    public Result treeData(){
         List<AdvDeptDto> tree = advDeptService.selectAdvDeptTree();
-        return tree;
+        return Result.success(tree);
     }
 
+    /**
+     * 获取全部部门
+     *
+     * @return
+     */
     @GetMapping("/listAll")
-    public List<AdvDept> listAll(){
+    public Result listAll(){
         List<AdvDept> advDeptList = advDeptService.selectAdvDeptAll();
-        return advDeptList;
+        //应前台要求在返回list中，增加-以便使用
+        AdvDept advDept = new AdvDept();
+        advDept.setParentId(0);
+        advDept.setDeptName("-");
+        advDeptList.add(advDept);
+        return Result.success(advDeptList);
     }
 
+    /**
+     * 应前端要求，添加部门总数
+     *
+     * @return
+     */
+    @GetMapping("/deptCount")
+    public Result getAdvDeptCount(){
+        int count = advDeptService.getAdvDeptCount();
+        return Result.success(count);
+    }
+
+
+    /**
+     * 根据条件查询部门
+     *
+     * @param requestMap
+     * @return
+     */
     @PostMapping("/query")
-    public List<AdvDeptDto> query(@RequestBody AdvDept advDept){
-        String deptName = advDept.getDeptName();
-        String status = advDept.getStatus();
+    public Result query(@RequestBody Map<String,Object> requestMap){
+        String deptName = (String) requestMap.get("deptName");
+        String status = (String) requestMap.get("status");
         //无有效参数，返回treeData
-        if(StringUtils.isBlank(deptName) && status == null){
+        if(StringUtils.isBlank(deptName) && StringUtils.isBlank(status)){
             return treeData();
         }
-        return advDeptService.selectAdvDeptList(advDept);
+        //使用advDept作为参数的目的是为了，方便未来扩展
+        AdvDept advDept = new AdvDept();
+        advDept.setDeptName(deptName);
+        advDept.setStatus(status);
+
+
+        List<AdvDeptDto> advDeptDtoList = advDeptService.selectAdvDeptList(advDept);
+        return Result.success(advDeptDtoList);
     }
 
 

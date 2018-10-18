@@ -9,7 +9,7 @@ public class DeptException extends RuntimeException{
 
     private  static final long serialVersionUID = 1L;
 
-    public DeptException(){};
+    public DeptException(){}
 
     public DeptException(String errorMsg){
         super(errorMsg);

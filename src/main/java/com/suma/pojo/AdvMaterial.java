@@ -5,6 +5,8 @@ import java.util.Date;
 public class AdvMaterial {
     private Long id;
 
+    private Integer materialType;
+
     private String fileName;
 
     private String fileType;
@@ -43,6 +45,14 @@ public class AdvMaterial {
 
     public void setId(Long id) {
         this.id = id;
+    }
+
+    public Integer getMaterialType() {
+        return materialType;
+    }
+
+    public void setMaterialType(Integer materialType) {
+        this.materialType = materialType;
     }
 
     public String getFileName() {

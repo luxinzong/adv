@@ -2,6 +2,7 @@ package com.suma.service.impl;
 
 import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.Lists;
+import com.google.common.collect.Maps;
 import com.google.common.collect.Multimap;
 import com.suma.constants.ExceptionConstants;
 import com.suma.dao.AdvDeptMapper;
@@ -15,9 +16,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
 
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.List;
+import java.util.*;
 import java.util.stream.Collectors;
 
 /**
@@ -33,19 +32,16 @@ public class AdvDeptServiceImpl implements iAdvDeptService {
 
     @Override
     public List<AdvDeptDto> selectAdvDeptList(AdvDept advDept) {
-        List<AdvDept> deptList = advDeptMapper.selectAdvDeptList(advDept);
-        return selectAdvDeptTree(deptList);
+        List<AdvDept> advDeptList = advDeptMapper.selectAdvDeptList(advDept);
+        return produceAdvDeptDto(advDeptList);
+
     }
     @Override
     public List<AdvDept> selectAdvDeptAll() {
         List<AdvDept> advDeptList = advDeptMapper.selectAdvDeptAll();
-        Collections.sort(advDeptList,advDeptComparator);
-        //应前台要求在返回list中，增加无以便使用
-        AdvDept advDept = new AdvDept();
-        advDept.setParentId(0);
-        advDept.setDeptName("无");
-        advDeptList.add(advDept);
-
+        if(!CollectionUtils.isEmpty(advDeptList)){
+            Collections.sort(advDeptList,advDeptComparator);
+        }
         return advDeptList;
     }
 
@@ -58,39 +54,45 @@ public class AdvDeptServiceImpl implements iAdvDeptService {
     public List<AdvDeptDto> selectAdvDeptTree() {
         //先获取全部部门信息
         List<AdvDept> deptList = advDeptMapper.selectAdvDeptAll();
-        //生成dtoList
-        List<AdvDeptDto> dtoList = Lists.newArrayList();
-        //进行bean属性的复制
-        deptList.forEach(dept ->{
-            AdvDeptDto advDeptDto = AdvDeptDto.adapt(dept);
-            dtoList.add(advDeptDto);
-        });
-
-        return advDeptListToTree(dtoList,AncestorUtil.ROOT);
+        //进行拼装部门树
+        return CollectionUtils.isEmpty(deptList)?null:produceAdvDeptTree(deptList,AncestorUtil.ROOT);
     }
 
     /**
-     * 通过参数查询部门树
+     * 生产DeptDto
      *
-     * @param advDeptList
      * @return
      */
-    public List<AdvDeptDto> selectAdvDeptTree(List<AdvDept> advDeptList){
-        //生成dtoList
-        List<AdvDeptDto> dtoList = Lists.newArrayList();
-        //进行bean属性的复制
-        if(!CollectionUtils.isEmpty(advDeptList)){
-            advDeptList.forEach(dept ->{
-                AdvDeptDto advDeptDto = AdvDeptDto.adapt(dept);
-                dtoList.add(advDeptDto);
-            });
-
-            String ancestor = dtoList.get(0).getAncestors();
-            return advDeptListToTree(dtoList,ancestor);
-
+    private List<AdvDeptDto> produceAdvDeptDto(List<AdvDept> advDeptList){
+        if(CollectionUtils.isEmpty(advDeptList)){
+            return null;
         }
+        List<AdvDeptDto> advDeptDtoList = Lists.newArrayList();
+        Map<Integer,String> parentNameMap = Maps.newConcurrentMap();
+        advDeptList.forEach(dept ->{
+            parentNameMap.put(dept.getDeptId(),dept.getDeptName());
+        });
+        advDeptList.forEach(dept ->{
+            AdvDeptDto advDeptDto = AdvDeptDto.adapt(dept);
+            //添加parentName
+            if(dept.getParentId() == 0){//说明当前是父类id
+                advDeptDto.setParentName("-");
+            }else{
+                //获取当前父类名称
+                String parentName = parentNameMap.get(dept.getParentId());
+                advDeptDto.setParentName(parentName);
+            }
+            advDeptDtoList.add(advDeptDto);
+        });
 
-        return advDeptListToTree(dtoList,AncestorUtil.ROOT);
+        return advDeptDtoList;
+    }
+
+    private List<AdvDeptDto> produceAdvDeptTree(List<AdvDept> advDeptList,String ancestor){
+        //对部门id和部门名称进行存储以便后续拼装使用
+        //生成dtoList
+        List<AdvDeptDto> dtoList = produceAdvDeptDto(advDeptList);
+        return advDeptListToTree(dtoList,ancestor);
     }
 
     private List<AdvDeptDto> advDeptListToTree(List<AdvDeptDto> deptDtoList,String ancestor){
@@ -110,14 +112,8 @@ public class AdvDeptServiceImpl implements iAdvDeptService {
                 rootList.add(deptDto);
             }
         });
-
         //对root按照从大到小排序
-        Collections.sort(rootList, new Comparator<AdvDeptDto>() {
-            @Override
-            public int compare(AdvDeptDto o1, AdvDeptDto o2) {
-                return o1.getOrderNum() - o2.getOrderNum();
-            }
-        });
+        Collections.sort(rootList,advDeptDtoComparator);
         //拼装部门树
         transformAdvDeptTree(rootList,ancestor,ancestorMutimap);
         return rootList;
@@ -138,14 +134,12 @@ public class AdvDeptServiceImpl implements iAdvDeptService {
         });
 
     }
-
     private Comparator<AdvDept> advDeptComparator = new Comparator<AdvDept>() {
         @Override
         public int compare(AdvDept o1, AdvDept o2) {
             return o1.getOrderNum() - o2.getOrderNum();
         }
     };
-
     private Comparator<AdvDeptDto> advDeptDtoComparator = new Comparator<AdvDeptDto>() {
         @Override
         public int compare(AdvDeptDto o1, AdvDeptDto o2) {
@@ -153,7 +147,6 @@ public class AdvDeptServiceImpl implements iAdvDeptService {
         }
 
     };
-
 
     @Override
     public int selectAdvDeptCount(Integer parentId) {
@@ -285,5 +278,10 @@ public class AdvDeptServiceImpl implements iAdvDeptService {
         }
 
         return advDeptMapper.getMaxAdvDeptOrderNum(parentId);
+    }
+
+    @Override
+    public int getAdvDeptCount() {
+        return advDeptMapper.getAdvDeptCount();
     }
 }

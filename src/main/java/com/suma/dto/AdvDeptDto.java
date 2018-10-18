@@ -17,10 +17,12 @@ public class AdvDeptDto extends AdvDept {
     //属性结构
     private List<AdvDeptDto> deptDtoList = Lists.newArrayList();
 
+    private String parentName;
+
+
     public static AdvDeptDto adapt(AdvDept advDept){
         AdvDeptDto advDeptDto = new AdvDeptDto();
         BeanUtils.copyProperties(advDept,advDeptDto);
-
         return advDeptDto;
     }
 

@@ -165,6 +165,66 @@ public class AdvMaterialExample {
             return (Criteria) this;
         }
 
+        public Criteria andMaterialTypeIsNull() {
+            addCriterion("MATERIAL_TYPE is null");
+            return (Criteria) this;
+        }
+
+        public Criteria andMaterialTypeIsNotNull() {
+            addCriterion("MATERIAL_TYPE is not null");
+            return (Criteria) this;
+        }
+
+        public Criteria andMaterialTypeEqualTo(Integer value) {
+            addCriterion("MATERIAL_TYPE =", value, "materialType");
+            return (Criteria) this;
+        }
+
+        public Criteria andMaterialTypeNotEqualTo(Integer value) {
+            addCriterion("MATERIAL_TYPE <>", value, "materialType");
+            return (Criteria) this;
+        }
+
+        public Criteria andMaterialTypeGreaterThan(Integer value) {
+            addCriterion("MATERIAL_TYPE >", value, "materialType");
+            return (Criteria) this;
+        }
+
+        public Criteria andMaterialTypeGreaterThanOrEqualTo(Integer value) {
+            addCriterion("MATERIAL_TYPE >=", value, "materialType");
+            return (Criteria) this;
+        }
+
+        public Criteria andMaterialTypeLessThan(Integer value) {
+            addCriterion("MATERIAL_TYPE <", value, "materialType");
+            return (Criteria) this;
+        }
+
+        public Criteria andMaterialTypeLessThanOrEqualTo(Integer value) {
+            addCriterion("MATERIAL_TYPE <=", value, "materialType");
+            return (Criteria) this;
+        }
+
+        public Criteria andMaterialTypeIn(List<Integer> values) {
+            addCriterion("MATERIAL_TYPE in", values, "materialType");
+            return (Criteria) this;
+        }
+
+        public Criteria andMaterialTypeNotIn(List<Integer> values) {
+            addCriterion("MATERIAL_TYPE not in", values, "materialType");
+            return (Criteria) this;
+        }
+
+        public Criteria andMaterialTypeBetween(Integer value1, Integer value2) {
+            addCriterion("MATERIAL_TYPE between", value1, value2, "materialType");
+            return (Criteria) this;
+        }
+
+        public Criteria andMaterialTypeNotBetween(Integer value1, Integer value2) {
+            addCriterion("MATERIAL_TYPE not between", value1, value2, "materialType");
+            return (Criteria) this;
+        }
+
         public Criteria andFileNameIsNull() {
             addCriterion("FILE_NAME is null");
             return (Criteria) this;

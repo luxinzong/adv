@@ -1,7 +1,9 @@
 package com.suma.vo;
 
 import lombok.Data;
+import org.hibernate.validator.constraints.Length;
 
+import javax.validation.constraints.Max;
 import javax.validation.constraints.NotBlank;
 
 /**
@@ -20,6 +22,8 @@ public class AdvMenuVO {
     private Integer orderNum;
     //菜单url
     private String url;
+    @NotBlank
+    @Length(min = 1,max = 1)
     //菜单类型：0目录,1菜单，2按钮
     private String menuType;
     //权限字符串

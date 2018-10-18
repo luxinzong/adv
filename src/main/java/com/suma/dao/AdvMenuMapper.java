@@ -20,6 +20,8 @@ public interface AdvMenuMapper {
 
     List<AdvMenu> selectAdvMenuAll();
 
+    List<AdvMenu> selectAdvMenuList(AdvMenu advMenu);
+
     int checkAdvMenuUnique(@Param("menuName") String menuName);
 
     int updateByPrimaryKeySelective(AdvMenu record);

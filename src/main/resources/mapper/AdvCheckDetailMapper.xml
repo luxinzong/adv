@@ -1,0 +1,244 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.suma.dao.AdvCheckDetailMapper" >
+  <resultMap id="BaseResultMap" type="com.suma.pojo.AdvCheckDetail" >
+    <id column="ID" property="id" jdbcType="BIGINT" />
+    <result column="ADV_INFO_ID" property="advInfoId" jdbcType="BIGINT" />
+    <result column="REGION" property="region" jdbcType="INTEGER" />
+    <result column="USERNAME" property="username" jdbcType="VARCHAR" />
+    <result column="STATUS" property="status" jdbcType="INTEGER" />
+    <result column="MARK" property="mark" jdbcType="VARCHAR" />
+    <result column="TIMES" property="times" jdbcType="TIMESTAMP" />
+  </resultMap>
+  <sql id="Example_Where_Clause" >
+    <where >
+      <foreach collection="oredCriteria" item="criteria" separator="or" >
+        <if test="criteria.valid" >
+          <trim prefix="(" suffix=")" prefixOverrides="and" >
+            <foreach collection="criteria.criteria" item="criterion" >
+              <choose >
+                <when test="criterion.noValue" >
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue" >
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue" >
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue" >
+                  and ${criterion.condition}
+                  <foreach collection="criterion.value" item="listItem" open="(" close=")" separator="," >
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Update_By_Example_Where_Clause" >
+    <where >
+      <foreach collection="example.oredCriteria" item="criteria" separator="or" >
+        <if test="criteria.valid" >
+          <trim prefix="(" suffix=")" prefixOverrides="and" >
+            <foreach collection="criteria.criteria" item="criterion" >
+              <choose >
+                <when test="criterion.noValue" >
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue" >
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue" >
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue" >
+                  and ${criterion.condition}
+                  <foreach collection="criterion.value" item="listItem" open="(" close=")" separator="," >
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Base_Column_List" >
+    ID, ADV_INFO_ID, REGION, USERNAME, STATUS, MARK, TIMES
+  </sql>
+  <select id="selectByExample" resultMap="BaseResultMap" parameterType="com.suma.pojo.AdvCheckDetailExample" >
+    select
+    <if test="distinct" >
+      distinct
+    </if>
+    'true' as QUERYID,
+    <include refid="Base_Column_List" />
+    from adv_check_detail
+    <if test="_parameter != null" >
+      <include refid="Example_Where_Clause" />
+    </if>
+    <if test="orderByClause != null" >
+      order by ${orderByClause}
+    </if>
+  </select>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Long" >
+    select 
+    <include refid="Base_Column_List" />
+    from adv_check_detail
+    where ID = #{id,jdbcType=BIGINT}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long" >
+    delete from adv_check_detail
+    where ID = #{id,jdbcType=BIGINT}
+  </delete>
+  <delete id="deleteByExample" parameterType="com.suma.pojo.AdvCheckDetailExample" >
+    delete from adv_check_detail
+    <if test="_parameter != null" >
+      <include refid="Example_Where_Clause" />
+    </if>
+  </delete>
+  <insert id="insert" parameterType="com.suma.pojo.AdvCheckDetail" >
+    insert into adv_check_detail (ID, ADV_INFO_ID, REGION, 
+      USERNAME, STATUS, MARK, 
+      TIMES)
+    values (#{id,jdbcType=BIGINT}, #{advInfoId,jdbcType=BIGINT}, #{region,jdbcType=INTEGER}, 
+      #{username,jdbcType=VARCHAR}, #{status,jdbcType=INTEGER}, #{mark,jdbcType=VARCHAR}, 
+      #{times,jdbcType=TIMESTAMP})
+  </insert>
+  <insert id="insertSelective" parameterType="com.suma.pojo.AdvCheckDetail" >
+    insert into adv_check_detail
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        ID,
+      </if>
+      <if test="advInfoId != null" >
+        ADV_INFO_ID,
+      </if>
+      <if test="region != null" >
+        REGION,
+      </if>
+      <if test="username != null" >
+        USERNAME,
+      </if>
+      <if test="status != null" >
+        STATUS,
+      </if>
+      <if test="mark != null" >
+        MARK,
+      </if>
+      <if test="times != null" >
+        TIMES,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        #{id,jdbcType=BIGINT},
+      </if>
+      <if test="advInfoId != null" >
+        #{advInfoId,jdbcType=BIGINT},
+      </if>
+      <if test="region != null" >
+        #{region,jdbcType=INTEGER},
+      </if>
+      <if test="username != null" >
+        #{username,jdbcType=VARCHAR},
+      </if>
+      <if test="status != null" >
+        #{status,jdbcType=INTEGER},
+      </if>
+      <if test="mark != null" >
+        #{mark,jdbcType=VARCHAR},
+      </if>
+      <if test="times != null" >
+        #{times,jdbcType=TIMESTAMP},
+      </if>
+    </trim>
+  </insert>
+  <select id="countByExample" parameterType="com.suma.pojo.AdvCheckDetailExample" resultType="java.lang.Integer" >
+    select count(*) from adv_check_detail
+    <if test="_parameter != null" >
+      <include refid="Example_Where_Clause" />
+    </if>
+  </select>
+  <update id="updateByExampleSelective" parameterType="map" >
+    update adv_check_detail
+    <set >
+      <if test="record.id != null" >
+        ID = #{record.id,jdbcType=BIGINT},
+      </if>
+      <if test="record.advInfoId != null" >
+        ADV_INFO_ID = #{record.advInfoId,jdbcType=BIGINT},
+      </if>
+      <if test="record.region != null" >
+        REGION = #{record.region,jdbcType=INTEGER},
+      </if>
+      <if test="record.username != null" >
+        USERNAME = #{record.username,jdbcType=VARCHAR},
+      </if>
+      <if test="record.status != null" >
+        STATUS = #{record.status,jdbcType=INTEGER},
+      </if>
+      <if test="record.mark != null" >
+        MARK = #{record.mark,jdbcType=VARCHAR},
+      </if>
+      <if test="record.times != null" >
+        TIMES = #{record.times,jdbcType=TIMESTAMP},
+      </if>
+    </set>
+    <if test="_parameter != null" >
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByExample" parameterType="map" >
+    update adv_check_detail
+    set ID = #{record.id,jdbcType=BIGINT},
+      ADV_INFO_ID = #{record.advInfoId,jdbcType=BIGINT},
+      REGION = #{record.region,jdbcType=INTEGER},
+      USERNAME = #{record.username,jdbcType=VARCHAR},
+      STATUS = #{record.status,jdbcType=INTEGER},
+      MARK = #{record.mark,jdbcType=VARCHAR},
+      TIMES = #{record.times,jdbcType=TIMESTAMP}
+    <if test="_parameter != null" >
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByPrimaryKeySelective" parameterType="com.suma.pojo.AdvCheckDetail" >
+    update adv_check_detail
+    <set >
+      <if test="advInfoId != null" >
+        ADV_INFO_ID = #{advInfoId,jdbcType=BIGINT},
+      </if>
+      <if test="region != null" >
+        REGION = #{region,jdbcType=INTEGER},
+      </if>
+      <if test="username != null" >
+        USERNAME = #{username,jdbcType=VARCHAR},
+      </if>
+      <if test="status != null" >
+        STATUS = #{status,jdbcType=INTEGER},
+      </if>
+      <if test="mark != null" >
+        MARK = #{mark,jdbcType=VARCHAR},
+      </if>
+      <if test="times != null" >
+        TIMES = #{times,jdbcType=TIMESTAMP},
+      </if>
+    </set>
+    where ID = #{id,jdbcType=BIGINT}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.suma.pojo.AdvCheckDetail" >
+    update adv_check_detail
+    set ADV_INFO_ID = #{advInfoId,jdbcType=BIGINT},
+      REGION = #{region,jdbcType=INTEGER},
+      USERNAME = #{username,jdbcType=VARCHAR},
+      STATUS = #{status,jdbcType=INTEGER},
+      MARK = #{mark,jdbcType=VARCHAR},
+      TIMES = #{times,jdbcType=TIMESTAMP}
+    where ID = #{id,jdbcType=BIGINT}
+  </update>
+</mapper>

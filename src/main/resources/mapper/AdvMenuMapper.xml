@@ -9,7 +9,7 @@
     <result column="order_num" property="orderNum" jdbcType="INTEGER" />
     <result column="url" property="url" jdbcType="VARCHAR" />
     <result column="menu_type" property="menuType" jdbcType="CHAR" />
-    <result column="visible" property="visible" jdbcType="CHAR" />
+    <result column="status" property="status" jdbcType="CHAR" />
     <result column="perms" property="perms" jdbcType="VARCHAR" />
     <result column="create_by" property="createBy" jdbcType="VARCHAR" />
     <result column="create_time" property="createTime" jdbcType="TIMESTAMP" />
@@ -18,7 +18,7 @@
     <result column="remark" property="remark" jdbcType="VARCHAR" />
   </resultMap>
   <sql id="Base_Column_List" >
-    menu_id, menu_name, parent_id,ancestors,order_num, url, menu_type, visible, perms, create_by,
+    menu_id, menu_name, parent_id,ancestors,order_num, url, menu_type, status, perms, create_by,
     create_time, update_by, update_time, remark
   </sql>
   <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
@@ -35,7 +35,7 @@
   </select>
   <select id="selectAdvMenuAll" resultMap="BaseResultMap">
     select <include refid="Base_Column_List"/>
-      from  sys_menu;
+      from  adv_menu;
   </select>
   <select id="selectAdvMenuCountByParentId" resultType="java.lang.Integer" parameterType="java.lang.Integer">
     select COUNT(*) from adv_menu
@@ -43,7 +43,17 @@
       <if test="parentId != null and parentId != 0">and parent_id = #{parentId}</if>
     </where>
   </select>
-
+  <select id="selectAdvMenuList" resultMap="BaseResultMap">
+    select <include refid="Base_Column_List"/> from adv_menu
+    <where>
+      <if test="menuName != null and menuName != ''">
+        AND menu_name like concat ('%',#{menuName},'%')
+      </if>
+      <if test="status != null and status != ''">
+        AND status = #{status};
+      </if>
+    </where>
+  </select>
   <select id="checkAdvMenuUnique" parameterType="java.lang.String" resultType="java.lang.Integer">
     SELECT count(*) FROM adv_menu
       WHERE menu_name = #{menuName};
@@ -59,12 +69,12 @@
   <insert id="insert" parameterType="com.suma.pojo.AdvMenu" >
     insert into adv_menu (menu_id, menu_name, parent_id, 
       order_num, url, menu_type, 
-      visible, perms, create_by, 
+      status, perms, create_by,
       create_time, update_by, update_time, 
       remark)
     values (#{menuId,jdbcType=INTEGER}, #{menuName,jdbcType=VARCHAR}, #{parentId,jdbcType=INTEGER}, 
       #{orderNum,jdbcType=INTEGER}, #{url,jdbcType=VARCHAR}, #{menuType,jdbcType=CHAR}, 
-      #{visible,jdbcType=CHAR}, #{perms,jdbcType=VARCHAR}, #{createBy,jdbcType=VARCHAR}, 
+      #{status,jdbcType=CHAR}, #{perms,jdbcType=VARCHAR}, #{createBy,jdbcType=VARCHAR},
       #{sysdate(),jdbcType=TIMESTAMP}, #{updateBy,jdbcType=VARCHAR}, #{updateTime,jdbcType=DATE},
       #{remark,jdbcType=VARCHAR})
   </insert>
@@ -92,8 +102,8 @@
       <if test="menuType != null" >
         menu_type,
       </if>
-      <if test="visible != null" >
-        visible,
+      <if test="status != null" >
+        status,
       </if>
       <if test="perms != null" >
         perms,
@@ -134,8 +144,8 @@
       <if test="menuType != null" >
         #{menuType,jdbcType=CHAR},
       </if>
-      <if test="visible != null" >
-        #{visible,jdbcType=CHAR},
+      <if test="status != null" >
+        #{status,jdbcType=CHAR},
       </if>
       <if test="perms != null" >
         #{perms,jdbcType=VARCHAR},
@@ -176,8 +186,8 @@
       <if test="menuType != null" >
         menu_type = #{menuType,jdbcType=CHAR},
       </if>
-      <if test="visible != null" >
-        visible = #{visible,jdbcType=CHAR},
+      <if test="status != null" >
+        status = #{status,jdbcType=CHAR},
       </if>
       <if test="perms != null" >
         perms = #{perms,jdbcType=VARCHAR},
@@ -205,7 +215,7 @@
       order_num = #{orderNum,jdbcType=INTEGER},
       url = #{url,jdbcType=VARCHAR},
       menu_type = #{menuType,jdbcType=CHAR},
-      visible = #{visible,jdbcType=CHAR},
+      status = #{status,jdbcType=CHAR},
       perms = #{perms,jdbcType=VARCHAR},
       create_by = #{createBy,jdbcType=VARCHAR},
       create_time = #{createTime,jdbcType=TIMESTAMP},
