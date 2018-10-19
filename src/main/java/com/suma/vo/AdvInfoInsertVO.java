@@ -22,4 +22,10 @@ public class AdvInfoInsertVO {
     private Integer status;//广告状态
 
     private Integer materialType;//素材类型
+
+    private String fileName;//资源文件名
+
+    private Integer duration;//持续时间
+
+    private Integer sequence;//播放顺序
 }

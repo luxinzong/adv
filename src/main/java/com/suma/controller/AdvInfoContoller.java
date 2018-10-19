@@ -5,12 +5,13 @@ import com.suma.constants.ExceptionConstants;
 import com.suma.exception.AdvInfoException;
 import com.suma.pojo.*;
 import com.suma.service.AdvInfoService;
+import com.suma.service.AdvMaterialService;
 import com.suma.service.AdvTypeService;
 import com.suma.service.InfoMaterialService;
 import com.suma.utils.Result;
 import com.suma.vo.AdvInfoInsertVO;
-import com.suma.vo.AdvInfoQueryVO;
 import com.suma.vo.AdvInfoUpdateVO;
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeanUtils;
@@ -43,6 +44,9 @@ public class AdvInfoContoller extends BaseController{
     @Autowired
     private AdvTypeService advTypeService;
 
+    @Autowired
+    private AdvMaterialService advMaterialService;
+
     /**
      * 查询广告信息
      * @param
@@ -59,17 +63,11 @@ public class AdvInfoContoller extends BaseController{
         AdvTypeExample example1 = new AdvTypeExample();
         example1.createCriteria().andAdvtypeEqualTo(advType);
         List<AdvType> advTypes = advTypeService.selectByExample(example1);
-        List<Long> ids = new ArrayList<>();
-        for (AdvType advType1 : advTypes) {
-            ids.add(advType1.getId());
-        }
-        if (name == null) {
-            nameIsNull(ids, status, start, end, sdf, example);
-        } else {
-            nameIsNotNull(ids, status, name, start, end, sdf, example);
-        }
+        List<AdvInfo> advInfoList = new ArrayList<>();
         PageHelper.startPage(pageNum, pageSize);
-        List<AdvInfo> advInfoList = advInfoService.selectByExample(example);
+        for (AdvType advType1 : advTypes) {
+            advInfoList.add(advInfoService.selectAdvInfo(name, start, end, status, advType1.getId()));
+        }
         return  Result.success(advInfoList);
     }
 
@@ -85,21 +83,11 @@ public class AdvInfoContoller extends BaseController{
     @RequestMapping(value = "deleteAdvInfo", method = RequestMethod.POST)
     public Result deleteAdvInfo(Long id) {
         Result result = new Result();
-        /*try {*/
-           /* if (ids == null) {
-                throw new AdvInfoException(ExceptionConstants.INFO_EXCEPTION_MISSING_REQUIRED_PARAMS);
-            }*/
-     /* for (Long id : ids) {*/
-                //删除所有广告及所对应资源关系
                 int a = advInfoService.deleteByPK(id);
                 InfoMaterialExample example = new InfoMaterialExample();
                 example.createCriteria().andAdvInfoIdEqualTo(id);
                 int b = infoMaterialService.deleteByExample(example);
-           // }
         toResult(a*b);
-       /* } catch (Exception e) {
-            e.printStackTrace();
-        }*/
         return result;
     }
 
@@ -164,8 +152,26 @@ public class AdvInfoContoller extends BaseController{
             if (advInfoList.size() != 0) {
                 throw new AdvInfoException(ExceptionConstants.INFO_EXCEPTION_INFO_NAME_IS_EXIT);
             }
-            //若不存在,则创建广告信息以及对应广告资源
-            return toResult(advInfoService.save(advInfo));
+            //若不存在,则创建广告信息
+            int a = advInfoService.save(advInfo);
+
+            //创建广告信息与广告资源对应表
+            List<AdvInfo> advInfos = advInfoService.selectByExample(example);
+            //获取广告信息ID
+            Long advInfoId = advInfos.get(0).getId();
+            //获取广告信息与资源关系表对象
+            InfoMaterial infoMaterial = new InfoMaterial();
+            //根据前端传递过来的文件名查找对应资源ID
+            AdvMaterialExample advMaterialExample = new AdvMaterialExample();
+            advMaterialExample.createCriteria().andFileNameEqualTo(advInfoInsertVO.getFileName());
+            List<AdvMaterial> advMaterials = advMaterialService.selectByExample(advMaterialExample);
+            Long materialId =  advMaterials.get(0).getId();
+            infoMaterial.setAdvInfoId(advInfoId);
+            infoMaterial.setMaterialId(materialId);
+            infoMaterial.setDuration(advInfoInsertVO.getDuration());
+            infoMaterial.setSequence(advInfoInsertVO.getSequence());
+            int b = infoMaterialService.save(infoMaterial);
+            return toResult(a*b);
         }
 
         /**
@@ -174,6 +180,7 @@ public class AdvInfoContoller extends BaseController{
          * @param advInfoUpdateVO
          * @return
          */
+        @Transactional(rollbackFor = Exception.class)
         @RequestMapping(value = "update", method = RequestMethod.POST)
         public Result updateAdvInfo (AdvInfoUpdateVO advInfoUpdateVO) throws ParseException {
             SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
@@ -195,7 +202,22 @@ public class AdvInfoContoller extends BaseController{
             if (advInfoService.selectByExample(example).size() == 0) {
                 throw new AdvInfoException(ExceptionConstants.INFO_EXCEPTION_INFO_IS_NOT_EXIT);
             }
-            return toResult(advInfoService.update(advInfo));
+            //更新广告信息
+           int a =  advInfoService.update(advInfo);
+
+            //更新广告对应资源表信息
+            InfoMaterial infoMaterial = new InfoMaterial();
+            BeanUtils.copyProperties(advInfoUpdateVO, infoMaterial);
+
+            //根据文件名查找资源ID
+            AdvMaterialExample example1 = new AdvMaterialExample();
+            example1.createCriteria().andFileNameEqualTo(advInfoUpdateVO.getFileName());
+            Long materialId = advMaterialService.selectByExample(example1).get(0).getId();
+            infoMaterial.setMaterialId(materialId);
+            InfoMaterialExample example2 = new InfoMaterialExample();
+            example2.createCriteria().andMaterialIdEqualTo(materialId).andAdvInfoIdEqualTo(advInfoUpdateVO.getAdvInfoId());
+            infoMaterialService.updateByExample(infoMaterial, example2);
+            return toResult(1);
         }
 
 
@@ -210,19 +232,18 @@ public class AdvInfoContoller extends BaseController{
      * @throws ParseException
      */
         private void nameIsNotNull(List<Long> ids,Integer status, String name, String start, String end, SimpleDateFormat sdf, AdvInfoExample example) throws ParseException {
-            if (start == null && end == null) {
+            if (StringUtils.isBlank(start) && StringUtils.isBlank(end)) {
                 example.createCriteria().andStatusEqualTo(status).andNameEqualTo(name).andAdvTypeIdIn(ids);
-            } else if (start == null && end != null) {
+            } else if (StringUtils.isBlank(start) && !StringUtils.isBlank(end)) {
                 Date endDate = sdf.parse(end);
-                example.createCriteria().andStatusEqualTo(status).andEndDateLessThanOrEqualTo(endDate).andNameEqualTo(name).andAdvTypeIdIn(ids);
-            } else if (start != null && end == null) {
+                example.createCriteria().andStatusEqualTo(status).andStartDateLessThanOrEqualTo(endDate).andNameEqualTo(name).andAdvTypeIdIn(ids);
+            } else if (!StringUtils.isBlank(start) && StringUtils.isBlank(end)) {
                 Date startDate =sdf.parse(start);
-                example.createCriteria().andStatusEqualTo(status).andStartDateGreaterThanOrEqualTo(startDate).andNameEqualTo(name).andAdvTypeIdIn(ids);
+                example.createCriteria().andStatusEqualTo(status).andEndDateGreaterThanOrEqualTo(startDate).andNameEqualTo(name).andAdvTypeIdIn(ids);
             } else {
                 Date endDate = sdf.parse(end);
                 Date startDate =sdf.parse(start);
-                example.createCriteria().andStatusEqualTo(status).
-                        andStartDateGreaterThanOrEqualTo(startDate).andEndDateLessThanOrEqualTo(endDate).andNameEqualTo(name).andAdvTypeIdIn(ids);
+                example.createCriteria().andStartDateBetween(startDate, endDate);
             }
         }
 
@@ -236,12 +257,12 @@ public class AdvInfoContoller extends BaseController{
      * @throws ParseException
      */
         private void nameIsNull(List<Long> ids,Integer status, String start, String end, SimpleDateFormat sdf, AdvInfoExample example) throws ParseException {
-            if (start == null && end == null) {
+            if (StringUtils.isEmpty(start) && StringUtils.isEmpty(end)) {
                 example.createCriteria().andStatusEqualTo(status).andAdvTypeIdIn(ids);
-            } else if (start == null && end != null) {
+            } else if (StringUtils.isBlank(start)&&!StringUtils.isBlank(end)) {
                 Date endDate = sdf.parse(end);
                 example.createCriteria().andStatusEqualTo(status).andEndDateLessThanOrEqualTo(endDate).andAdvTypeIdIn(ids);
-            } else if (start != null && end == null) {
+            } else if (!StringUtils.isBlank(start) && StringUtils.isBlank(end)) {
                 Date startDate = sdf.parse(start);
                 example.createCriteria().andStatusEqualTo(status).andStartDateGreaterThanOrEqualTo(startDate).andAdvTypeIdIn(ids);
             } else {
