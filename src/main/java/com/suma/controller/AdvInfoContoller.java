@@ -5,6 +5,7 @@ import com.suma.constants.ExceptionConstants;
 import com.suma.exception.AdvInfoException;
 import com.suma.pojo.*;
 import com.suma.service.AdvInfoService;
+import com.suma.service.AdvTypeService;
 import com.suma.service.InfoMaterialService;
 import com.suma.utils.Result;
 import com.suma.vo.AdvInfoInsertVO;
@@ -19,6 +20,7 @@ import org.springframework.web.bind.annotation.*;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -36,27 +38,38 @@ public class AdvInfoContoller extends BaseController{
 
     @Autowired
     private InfoMaterialService infoMaterialService;
+
+    @Autowired
+    private AdvTypeService advTypeService;
+
     /**
      * 查询广告信息
      * @param
      * @return
      */
     @RequestMapping(value = "query", method = RequestMethod.GET)
-    public Result queryAdvInfo(Integer status,String name,String start,String end,Integer pageNum,Integer pageSize) throws ParseException {
-        System.out.println("sssss"+status+name+start+end+pageNum+pageSize);
+    public Result queryAdvInfo(Integer status,String name,String start,String end,Integer pageNum,Integer pageSize,String advType) throws ParseException {
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
         //判断日期是否合理
         AdvInfoExample example = new AdvInfoExample();
-        if (pageNum == null || pageSize == null || status == null) {//检查页码参数和广告状态是否为空
+        if (pageNum == null || pageSize == null || status == null || advType == null) {//检查页码参数和广告状态是否为空
             throw new AdvInfoException(ExceptionConstants.INFO_EXCEPTION_QUERYPARAMS_IS_NULL);
         }
+        AdvTypeExample example1 = new AdvTypeExample();
+        example1.createCriteria().andAdvtypeEqualTo(advType);
+        List<AdvType> advTypes = advTypeService.selectByExample(example1);
+        List<Long> ids = new ArrayList<>();
+        for (AdvType advType1 : advTypes) {
+            ids.add(advType1.getId());
+        }
         if (name == null) {
-            nameIsNull(status, start, end, sdf, example);
+            nameIsNull(ids, status, start, end, sdf, example);
         } else {
-            nameIsNotNull(status, name, start, end, sdf, example);
+            nameIsNotNull(ids, status, name, start, end, sdf, example);
         }
         PageHelper.startPage(pageNum, pageSize);
-        return  Result.success(advInfoService.selectByExample(example));
+        List<AdvInfo> advInfoList = advInfoService.selectByExample(example);
+        return  Result.success(advInfoList);
     }
 
 
@@ -68,7 +81,7 @@ public class AdvInfoContoller extends BaseController{
      * @param
      * @return
      */
-    @RequestMapping(value = "delete", method = RequestMethod.POST)
+    @RequestMapping(value = "deleteAdvInfo", method = RequestMethod.POST)
     public Result deleteAdvInfo(Long id) {
         Result result = new Result();
         /*try {*/
@@ -88,8 +101,14 @@ public class AdvInfoContoller extends BaseController{
         }*/
         return result;
     }
-    /*@RequestMapping(value = "delete", method = RequestMethod.POST)
-    public Result deleteAdvInfo(List<Long> ids) {
+
+    /**
+     * 批量删除广告信息
+     * @param ids
+     * @return
+     */
+    @RequestMapping(value = "delete", method = RequestMethod.POST)
+    public Result deleteAdvInfos(Long[] ids) {
         Result result = new Result();
         try {
             if (ids == null) {
@@ -101,14 +120,14 @@ public class AdvInfoContoller extends BaseController{
                 InfoMaterialExample example = new InfoMaterialExample();
                 example.createCriteria().andAdvInfoIdEqualTo(id);
                 infoMaterialService.deleteByExample(example);
-                *//*   }*//*
+                   }
                 Result.success();
-            }
         }catch(Exception e){
             e.printStackTrace();
+
         }
         return result;
-    }*/
+    }
 
 
         /**
@@ -186,20 +205,20 @@ public class AdvInfoContoller extends BaseController{
      * @param example
      * @throws ParseException
      */
-        private void nameIsNotNull(Integer status, String name, String start, String end, SimpleDateFormat sdf, AdvInfoExample example) throws ParseException {
+        private void nameIsNotNull(List<Long> ids,Integer status, String name, String start, String end, SimpleDateFormat sdf, AdvInfoExample example) throws ParseException {
             if (start == null && end == null) {
-                example.createCriteria().andStatusEqualTo(status).andNameEqualTo(name);
+                example.createCriteria().andStatusEqualTo(status).andNameEqualTo(name).andAdvTypeIdIn(ids);
             } else if (start == null && end != null) {
                 Date endDate = sdf.parse(end);
-                example.createCriteria().andStatusEqualTo(status).andEndDateLessThanOrEqualTo(endDate).andNameEqualTo(name);
+                example.createCriteria().andStatusEqualTo(status).andEndDateLessThanOrEqualTo(endDate).andNameEqualTo(name).andAdvTypeIdIn(ids);
             } else if (start != null && end == null) {
                 Date startDate =sdf.parse(start);
-                example.createCriteria().andStatusEqualTo(status).andStartDateGreaterThanOrEqualTo(startDate).andNameEqualTo(name);
+                example.createCriteria().andStatusEqualTo(status).andStartDateGreaterThanOrEqualTo(startDate).andNameEqualTo(name).andAdvTypeIdIn(ids);
             } else {
                 Date endDate = sdf.parse(end);
                 Date startDate =sdf.parse(start);
                 example.createCriteria().andStatusEqualTo(status).
-                        andStartDateGreaterThanOrEqualTo(startDate).andEndDateLessThanOrEqualTo(endDate).andNameEqualTo(name);
+                        andStartDateGreaterThanOrEqualTo(startDate).andEndDateLessThanOrEqualTo(endDate).andNameEqualTo(name).andAdvTypeIdIn(ids);
             }
         }
 
@@ -212,20 +231,20 @@ public class AdvInfoContoller extends BaseController{
      * @param example
      * @throws ParseException
      */
-        private void nameIsNull(Integer status, String start, String end, SimpleDateFormat sdf, AdvInfoExample example) throws ParseException {
+        private void nameIsNull(List<Long> ids,Integer status, String start, String end, SimpleDateFormat sdf, AdvInfoExample example) throws ParseException {
             if (start == null && end == null) {
-                example.createCriteria().andStatusEqualTo(status);
+                example.createCriteria().andStatusEqualTo(status).andAdvTypeIdIn(ids);
             } else if (start == null && end != null) {
                 Date endDate = sdf.parse(end);
-                example.createCriteria().andStatusEqualTo(status).andEndDateLessThanOrEqualTo(endDate);
+                example.createCriteria().andStatusEqualTo(status).andEndDateLessThanOrEqualTo(endDate).andAdvTypeIdIn(ids);
             } else if (start != null && end == null) {
                 Date startDate = sdf.parse(start);
-                example.createCriteria().andStatusEqualTo(status).andStartDateGreaterThanOrEqualTo(startDate);
+                example.createCriteria().andStatusEqualTo(status).andStartDateGreaterThanOrEqualTo(startDate).andAdvTypeIdIn(ids);
             } else {
                 Date endDate = sdf.parse(end);
                 Date startDate = sdf.parse(start);
                 example.createCriteria().andStatusEqualTo(status).
-                        andStartDateGreaterThanOrEqualTo(startDate).andEndDateLessThanOrEqualTo(endDate);
+                        andStartDateGreaterThanOrEqualTo(startDate).andEndDateLessThanOrEqualTo(endDate).andAdvTypeIdIn(ids);
             }
         }
     }

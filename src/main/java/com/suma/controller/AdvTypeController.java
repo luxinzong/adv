@@ -4,9 +4,12 @@ import com.suma.pojo.AdvType;
 import com.suma.pojo.AdvTypeExample;
 import com.suma.service.AdvTypeService;
 import com.suma.utils.Result;
+import com.suma.vo.AdvSubTypeVO;
 import com.suma.vo.AdvTypeVO;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.ArrayList;
@@ -21,8 +24,8 @@ import java.util.Set;
  */
 
 @RestController
-@RequestMapping("type")
-public class AdvTypeController {
+@RequestMapping(value = "type",produces = "application/json;charset=utf-8")
+public class AdvTypeController extends  BaseController{
 
     @Autowired
     private AdvTypeService advTypeService;
@@ -72,4 +75,19 @@ public class AdvTypeController {
         result.setResultData(vos);
         return result;
     }
+
+    @RequestMapping(value = "getSubType",method = RequestMethod.GET)
+    public Result getSuvType() {
+        List<AdvType> advTypes = advTypeService.findALL();
+        List<AdvSubTypeVO> advSubTypeVOList = new ArrayList<>();
+        for (AdvType advType : advTypes) {
+            AdvSubTypeVO advSubTypeVO = new AdvSubTypeVO();
+            advSubTypeVO.setIndex(advType.getId().toString());
+            advSubTypeVO.setTitle(advType.getAdvsubtypename());
+            advSubTypeVOList.add(advSubTypeVO);
+        }
+        return Result.success(advSubTypeVOList);
+    }
+
+
 }

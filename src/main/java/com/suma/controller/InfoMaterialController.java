@@ -38,13 +38,13 @@ public class InfoMaterialController extends BaseController{
     AdvMaterialService advMaterialService;
 
     /**
-     * 添加广告信息对应资源
+     * 批量添加广告信息对应资源
      *
      * @param
      * @return
      */
-    /*@RequestMapping(value = "insert", method = RequestMethod.POST)*/
-   /* public Result addInfoMaterial(List<InfoMaterial> infoMaterialList) {
+    @RequestMapping(value = "insert", method = RequestMethod.POST)
+    public Result addInfoMaterials(List<InfoMaterial> infoMaterialList) {
         //判断是否缺少对应资源信息
         if (infoMaterialList.size() == 0) {
             throw new InfoMaterialException(ExceptionConstants.INFO_MATERIAL_INFO_MATERIAL_IS_NULL);
@@ -58,8 +58,18 @@ public class InfoMaterialController extends BaseController{
             infoMaterialService.save(infoMaterial);
         }
         return Result.success();
-    }*/
-    @RequestMapping(value = "insert", method = RequestMethod.POST)
+    }
+
+
+    /**
+     * 单个添加广告信息与资源对应关系
+     * @param advInfoId
+     * @param materialId
+     * @param duration
+     * @param sequence
+     * @return
+     */
+    @RequestMapping(value = "insertInfoMaterial", method = RequestMethod.POST)
     public Result addInfoMaterial(Long advInfoId, Long materialId,Integer duration,Integer sequence) {
         if (advInfoId == null || materialId == null || duration == null ||sequence == null) {
             throw new InfoMaterialException(ExceptionConstants.INFO_MATERIAL_REQUESTPARAMS_IS_NULL);
@@ -77,25 +87,9 @@ public class InfoMaterialController extends BaseController{
        return toResult(infoMaterialService.save(infoMaterial));
     }
 
-    @RequestMapping(value = "insertMaterial", method = RequestMethod.POST)
-    public Result addInfoMaterials(Long[] ids) {
-        AdvMaterialExample example = new AdvMaterialExample();
-        List<InfoMaterialVO> infoMaterialVOList = new ArrayList<>();
-        List<Long> materialIds = Lists.newArrayList(ids);
-        for (Long materialId : materialIds) {
-            System.out.println(materialId);
-            InfoMaterialVO infoMaterialVO = new InfoMaterialVO();
-            example.createCriteria().andIdEqualTo(materialId);
-            BeanUtils.copyProperties(infoMaterialService.findByPK(materialId), infoMaterialVO);
-            infoMaterialVO.setFileName(advMaterialService.findByPK(materialId).getFileName());
-            infoMaterialVOList.add(infoMaterialVO);
-        }
-        return Result.success(infoMaterialVOList);
-    }
-
 
     /**
-     * 查询广告信息对应资源
+     * 查询所有广告信息对应资源
      * @param advInfoId
      * @return
      */
@@ -129,25 +123,27 @@ public class InfoMaterialController extends BaseController{
 
     }
 
-   /* @RequestMapping(value = "queryMaterial", method = RequestMethod.POST)
+    /**
+     * 创建广告时，根据广告资源id查询广告资源信息
+     * @param ids
+     * @return
+     */
+    @RequestMapping(value = "queryMaterial", method = RequestMethod.POST)
     public Result queryMaterial(Long[] ids) {
         AdvMaterialExample example = new AdvMaterialExample();
         List<InfoMaterialVO> infoMaterialVOList = new ArrayList<>();
         List<Long> materialIds = Lists.newArrayList(ids);
         for (Long materialId : materialIds) {
-            System.out.println(materialId);
             InfoMaterialVO infoMaterialVO = new InfoMaterialVO();
-            example.createCriteria().andIdEqualTo(materialId);
-            BeanUtils.copyProperties(infoMaterialService.findByPK(materialId), infoMaterialVO);
-            infoMaterialVO.setFileName(advMaterialService.findByPK(materialId).getFileName());
+            String fileName = advMaterialService.findByPK(materialId).getFileName();
+            infoMaterialVO.setFileName(fileName);
             infoMaterialVOList.add(infoMaterialVO);
         }
         return Result.success(infoMaterialVOList);
     }
-*/
 
     /**
-     * 删除广告信息对应资源
+     * 根据json格式删除广告信息对应资源
      * @param
      * @return
      */
@@ -176,6 +172,12 @@ public class InfoMaterialController extends BaseController{
         return result;
     }*/
 
+    /**
+     * 根据广告ID和资源ID删除对应信息
+     * @param advInfoId
+     * @param materialId
+     * @return
+     */
     @RequestMapping(value = "delete", method = RequestMethod.POST)
     public Result deleteInfoMaterial(Long advInfoId,Long materialId) {
         int count = 0;
@@ -196,11 +198,11 @@ public class InfoMaterialController extends BaseController{
 
 
     /**
-     * 编辑广告信息对应资源
+     * 批量更新广告信息对应资源关系
      * @param
      * @return
      */
-   /* @RequestMapping(value = "update",method = RequestMethod.POST)
+    @RequestMapping(value = "update",method = RequestMethod.POST)
     public Result getUpdateInfoMaterials(List<InfoMaterial> infoMaterialList) {
         InfoMaterialExample example = new InfoMaterialExample();
         int count = 0;
@@ -221,10 +223,15 @@ public class InfoMaterialController extends BaseController{
         } else {
             throw new InfoMaterialException("有"+(infoMaterialList.size()-count)+"更新失败");
         }
-    }*/
+    }
 
 
-    @RequestMapping(value = "update", method = RequestMethod.POST)
+    /**
+     * 单个更新广告信息与资源对应关系
+     * @param infoMaterial
+     * @return
+     */
+    @RequestMapping(value = "updatematerial", method = RequestMethod.POST)
     public Result updateInfoMaterial(InfoMaterial infoMaterial) {
         InfoMaterialExample example = new InfoMaterialExample();
         example.createCriteria().andAdvInfoIdEqualTo(infoMaterial.getAdvInfoId())

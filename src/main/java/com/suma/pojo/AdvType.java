@@ -50,4 +50,5 @@ public class AdvType {
     public void setAdvsubtypename(String advsubtypename) {
         this.advsubtypename = advsubtypename == null ? null : advsubtypename.trim();
     }
+
 }
