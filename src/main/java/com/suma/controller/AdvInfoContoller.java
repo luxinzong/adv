@@ -15,6 +15,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
 import java.text.DateFormat;
@@ -136,8 +137,10 @@ public class AdvInfoContoller extends BaseController{
          * @param advInfoInsertVO
          * @return
          */
+        @Transactional(rollbackFor = Exception.class)
         @RequestMapping(value = "insert", method = RequestMethod.POST)
         public Result insertAdvInfo (AdvInfoInsertVO advInfoInsertVO) throws ParseException {
+            System.out.println(advInfoInsertVO);
             DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
             DateFormat df = new SimpleDateFormat("HH:mm:ss");
             AdvInfo advInfo = new AdvInfo();
@@ -145,11 +148,12 @@ public class AdvInfoContoller extends BaseController{
             advInfo.setEndDate(dateFormat.parse(advInfoInsertVO.getEnd()));
             advInfo.setPeriodTimeEnd(df.parse(advInfoInsertVO.getPeriodTimeEnd()));
             advInfo.setPeriodTimeStart(df.parse(advInfoInsertVO.getPeriodTimeStart()));
-            advInfo.setName(advInfoInsertVO.getName());
+            BeanUtils.copyProperties(advInfoInsertVO, advInfo);
             System.out.println(advInfo);
             if (advInfo.getName() == null || advInfo.getStartDate() == null ||
                     advInfo.getEndDate() == null || advInfo.getPeriodTimeEnd() == null
-                    || advInfo.getPeriodTimeStart() == null) {
+                    || advInfo.getPeriodTimeStart() == null || advInfo.getStatus() == null
+                    || advInfo.getMaterialType() == null) {
                 throw new AdvInfoException(ExceptionConstants.INFO_EXCEPTION_MISSING_REQUIRED_PARAMS);
             }
             String name = advInfo.getName();

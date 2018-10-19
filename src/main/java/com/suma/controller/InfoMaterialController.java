@@ -4,6 +4,7 @@ import com.google.common.collect.Lists;
 import com.suma.constants.AdvContants;
 import com.suma.constants.ExceptionConstants;
 import com.suma.exception.InfoMaterialException;
+import com.suma.exception.MaterialException;
 import com.suma.pojo.AdvMaterial;
 import com.suma.pojo.AdvMaterialExample;
 import com.suma.pojo.InfoMaterial;
@@ -124,22 +125,20 @@ public class InfoMaterialController extends BaseController{
     }
 
     /**
-     * 创建广告时，根据广告资源id查询广告资源信息
-     * @param ids
+     * 根据素材Id查询素材相关信息
+     * @param materialIds
      * @return
      */
-    @RequestMapping(value = "queryMaterial", method = RequestMethod.POST)
-    public Result queryMaterial(Long[] ids) {
-        AdvMaterialExample example = new AdvMaterialExample();
-        List<InfoMaterialVO> infoMaterialVOList = new ArrayList<>();
-        List<Long> materialIds = Lists.newArrayList(ids);
-        for (Long materialId : materialIds) {
-            InfoMaterialVO infoMaterialVO = new InfoMaterialVO();
-            String fileName = advMaterialService.findByPK(materialId).getFileName();
-            infoMaterialVO.setFileName(fileName);
-            infoMaterialVOList.add(infoMaterialVO);
+    @RequestMapping(value = "queryMaterialName", method = RequestMethod.GET)
+    public Result queryMaterialName(Long[] materialIds) {
+        if (materialIds == null) {
+            throw new InfoMaterialException(ExceptionConstants.INFO_MATERIAL_REQUESTPARAMS_IS_NULL);
         }
-        return Result.success(infoMaterialVOList);
+        List<AdvMaterial> advMaterials = new ArrayList<>();
+        for (Long materialId : materialIds) {
+            advMaterials.add(advMaterialService.findByPK(materialId));
+        }
+        return Result.success(advMaterials);
     }
 
     /**
