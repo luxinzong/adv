@@ -34,6 +34,7 @@ public class ExceptionConstants {
     public static final String INFO_EXCEPTION_INFO_NAME_IS_EXIT = "广告名称已存在";
     public static final String INFO_EXCEPTION_INFO_IS_NOT_EXIT = "该广告不存在";
     public static final String DATE_FILL_IN_ERROR = "日期填写错误";
+    public static final String INFO_EXCEPTION_DELETE_ERROR = "删除信息失败";
 
     //素材异常常量
     public static final String MATERIAL_EXCEPTION_UPLOAD_FAIL="素材上传失败";

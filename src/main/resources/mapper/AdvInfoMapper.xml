@@ -465,21 +465,25 @@
       RESERVED_INT = #{reservedInt,jdbcType=BIGINT}
     where ID = #{id,jdbcType=BIGINT}
   </update>
-
-  <select id="selectAdvInfo" resultType="AdvInfo">
-    select
-    <include refid="Base_Column_List"/>
-    from adv_info
-    <where>
-      <if test="name != null and name != ''"> and NAME = #{name}</if>
-
-      <if test="startDate != null and startDate != ''">and START_DATE = #{startDate}</if>
-
-      <if test="endDate != null and endDate != ''">and END_DATE = #{endDate}</if>
-
-      <if test="status != null and status != ''">and STATUS = #{status}</if>
-
-      <if test="advTypeId != null and advTypeId != ''"> and ADV_TYPE_ID = #{advTypeId}</if>
-    </where>
-  </select>
+    <select id="selectAdvInfo" resultType="AdvInfo">
+      select
+      <include refid="Base_Column_List"/>
+      from adv_info
+      <where>
+        <if test="name != null and name != ''">name = #{name}</if>
+        <if test="status != null and status != ''">and status=#{status}</if>
+        <if test="startDate != null and startDate != ''">and startDate &gt;=#{startDate}</if>
+        <if test="endDate != null and endDate != ''">and endDate &lt;= #{endDate}</if>
+        <if test="advTypeId != null and advTypeId != ''">and advTypeId=#{advType}</if>
+      </where>
+      limit (#{pageSizi}-1) * #{pageSize},#{pageSize} * #{pageNum}
+    </select>
 </mapper>
+
+
+
+
+
+
+
+

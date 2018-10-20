@@ -1,30 +1,21 @@
 package com.suma.dao;
 
 import com.suma.pojo.AdvCheckDetail;
-import com.suma.pojo.AdvCheckDetailExample;
-import java.util.List;
 import org.apache.ibatis.annotations.Param;
 
+import java.util.List;
+
 public interface AdvCheckDetailMapper {
-    int countByExample(AdvCheckDetailExample example);
 
-    int deleteByExample(AdvCheckDetailExample example);
+    int deleteById(@Param("id") Long id);
 
-    int deleteByPrimaryKey(Long id);
+    int insert(AdvCheckDetail advCheckDetail);
 
-    int insert(AdvCheckDetail record);
+    AdvCheckDetail select(@Param("id") Long id);
 
-    int insertSelective(AdvCheckDetail record);
+    int updateById(AdvCheckDetail advCheckDetail);
 
-    List<AdvCheckDetail> selectByExample(AdvCheckDetailExample example);
+    List<AdvCheckDetail> selectAll();
 
-    AdvCheckDetail selectByPrimaryKey(Long id);
-
-    int updateByExampleSelective(@Param("record") AdvCheckDetail record, @Param("example") AdvCheckDetailExample example);
-
-    int updateByExample(@Param("record") AdvCheckDetail record, @Param("example") AdvCheckDetailExample example);
-
-    int updateByPrimaryKeySelective(AdvCheckDetail record);
-
-    int updateByPrimaryKey(AdvCheckDetail record);
+    int deleteAll(Long[] ids);
 }
