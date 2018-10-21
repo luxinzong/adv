@@ -15,12 +15,12 @@
   </sql>
 
 
-  <!--根据ID查询-->
+  <!--根据advInfoId查询-->
   <select id="select" resultMap="BaseResultMap" parameterType="java.lang.Long">
     select 
     <include refid="Base_Column_List" />
     from adv_check_detail
-    where ID = #{id,jdbcType=BIGINT}
+    where ADV_INFO_ID = #{advInfoId,jdbcType=BIGINT}
   </select>
 
   <!--查询所有-->

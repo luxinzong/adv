@@ -11,11 +11,13 @@ public interface AdvCheckDetailMapper {
 
     int insert(AdvCheckDetail advCheckDetail);
 
-    AdvCheckDetail select(@Param("id") Long id);
+    AdvCheckDetail select(@Param("advInfoId") Long advInfoId);
 
     int updateById(AdvCheckDetail advCheckDetail);
 
     List<AdvCheckDetail> selectAll();
 
     int deleteAll(Long[] ids);
+
+    List<AdvCheckDetail> selectAll(@Param("status") Integer status);
 }

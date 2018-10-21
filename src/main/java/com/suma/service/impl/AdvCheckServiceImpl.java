@@ -35,8 +35,8 @@ public class AdvCheckServiceImpl implements AdvCheckService {
     }
 
     @Override
-    public AdvCheckDetail select(Long id) {
-        return advCheckDetailMapper.select(id);
+    public AdvCheckDetail select(Long advInfoId) {
+        return advCheckDetailMapper.select(advInfoId);
     }
 
     @Override
@@ -47,5 +47,10 @@ public class AdvCheckServiceImpl implements AdvCheckService {
     @Override
     public int updateById(AdvCheckDetail record) {
         return advCheckDetailMapper.updateById(record);
+    }
+
+    @Override
+    public List<AdvCheckDetail> selectAll(Integer status) {
+        return advCheckDetailMapper.selectAll(status);
     }
 }

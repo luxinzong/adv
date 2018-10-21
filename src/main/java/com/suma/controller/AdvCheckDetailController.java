@@ -1,7 +1,10 @@
 package com.suma.controller;
 
+import com.github.pagehelper.PageHelper;
 import com.suma.pojo.AdvCheckDetail;
+import com.suma.pojo.AdvInfoExample;
 import com.suma.service.AdvCheckService;
+import com.suma.service.AdvInfoService;
 import com.suma.utils.Result;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -24,11 +27,13 @@ public class AdvCheckDetailController extends BaseController{
     @Autowired
     AdvCheckService advCheckService;
 
+    @Autowired
+    AdvInfoService advInfoService;
 
     /**
      * 保存审核信息
      * @param advCheckDetail
-     * @return
+     * @return 返回添加结果 Result
      */
     @RequestMapping(value = "save", method = RequestMethod.POST)
     public Result save(AdvCheckDetail advCheckDetail) {
@@ -39,7 +44,7 @@ public class AdvCheckDetailController extends BaseController{
     /**
      * 删除单个信息
      * @param id
-     * @return
+     * @return 返回删除结果 Result
      */
     @RequestMapping(value = "delete", method = RequestMethod.POST)
     public Result delete(Long id) {
@@ -50,7 +55,7 @@ public class AdvCheckDetailController extends BaseController{
     /**
      * 批量删除审核信息
      * @param id
-     * @return
+     * @return 返回更新结果 Result
      */
     @RequestMapping(value = "deleteAll", method = RequestMethod.POST)
     public Result delete(Long[] id) {
@@ -61,7 +66,7 @@ public class AdvCheckDetailController extends BaseController{
     /**
      * 更新审核信息
      * @param advCheckDetail
-     * @return
+     * @return 返回更新结果 Result
      */
     @RequestMapping(value = "update", method = RequestMethod.POST)
     public Result update(AdvCheckDetail advCheckDetail) {
@@ -69,27 +74,41 @@ public class AdvCheckDetailController extends BaseController{
     }
 
 
-
-
     /**
      * 查询所有审核信息
-     * @return
+     * @return 返回查询结果 -> List<AdvCheckDetail>
      */
     @RequestMapping(value = "selectAll", method = RequestMethod.POST)
-    public Result selectAll() {
+    public Result selectAll(Integer status,Integer pageNum,Integer pageSize) {
+        PageHelper.startPage(pageNum, pageSize);
         return Result.success(advCheckService.selectAll());
     }
 
 
+    /**
+     * 查询所有待审核信息
+     * @param status
+     * @return 返回查询结果 -> List<AdvCheckDetail>
+     */
+    @RequestMapping(value = "selectAdvChecks", method = RequestMethod.POST)
+    public Result selectByStatus(Integer status,Integer pageNum,Integer pageSize) {
+        AdvInfoExample example = new AdvInfoExample();
+        example.createCriteria().andStatusEqualTo(status);
+        PageHelper.startPage(pageNum, pageSize);
+        return Result.success(advInfoService.selectByExample(example));
+    }
+
 
     /**
-     * 查询单个广告审核信息
-     * @param id
-     * @return
+     * 查询单个广告审核信息详情
+     * @param advInfoId
+     * @return 返回查询结果 -> List<AdvCheckDetail>
      */
     @RequestMapping(value = "select", method = RequestMethod.POST)
-    public Result select(Long id) {
-        return Result.success(advCheckService.select(id));
+    public Result select(Long advInfoId) {
+        advCheckService.select(advInfoId);
+        advInfoService.findById(advInfoId);
+        return Result.success(advInfoService.findById(advInfoId));
     }
 
 }

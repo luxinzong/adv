@@ -29,4 +29,9 @@ public class AdvInfoServiceImpl extends BaseServiceImpl<AdvInfo, AdvInfoExample,
     public AdvInfo selectAdvInfo(String name,String startDate,String endDate,Integer status,Long advTypeId) {
         return advInfoMapper.selectAdvInfo(name, startDate, endDate,status, advTypeId);
     }
+
+    @Override
+    public AdvInfo findById(Long id) {
+        return advInfoMapper.findById(id);
+    }
 }

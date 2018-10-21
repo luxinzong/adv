@@ -478,6 +478,13 @@
       </where>
       limit (#{pageSizi}-1) * #{pageSize},#{pageSize} * #{pageNum}
     </select>
+
+  <select id="findById">
+    select  <include refid="Base_Column_List"/>
+    from adv_info
+    where
+    ID = #{id}
+  </select>
 </mapper>
 
 

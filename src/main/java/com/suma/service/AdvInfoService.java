@@ -11,4 +11,6 @@ import java.util.List;
  */
 public interface AdvInfoService extends BaseService<AdvInfo, AdvInfoExample, Long> {
     AdvInfo selectAdvInfo(String name,String startDate,String endDate,Integer status,Long advTypeId);
+
+    AdvInfo findById(Long id);
 }

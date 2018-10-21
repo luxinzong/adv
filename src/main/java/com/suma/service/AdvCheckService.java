@@ -14,11 +14,13 @@ public interface AdvCheckService {
 
     int insert(AdvCheckDetail record);
 
-    AdvCheckDetail select(Long id);
+    AdvCheckDetail select(Long advInfoId);
 
     List<AdvCheckDetail> selectAll();
 
     int updateById(AdvCheckDetail record);
 
     int deleteAll(Long[] ids);
+
+    List<AdvCheckDetail> selectAll(Integer status);
 }
