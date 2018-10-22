@@ -55,6 +55,12 @@ public interface AdvRoleMenuMapper {
      */
     public List<Integer> selectMenuIdsByAdvRoleId(Integer roleId);
 
-
+    /**
+     * 通过角色id删除对应菜单id
+     *
+     * @param roleId
+     * @return
+     */
+    public int deleteMenuIdsByAdvRoleId(Integer roleId);
 
 }

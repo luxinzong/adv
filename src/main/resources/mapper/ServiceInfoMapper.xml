@@ -2,8 +2,9 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.suma.dao.ServiceInfoMapper">
   <resultMap id="BaseResultMap" type="com.suma.pojo.ServiceInfo">
-    <id column="SERVICE_ID" jdbcType="BIGINT" property="serviceId" />
-    <result column="TS_ID" jdbcType="BIGINT" property="tsId" />
+    <id column="ID" jdbcType="BIGINT" property="id" />
+    <result column="SERVICE_ID" jdbcType="BIGINT" property="serviceId" />
+    <result column="TID" jdbcType="BIGINT" property="tid" />
     <result column="SERVICE_NAME" jdbcType="VARCHAR" property="serviceName" />
     <result column="TYPE" jdbcType="INTEGER" property="type" />
     <result column="MARK" jdbcType="VARCHAR" property="mark" />
@@ -72,7 +73,7 @@
     </where>
   </sql>
   <sql id="Base_Column_List">
-    SERVICE_ID, TS_ID, SERVICE_NAME, TYPE, MARK, CREATED_USER, CREATED_TIME, LAST_EDIT_TIME, 
+    ID, SERVICE_ID, TID, SERVICE_NAME, TYPE, MARK, CREATED_USER, CREATED_TIME, LAST_EDIT_TIME, 
     LAST_EDIT_USER, REGION
   </sql>
   <select id="selectByExample" parameterType="com.suma.pojo.ServiceInfoExample" resultMap="BaseResultMap">
@@ -93,11 +94,11 @@
     select 
     <include refid="Base_Column_List" />
     from service_info
-    where SERVICE_ID = #{serviceId,jdbcType=BIGINT}
+    where ID = #{id,jdbcType=BIGINT}
   </select>
   <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
     delete from service_info
-    where SERVICE_ID = #{serviceId,jdbcType=BIGINT}
+    where ID = #{id,jdbcType=BIGINT}
   </delete>
   <delete id="deleteByExample" parameterType="com.suma.pojo.ServiceInfoExample">
     delete from service_info
@@ -106,23 +107,26 @@
     </if>
   </delete>
   <insert id="insert" parameterType="com.suma.pojo.ServiceInfo">
-    insert into service_info (SERVICE_ID, TS_ID, SERVICE_NAME, 
-      TYPE, MARK, CREATED_USER, 
-      CREATED_TIME, LAST_EDIT_TIME, LAST_EDIT_USER, 
-      REGION)
-    values (#{serviceId,jdbcType=BIGINT}, #{tsId,jdbcType=BIGINT}, #{serviceName,jdbcType=VARCHAR}, 
-      #{type,jdbcType=INTEGER}, #{mark,jdbcType=VARCHAR}, #{createdUser,jdbcType=VARCHAR}, 
-      #{createdTime,jdbcType=TIMESTAMP}, #{lastEditTime,jdbcType=TIMESTAMP}, #{lastEditUser,jdbcType=VARCHAR}, 
-      #{region,jdbcType=INTEGER})
+    insert into service_info (ID, SERVICE_ID, TID, 
+      SERVICE_NAME, TYPE, MARK, 
+      CREATED_USER, CREATED_TIME, LAST_EDIT_TIME, 
+      LAST_EDIT_USER, REGION)
+    values (#{id,jdbcType=BIGINT}, #{serviceId,jdbcType=BIGINT}, #{tid,jdbcType=BIGINT}, 
+      #{serviceName,jdbcType=VARCHAR}, #{type,jdbcType=INTEGER}, #{mark,jdbcType=VARCHAR}, 
+      #{createdUser,jdbcType=VARCHAR}, #{createdTime,jdbcType=TIMESTAMP}, #{lastEditTime,jdbcType=TIMESTAMP}, 
+      #{lastEditUser,jdbcType=VARCHAR}, #{region,jdbcType=INTEGER})
   </insert>
   <insert id="insertSelective" parameterType="com.suma.pojo.ServiceInfo">
     insert into service_info
     <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        ID,
+      </if>
       <if test="serviceId != null">
         SERVICE_ID,
       </if>
-      <if test="tsId != null">
-        TS_ID,
+      <if test="tid != null">
+        TID,
       </if>
       <if test="serviceName != null">
         SERVICE_NAME,
@@ -150,11 +154,14 @@
       </if>
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        #{id,jdbcType=BIGINT},
+      </if>
       <if test="serviceId != null">
         #{serviceId,jdbcType=BIGINT},
       </if>
-      <if test="tsId != null">
-        #{tsId,jdbcType=BIGINT},
+      <if test="tid != null">
+        #{tid,jdbcType=BIGINT},
       </if>
       <if test="serviceName != null">
         #{serviceName,jdbcType=VARCHAR},
@@ -191,11 +198,14 @@
   <update id="updateByExampleSelective" parameterType="map">
     update service_info
     <set>
+      <if test="record.id != null">
+        ID = #{record.id,jdbcType=BIGINT},
+      </if>
       <if test="record.serviceId != null">
         SERVICE_ID = #{record.serviceId,jdbcType=BIGINT},
       </if>
-      <if test="record.tsId != null">
-        TS_ID = #{record.tsId,jdbcType=BIGINT},
+      <if test="record.tid != null">
+        TID = #{record.tid,jdbcType=BIGINT},
       </if>
       <if test="record.serviceName != null">
         SERVICE_NAME = #{record.serviceName,jdbcType=VARCHAR},
@@ -228,8 +238,9 @@
   </update>
   <update id="updateByExample" parameterType="map">
     update service_info
-    set SERVICE_ID = #{record.serviceId,jdbcType=BIGINT},
-      TS_ID = #{record.tsId,jdbcType=BIGINT},
+    set ID = #{record.id,jdbcType=BIGINT},
+      SERVICE_ID = #{record.serviceId,jdbcType=BIGINT},
+      TID = #{record.tid,jdbcType=BIGINT},
       SERVICE_NAME = #{record.serviceName,jdbcType=VARCHAR},
       TYPE = #{record.type,jdbcType=INTEGER},
       MARK = #{record.mark,jdbcType=VARCHAR},
@@ -245,8 +256,11 @@
   <update id="updateByPrimaryKeySelective" parameterType="com.suma.pojo.ServiceInfo">
     update service_info
     <set>
-      <if test="tsId != null">
-        TS_ID = #{tsId,jdbcType=BIGINT},
+      <if test="serviceId != null">
+        SERVICE_ID = #{serviceId,jdbcType=BIGINT},
+      </if>
+      <if test="tid != null">
+        TID = #{tid,jdbcType=BIGINT},
       </if>
       <if test="serviceName != null">
         SERVICE_NAME = #{serviceName,jdbcType=VARCHAR},
@@ -273,11 +287,12 @@
         REGION = #{region,jdbcType=INTEGER},
       </if>
     </set>
-    where SERVICE_ID = #{serviceId,jdbcType=BIGINT}
+    where ID = #{id,jdbcType=BIGINT}
   </update>
   <update id="updateByPrimaryKey" parameterType="com.suma.pojo.ServiceInfo">
     update service_info
-    set TS_ID = #{tsId,jdbcType=BIGINT},
+    set SERVICE_ID = #{serviceId,jdbcType=BIGINT},
+      TID = #{tid,jdbcType=BIGINT},
       SERVICE_NAME = #{serviceName,jdbcType=VARCHAR},
       TYPE = #{type,jdbcType=INTEGER},
       MARK = #{mark,jdbcType=VARCHAR},
@@ -286,6 +301,6 @@
       LAST_EDIT_TIME = #{lastEditTime,jdbcType=TIMESTAMP},
       LAST_EDIT_USER = #{lastEditUser,jdbcType=VARCHAR},
       REGION = #{region,jdbcType=INTEGER}
-    where SERVICE_ID = #{serviceId,jdbcType=BIGINT}
+    where ID = #{id,jdbcType=BIGINT}
   </update>
 </mapper>

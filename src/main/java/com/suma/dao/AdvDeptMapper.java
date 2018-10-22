@@ -35,8 +35,6 @@ public interface AdvDeptMapper {
      */
     List<AdvDept> selectAdvDeptList(AdvDept advDept);
 
-    List<AdvDept> selectAdvDeptListByParentId(Integer parentId);
-
     /**
      * 查询部门所有数据
      *

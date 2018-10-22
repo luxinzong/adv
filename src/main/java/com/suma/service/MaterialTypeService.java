@@ -12,4 +12,6 @@ public interface MaterialTypeService extends BaseService<MaterialType, MaterialT
     Long[] getMeterialByTypeId(Long advTypeId);
 
     void deleteByMaterialId(Long id);
+
+    String getTypeIdsByMaterialId(Long id);
 }

@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.suma.dao.ServiceGroupMapper">
-  <resultMap id="BaseResultMap" type="com.suma.pojo.ServiceGroup">
-    <id column="SGID" jdbcType="BIGINT" property="sgid" />
-    <result column="GROUP_NAME" jdbcType="VARCHAR" property="groupName" />
-    <result column="COMMENT" jdbcType="VARCHAR" property="comment" />
-    <result column="REGION_ID" jdbcType="INTEGER" property="regionId" />
+<mapper namespace="com.suma.dao.RegionMapper">
+  <resultMap id="BaseResultMap" type="com.suma.pojo.Region">
+    <id column="REGION_ID" jdbcType="INTEGER" property="regionId" />
+    <result column="REGION_CODE" jdbcType="VARCHAR" property="regionCode" />
+    <result column="REGION_NAME" jdbcType="VARCHAR" property="regionName" />
+    <result column="MARK" jdbcType="VARCHAR" property="mark" />
   </resultMap>
   <sql id="Example_Where_Clause">
     <where>
@@ -66,15 +66,15 @@
     </where>
   </sql>
   <sql id="Base_Column_List">
-    SGID, GROUP_NAME, COMMENT, REGION_ID
+    REGION_ID, REGION_CODE, REGION_NAME, MARK
   </sql>
-  <select id="selectByExample" parameterType="com.suma.pojo.ServiceGroupExample" resultMap="BaseResultMap">
+  <select id="selectByExample" parameterType="com.suma.pojo.RegionExample" resultMap="BaseResultMap">
     select
     <if test="distinct">
       distinct
     </if>
     <include refid="Base_Column_List" />
-    from service_group
+    from region
     <if test="_parameter != null">
       <include refid="Example_Where_Clause" />
     </if>
@@ -82,82 +82,79 @@
       order by ${orderByClause}
     </if>
   </select>
-  <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
+  <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
     select 
     <include refid="Base_Column_List" />
-    from service_group
-    where SGID = #{sgid,jdbcType=BIGINT}
+    from region
+    where REGION_ID = #{regionId,jdbcType=INTEGER}
   </select>
-  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
-    delete from service_group
-    where SGID = #{sgid,jdbcType=BIGINT}
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+    delete from region
+    where REGION_ID = #{regionId,jdbcType=INTEGER}
   </delete>
-  <delete id="deleteByExample" parameterType="com.suma.pojo.ServiceGroupExample">
-    delete from service_group
+  <delete id="deleteByExample" parameterType="com.suma.pojo.RegionExample">
+    delete from region
     <if test="_parameter != null">
       <include refid="Example_Where_Clause" />
     </if>
   </delete>
-  <insert id="insert" parameterType="com.suma.pojo.ServiceGroup">
-    <selectKey resultType="java.lang.Long" order="AFTER" keyProperty="sgid">
-      SELECT LAST_INSERT_ID()
-    </selectKey>
-    insert into service_group (SGID, GROUP_NAME, COMMENT, 
-      REGION_ID)
-    values (#{sgid,jdbcType=BIGINT}, #{groupName,jdbcType=VARCHAR}, #{comment,jdbcType=VARCHAR}, 
-      #{regionId,jdbcType=INTEGER})
+  <insert id="insert" parameterType="com.suma.pojo.Region">
+    insert into region (REGION_ID, REGION_CODE, REGION_NAME, 
+      MARK)
+    values (#{regionId,jdbcType=INTEGER}, #{regionCode,jdbcType=VARCHAR}, #{regionName,jdbcType=VARCHAR}, 
+      #{mark,jdbcType=VARCHAR})
   </insert>
-  <insert id="insertSelective" parameterType="com.suma.pojo.ServiceGroup">
-    insert into service_group
+  <insert id="insertSelective" parameterType="com.suma.pojo.Region">
+    insert into region
     <trim prefix="(" suffix=")" suffixOverrides=",">
-      <if test="sgid != null">
-        SGID,
-      </if>
-      <if test="groupName != null">
-        GROUP_NAME,
-      </if>
-      <if test="comment != null">
-        COMMENT,
-      </if>
       <if test="regionId != null">
         REGION_ID,
       </if>
+      <if test="regionCode != null">
+        REGION_CODE,
+      </if>
+      <if test="regionName != null">
+        REGION_NAME,
+      </if>
+      <if test="mark != null">
+        MARK,
+      </if>
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides=",">
-      <if test="sgid != null">
-        #{sgid,jdbcType=BIGINT},
-      </if>
-      <if test="groupName != null">
-        #{groupName,jdbcType=VARCHAR},
-      </if>
-      <if test="comment != null">
-        #{comment,jdbcType=VARCHAR},
-      </if>
       <if test="regionId != null">
         #{regionId,jdbcType=INTEGER},
       </if>
+      <if test="regionCode != null">
+        #{regionCode,jdbcType=VARCHAR},
+      </if>
+      <if test="regionName != null">
+        #{regionName,jdbcType=VARCHAR},
+      </if>
+      <if test="mark != null">
+        #{mark,jdbcType=VARCHAR},
+      </if>
     </trim>
   </insert>
-  <select id="countByExample" parameterType="com.suma.pojo.ServiceGroupExample" resultType="java.lang.Long">
-    select count(*) from service_group
+  <select id="countByExample" parameterType="com.suma.pojo.RegionExample" resultType="java.lang.Long">
+    select count(*) from region
     <if test="_parameter != null">
       <include refid="Example_Where_Clause" />
     </if>
   </select>
-    <update id="updateByExampleSelective" parameterType="map">
-    update service_group
+  <update id="updateByExampleSelective" parameterType="map">
+    update region
     <set>
-      <if test="record.sgid != null">
-        SGID = #{record.sgid,jdbcType=BIGINT},
-      </if>
-      <if test="record.groupName != null">
-        GROUP_NAME = #{record.groupName,jdbcType=VARCHAR},
-      </if>
-      <if test="record.comment != null">
-        COMMENT = #{record.comment,jdbcType=VARCHAR},
-      </if>
       <if test="record.regionId != null">
         REGION_ID = #{record.regionId,jdbcType=INTEGER},
+      </if>
+      <if test="record.regionCode != null">
+        REGION_CODE = #{record.regionCode,jdbcType=VARCHAR},
+      </if>
+      <if test="record.regionName != null">
+        REGION_NAME = #{record.regionName,jdbcType=VARCHAR},
+      </if>
+      <if test="record.mark != null">
+        MARK = #{record.mark,jdbcType=VARCHAR},
       </if>
     </set>
     <if test="_parameter != null">
@@ -165,35 +162,35 @@
     </if>
   </update>
   <update id="updateByExample" parameterType="map">
-    update service_group
-    set SGID = #{record.sgid,jdbcType=BIGINT},
-      GROUP_NAME = #{record.groupName,jdbcType=VARCHAR},
-      COMMENT = #{record.comment,jdbcType=VARCHAR},
-      REGION_ID = #{record.regionId,jdbcType=INTEGER}
+    update region
+    set REGION_ID = #{record.regionId,jdbcType=INTEGER},
+      REGION_CODE = #{record.regionCode,jdbcType=VARCHAR},
+      REGION_NAME = #{record.regionName,jdbcType=VARCHAR},
+      MARK = #{record.mark,jdbcType=VARCHAR}
     <if test="_parameter != null">
       <include refid="Update_By_Example_Where_Clause" />
     </if>
   </update>
-  <update id="updateByPrimaryKeySelective" parameterType="com.suma.pojo.ServiceGroup">
-    update service_group
+  <update id="updateByPrimaryKeySelective" parameterType="com.suma.pojo.Region">
+    update region
     <set>
-      <if test="groupName != null">
-        GROUP_NAME = #{groupName,jdbcType=VARCHAR},
+      <if test="regionCode != null">
+        REGION_CODE = #{regionCode,jdbcType=VARCHAR},
       </if>
-      <if test="comment != null">
-        COMMENT = #{comment,jdbcType=VARCHAR},
+      <if test="regionName != null">
+        REGION_NAME = #{regionName,jdbcType=VARCHAR},
       </if>
-      <if test="regionId != null">
-        REGION_ID = #{regionId,jdbcType=INTEGER},
+      <if test="mark != null">
+        MARK = #{mark,jdbcType=VARCHAR},
       </if>
     </set>
-    where SGID = #{sgid,jdbcType=BIGINT}
+    where REGION_ID = #{regionId,jdbcType=INTEGER}
   </update>
-  <update id="updateByPrimaryKey" parameterType="com.suma.pojo.ServiceGroup">
-    update service_group
-    set GROUP_NAME = #{groupName,jdbcType=VARCHAR},
-      COMMENT = #{comment,jdbcType=VARCHAR},
-      REGION_ID = #{regionId,jdbcType=INTEGER}
-    where SGID = #{sgid,jdbcType=BIGINT}
+  <update id="updateByPrimaryKey" parameterType="com.suma.pojo.Region">
+    update region
+    set REGION_CODE = #{regionCode,jdbcType=VARCHAR},
+      REGION_NAME = #{regionName,jdbcType=VARCHAR},
+      MARK = #{mark,jdbcType=VARCHAR}
+    where REGION_ID = #{regionId,jdbcType=INTEGER}
   </update>
 </mapper>

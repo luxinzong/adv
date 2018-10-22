@@ -11,7 +11,6 @@ import com.suma.pojo.AdvRoleMenu;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import com.suma.service.iAdvRoleService;
-import org.springframework.util.CollectionUtils;
 
 import java.util.List;
 
@@ -47,9 +46,7 @@ public class AdvRoleSerivceImpl implements iAdvRoleService {
     public PageInfo<AdvRole> selectRoleList(String roleName, String roleKey, String status, String startTime, String endTime) {
         List<AdvRole> roleList = advRoleMapper.selectRoleList(roleName,roleKey,status,startTime,endTime);
         //将查询出来的roleList添加对应的menuId
-        if(!CollectionUtils.isEmpty(roleList)){
-            addMenuIdForAdvRole(roleList);
-        }
+        addMenuIdForAdvRole(roleList);
         PageInfo<AdvRole> pageInfo = new PageInfo<>(roleList);
 
         return pageInfo;
@@ -90,12 +87,12 @@ public class AdvRoleSerivceImpl implements iAdvRoleService {
             advRole.setRoleSort(resultRoleSort);
         }
 
-        int insertRows = advRoleMapper.insertSelective(advRole);
+        int updateRows = advRoleMapper.insertSelective(advRole);
         //提交数据后获取对应存入对应角色id，以便增加对应菜单id
         AdvRole tempAdvRole = advRoleMapper.selectByAdvRoleName(roleName);
         advRole.setRoleId(tempAdvRole.getRoleId());
         int insertAdcRoleMenuRows = insertAdvRoleMenu(advRole);
-        return insertRows + insertAdcRoleMenuRows;
+        return updateRows + insertAdcRoleMenuRows;
     }
 
     /**
@@ -104,8 +101,9 @@ public class AdvRoleSerivceImpl implements iAdvRoleService {
      * @return AdvRole 角色对象
      */
     private int insertAdvRoleMenu(AdvRole advRole){
+        //如果没有为role添加对应菜单信息，添加也为成功
         int rows = 0;
-        //新增角色和菜单管理
+        //新增用户和角色管理
         List<AdvRoleMenu> advRoleMenuList = Lists.newArrayList();
         advRole.getMenuIds().forEach(advMenuId -> {
             AdvRoleMenu advRoleMenu = new AdvRoleMenu();
@@ -139,10 +137,7 @@ public class AdvRoleSerivceImpl implements iAdvRoleService {
         //对应菜单进行修改,先删除后添加
         int deleteRows = advRoleMenuMapper.deleteAdvRoleMenuByAdvRoleId(advRole.getRoleId());
         //说明删除了数据,则需要进行添加，否则不需要添加
-        int insertRows = 0;
-        if(deleteRows > 0){
-            insertRows = insertAdvRoleMenu(advRole);
-        }
+        int insertRows = insertAdvRoleMenu(advRole);
         //返回影响表的行数
         return updateRows + insertRows + deleteRows;
     }
@@ -163,8 +158,11 @@ public class AdvRoleSerivceImpl implements iAdvRoleService {
         //删除对应role信息
         int rows = advRoleMapper.deleteByPrimaryKey(advRoleId);
         int deleteMenuIdsRows = deleteMenuIdsBYAdvRoleId(rows);
+        if(deleteMenuIdsRows == 0){//如果没有对应的menuIds直接返回删除role的结果
+            return rows;
+        }
 
-        return rows + deleteMenuIdsRows;
+        return deleteMenuIdsRows;
     }
 
     /**

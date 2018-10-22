@@ -47,4 +47,19 @@ public class MaterialTypeServiceImpl extends BaseServiceImpl<MaterialType, Mater
         example.createCriteria().andMaterialIdEqualTo(id);
         materialTypeMapper.deleteByExample(example);
     }
+
+    @Override
+    public String getTypeIdsByMaterialId(Long id) {
+        MaterialTypeExample example = new MaterialTypeExample();
+        example.createCriteria().andMaterialIdEqualTo(id);
+        List<MaterialType> materialTypes = materialTypeMapper.selectByExample(example);
+        StringBuffer buffer = new StringBuffer();
+        for (MaterialType materialType : materialTypes) {
+            buffer.append(materialType.getAdvTypeId()).append(",");
+        }
+        if (buffer.length() != 0) {
+            buffer.deleteCharAt(buffer.length() - 1);
+        }
+        return buffer.toString();
+    }
 }

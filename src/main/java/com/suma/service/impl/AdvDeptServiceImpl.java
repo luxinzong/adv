@@ -4,7 +4,6 @@ import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Multimap;
-import com.suma.constants.CommonConstants;
 import com.suma.constants.ExceptionConstants;
 import com.suma.dao.AdvDeptMapper;
 import com.suma.dto.AdvDeptDto;
@@ -244,19 +243,6 @@ public class AdvDeptServiceImpl implements iAdvDeptService {
         AdvDept selectAdvDept = advDeptMapper.selectByPrimaryKey(deptId);
         if(selectAdvDept == null){
             throw new DeptException(ExceptionConstants.DEPT_EXCEPTION_DEPT_ID_NOT_EXIST);
-        }
-        //如果将部门状态修改为无效，要判断是否该部门存在子部门
-        String updateStatus = advDept.getStatus();
-        if(updateStatus.equals(CommonConstants.UNUSUAL_STATUS)){
-            List<AdvDept> advDeptList = advDeptMapper.selectAdvDeptListByParentId(advDept.getDeptId());
-            if(advDeptList.size() > 0){ //说明存在子部门
-                //判断子部门状态是否存在有效
-                advDeptList.forEach(childDept ->{
-                    if(childDept.getStatus().equals(CommonConstants.NORMAL_STATUS)){
-                        throw new DeptException(ExceptionConstants.DEPT_EXCEPTION_NEXT_DEPT_IS_VALID);
-                    }
-                });
-            }
         }
 
         //修改对应祖先数据

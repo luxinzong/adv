@@ -72,8 +72,8 @@ public class AdvMaterialController extends BaseController {
     }
 
     @RequestMapping("update")
-    public Result updateMaterial(String typeIds, AdvMaterialVO materialVO) {
-        if (typeIds == null || materialVO.getFileName() == null || materialVO.getId() == null) {
+    public Result updateMaterial(AdvMaterialVO materialVO) {
+        if (materialVO.getTypeIds() == null || materialVO.getFileName() == null || materialVO.getId() == null) {
             throw new MaterialException(ExceptionConstants.BASE_EXCEPTION_MISSING_PARAMETERS);
         }
 
@@ -82,7 +82,7 @@ public class AdvMaterialController extends BaseController {
         if (materialVO.getHref() != null)
             materialPojo.setHref(materialVO.getHref());
 
-        advMaterialService.update(materialPojo, typeIds);
+        advMaterialService.update(materialPojo, materialVO.getTypeIds());
         return Result.success();
     }
 
@@ -96,5 +96,17 @@ public class AdvMaterialController extends BaseController {
         }
         return Result.success();
     }
+
+    @RequestMapping("getDetail")
+    public Result getDetail(Long id) {
+        AdvMaterial material = advMaterialService.findByPK(id);
+        AdvMaterialVO vo = new AdvMaterialVO();
+        vo.setFileName(material.getFileName());
+        vo.setHref(material.getHref());
+        String typeIds = materialTypeService.getTypeIdsByMaterialId(id);
+        vo.setTypeIds(typeIds);
+        return Result.success(vo);
+    }
+
 
 }

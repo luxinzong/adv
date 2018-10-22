@@ -31,6 +31,7 @@ public class AdvMenu extends BasePojo{
     //菜单URL
     private String url;
     @NotBlank
+    @Length(min = 1,max = 1)
     //菜单类型:0目录,1菜单,2按钮
     private String menuType;
     //菜单状态:0显示,1禁用

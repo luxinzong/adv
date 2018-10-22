@@ -1,14 +1,25 @@
 package com.suma.pojo;
 
+import com.suma.utils.Insert;
+import com.suma.utils.Update;
+
+import javax.validation.constraints.NotNull;
 import java.util.Date;
 
 public class ServiceInfo {
+    @NotNull(groups = Update.class)
+    private Long id;
+
+    @NotNull(groups = {Insert.class, Update.class})
     private Long serviceId;
 
-    private Long tsId;
+    @NotNull(groups = Insert.class)
+    private Long tid;
 
+    @NotNull(groups = {Insert.class, Update.class})
     private String serviceName;
 
+    @NotNull(groups = Insert.class)
     private Integer type;
 
     private String mark;
@@ -23,6 +34,14 @@ public class ServiceInfo {
 
     private Integer region;
 
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
     public Long getServiceId() {
         return serviceId;
     }
@@ -31,12 +50,12 @@ public class ServiceInfo {
         this.serviceId = serviceId;
     }
 
-    public Long getTsId() {
-        return tsId;
+    public Long getTid() {
+        return tid;
     }
 
-    public void setTsId(Long tsId) {
-        this.tsId = tsId;
+    public void setTid(Long tid) {
+        this.tid = tid;
     }
 
     public String getServiceName() {

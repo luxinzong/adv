@@ -27,33 +27,6 @@
     from adv_user
     where user_id = #{userId,jdbcType=INTEGER}
   </select>
-  <select id="selectAdvUserByUserName" resultMap="BaseResultMap" parameterType="java.lang.String">
-    select
-    <include refid="Base_Column_List"/>
-    from adv_user
-    WHERE user_name = #{userName};
-  </select>
-  <select id="selectUserList" resultMap="BaseResultMap">
-    select <include refid="Base_Column_List"/>
-    from adv_user
-    <where>
-      <if test="userName != null and userName !=''">
-        and user_name like concat('%',${userName},'%')
-      </if>
-      <if test="phoneNumber != null and phoneNumber != ''">
-        and phone_number = #{phoneNumber}
-      </if>
-      <if test="status != null and status != ''">
-        and status = #{status}
-      </if>
-      <if test="startTime != null and endTime != ''">
-        and create_time &lt;= #{startTime}
-      </if>
-      <if test="endTime != null and endTime != null">
-        and create_time &gt;= #{endTime}
-      </if>
-    </where>
-  </select>
   <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
     delete from adv_user
     where user_id = #{userId,jdbcType=INTEGER}
@@ -103,7 +76,9 @@
       <if test="createBy != null" >
         create_by,
       </if>
+      <if test="createTime != null" >
         create_time,
+      </if>
       <if test="updateBy != null" >
         update_by,
       </if>
@@ -145,7 +120,9 @@
       <if test="createBy != null" >
         #{createBy,jdbcType=VARCHAR},
       </if>
-        sysdate(),
+      <if test="createTime != null" >
+        #{createTime,jdbcType=TIMESTAMP},
+      </if>
       <if test="updateBy != null" >
         #{updateBy,jdbcType=VARCHAR},
       </if>
@@ -193,7 +170,9 @@
       <if test="updateBy != null" >
         update_by = #{updateBy,jdbcType=VARCHAR},
       </if>
-        update_time = sysdate(),
+      <if test="updateTime != null" >
+        update_time = #{updateTime,jdbcType=TIMESTAMP},
+      </if>
       <if test="remark != null" >
         remark = #{remark,jdbcType=VARCHAR},
       </if>

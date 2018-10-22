@@ -47,27 +47,28 @@ public class DefaultExceptionHandler {
         return Result.error(e.getMessage());
     }
     @ExceptionHandler(AdvInfoException.class)
-    public Result advInfoException (AdvInfoException e){
+    public Result advInfoException(AdvInfoException e) {
         log.error(e.getMessage(), e);
         return Result.error(e.getMessage());
     }
 
     @ExceptionHandler(InfoMaterialException.class)
-    public Result infoMaterialException (InfoMaterialException e){
+    public Result infoMaterialException(InfoMaterialException e) {
         log.error(e.getMessage(), e);
         return Result.error(e.getMessage());
     }
 
 
-        /**'
-         * 通过form表单传递参数异常
-         *
-         * @param bindException
-         * @return
-         */
-        @ExceptionHandler(BindException.class)
-        public Result handleBindException (BindException bindException){
-                log.error(bindException.getMessage(), bindException);
+    /**
+     * '
+     * 通过form表单传递参数异常
+     *
+     * @param bindException
+     * @return
+     */
+    @ExceptionHandler(BindException.class)
+    public Result handleBindException(BindException bindException) {
+        log.error(bindException.getMessage(), bindException);
         List<FieldError> fieldErrors = bindException.getFieldErrors();
         StringBuilder stringBuilder = new StringBuilder();
         fieldErrors.forEach(fieldError -> {
@@ -77,6 +78,7 @@ public class DefaultExceptionHandler {
         return Result.error(stringBuilder.toString());
     }
 
+
     /**
      * 通过json传递，出现参数错误异常
      *
@@ -84,7 +86,7 @@ public class DefaultExceptionHandler {
      * @return
      */
     @ExceptionHandler(MethodArgumentNotValidException.class)
-    public Result handleMethodArgumentNotValidException (MethodArgumentNotValidException exception){
+    public Result handleMethodArgumentNotValidException(MethodArgumentNotValidException exception) {
         log.error(exception.getMessage(), exception);
         List<FieldError> fieldErrors = exception.getBindingResult().getFieldErrors();
         StringBuilder stringBuilder = new StringBuilder();
@@ -94,8 +96,9 @@ public class DefaultExceptionHandler {
         });
         return Result.error(stringBuilder.toString());
     }
+
     @ExceptionHandler(BaseException.class)
-    public Result baseException (BaseException e){
+    public Result baseException(BaseException e) {
         log.error(e.getMessage());
         return Result.error(e.getMessage());
     }

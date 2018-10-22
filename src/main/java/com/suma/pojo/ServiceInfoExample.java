@@ -105,6 +105,66 @@ public class ServiceInfoExample {
             criteria.add(new Criterion(condition, value1, value2));
         }
 
+        public Criteria andIdIsNull() {
+            addCriterion("ID is null");
+            return (Criteria) this;
+        }
+
+        public Criteria andIdIsNotNull() {
+            addCriterion("ID is not null");
+            return (Criteria) this;
+        }
+
+        public Criteria andIdEqualTo(Long value) {
+            addCriterion("ID =", value, "id");
+            return (Criteria) this;
+        }
+
+        public Criteria andIdNotEqualTo(Long value) {
+            addCriterion("ID <>", value, "id");
+            return (Criteria) this;
+        }
+
+        public Criteria andIdGreaterThan(Long value) {
+            addCriterion("ID >", value, "id");
+            return (Criteria) this;
+        }
+
+        public Criteria andIdGreaterThanOrEqualTo(Long value) {
+            addCriterion("ID >=", value, "id");
+            return (Criteria) this;
+        }
+
+        public Criteria andIdLessThan(Long value) {
+            addCriterion("ID <", value, "id");
+            return (Criteria) this;
+        }
+
+        public Criteria andIdLessThanOrEqualTo(Long value) {
+            addCriterion("ID <=", value, "id");
+            return (Criteria) this;
+        }
+
+        public Criteria andIdIn(List<Long> values) {
+            addCriterion("ID in", values, "id");
+            return (Criteria) this;
+        }
+
+        public Criteria andIdNotIn(List<Long> values) {
+            addCriterion("ID not in", values, "id");
+            return (Criteria) this;
+        }
+
+        public Criteria andIdBetween(Long value1, Long value2) {
+            addCriterion("ID between", value1, value2, "id");
+            return (Criteria) this;
+        }
+
+        public Criteria andIdNotBetween(Long value1, Long value2) {
+            addCriterion("ID not between", value1, value2, "id");
+            return (Criteria) this;
+        }
+
         public Criteria andServiceIdIsNull() {
             addCriterion("SERVICE_ID is null");
             return (Criteria) this;
@@ -165,63 +225,63 @@ public class ServiceInfoExample {
             return (Criteria) this;
         }
 
-        public Criteria andTsIdIsNull() {
-            addCriterion("TS_ID is null");
+        public Criteria andTidIsNull() {
+            addCriterion("TID is null");
             return (Criteria) this;
         }
 
-        public Criteria andTsIdIsNotNull() {
-            addCriterion("TS_ID is not null");
+        public Criteria andTidIsNotNull() {
+            addCriterion("TID is not null");
             return (Criteria) this;
         }
 
-        public Criteria andTsIdEqualTo(Long value) {
-            addCriterion("TS_ID =", value, "tsId");
+        public Criteria andTidEqualTo(Long value) {
+            addCriterion("TID =", value, "tid");
             return (Criteria) this;
         }
 
-        public Criteria andTsIdNotEqualTo(Long value) {
-            addCriterion("TS_ID <>", value, "tsId");
+        public Criteria andTidNotEqualTo(Long value) {
+            addCriterion("TID <>", value, "tid");
             return (Criteria) this;
         }
 
-        public Criteria andTsIdGreaterThan(Long value) {
-            addCriterion("TS_ID >", value, "tsId");
+        public Criteria andTidGreaterThan(Long value) {
+            addCriterion("TID >", value, "tid");
             return (Criteria) this;
         }
 
-        public Criteria andTsIdGreaterThanOrEqualTo(Long value) {
-            addCriterion("TS_ID >=", value, "tsId");
+        public Criteria andTidGreaterThanOrEqualTo(Long value) {
+            addCriterion("TID >=", value, "tid");
             return (Criteria) this;
         }
 
-        public Criteria andTsIdLessThan(Long value) {
-            addCriterion("TS_ID <", value, "tsId");
+        public Criteria andTidLessThan(Long value) {
+            addCriterion("TID <", value, "tid");
             return (Criteria) this;
         }
 
-        public Criteria andTsIdLessThanOrEqualTo(Long value) {
-            addCriterion("TS_ID <=", value, "tsId");
+        public Criteria andTidLessThanOrEqualTo(Long value) {
+            addCriterion("TID <=", value, "tid");
             return (Criteria) this;
         }
 
-        public Criteria andTsIdIn(List<Long> values) {
-            addCriterion("TS_ID in", values, "tsId");
+        public Criteria andTidIn(List<Long> values) {
+            addCriterion("TID in", values, "tid");
             return (Criteria) this;
         }
 
-        public Criteria andTsIdNotIn(List<Long> values) {
-            addCriterion("TS_ID not in", values, "tsId");
+        public Criteria andTidNotIn(List<Long> values) {
+            addCriterion("TID not in", values, "tid");
             return (Criteria) this;
         }
 
-        public Criteria andTsIdBetween(Long value1, Long value2) {
-            addCriterion("TS_ID between", value1, value2, "tsId");
+        public Criteria andTidBetween(Long value1, Long value2) {
+            addCriterion("TID between", value1, value2, "tid");
             return (Criteria) this;
         }
 
-        public Criteria andTsIdNotBetween(Long value1, Long value2) {
-            addCriterion("TS_ID not between", value1, value2, "tsId");
+        public Criteria andTidNotBetween(Long value1, Long value2) {
+            addCriterion("TID not between", value1, value2, "tid");
             return (Criteria) this;
         }
 

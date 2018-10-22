@@ -10,7 +10,6 @@ import com.suma.vo.AdvDeptVO;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.util.CollectionUtils;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
@@ -137,9 +136,6 @@ public class AdvDeptController extends BaseController{
         advDept.setStatus(status);
 
         List<AdvDept> advDeptList = advDeptService.selectAdvDeptList(advDept);
-        if(CollectionUtils.isEmpty(advDeptList)){
-            return Result.selectIsNullError();
-        }
         return Result.success(advDeptList);
     }
 

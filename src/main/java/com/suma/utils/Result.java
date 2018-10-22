@@ -20,26 +20,14 @@ public class Result {
     private Object resultData;
 
 
-
-
     public static Result buildResult(int resultCode,String resultDesc,Object resultData){
         Result result = new Result();
         result.setResultCode(resultCode);
         result.setResultDesc(resultDesc);
         result.setResultData(resultData);
+
         return result;
     }
-
-  /*  public Result() {
-    }
-
-    public Result(int total,int resultCode,String resultDesc,Object resultData) {
-        this.total = total;
-        this.resultCode = resultCode;
-        this.resultData = resultData;
-        this.resultDesc = resultDesc;
-
-    }*/
 
     /**
      * 返回成功信息
@@ -63,8 +51,6 @@ public class Result {
     public static Result error(){
         return buildResult(CommonConstants.FAIL,"操作失败",null);
     }
-
-    public static Result selectIsNullError(){return buildResult(CommonConstants.FAIL,"查询数据为空",null);}
 
     public static Result sysytemError(){
         return buildResult(CommonConstants.SYSTEM_ERROR,"系统错误",null);

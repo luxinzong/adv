@@ -1,13 +1,21 @@
 package com.suma.pojo;
 
+import com.suma.utils.Insert;
+import com.suma.utils.Update;
+
+import javax.validation.constraints.NotNull;
 import java.util.Date;
 
 public class TsInfo {
-    private Long tsId;
+    @NotNull(groups = {Update.class})
+    private Long id;
 
+    @NotNull(groups = {Insert.class, Update.class})
+    private Long tsId;
+    @NotNull(groups = {Insert.class, Update.class})
     private String tsName;
 
-    private Long networkId;
+    private Long nid;
 
     private String createdUser;
 
@@ -18,6 +26,14 @@ public class TsInfo {
     private Date lastEditTime;
 
     private Integer region;
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
 
     public Long getTsId() {
         return tsId;
@@ -35,12 +51,12 @@ public class TsInfo {
         this.tsName = tsName == null ? null : tsName.trim();
     }
 
-    public Long getNetworkId() {
-        return networkId;
+    public Long getNid() {
+        return nid;
     }
 
-    public void setNetworkId(Long networkId) {
-        this.networkId = networkId;
+    public void setNid(Long nid) {
+        this.nid = nid;
     }
 
     public String getCreatedUser() {

@@ -41,9 +41,6 @@
       </if>
     </where>
   </select>
-  <select id="selectAdvDeptListByParentId" parameterType="java.lang.Integer" resultMap="BaseResultMap">
-    select <include refid="Base_Column_List"/> from adv_dept where parent_id = #{parentId};
-  </select>
   <select id="getAdvDeptCount" resultType="java.lang.Integer">
     select COUNT(*) FROM adv_dept;
   </select>

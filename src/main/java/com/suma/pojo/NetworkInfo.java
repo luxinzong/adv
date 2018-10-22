@@ -2,7 +2,10 @@ package com.suma.pojo;
 
 import java.util.Date;
 
+
 public class NetworkInfo {
+    private Long id;
+
     private Long networkId;
 
     private Long orNetworkId;
@@ -18,6 +21,14 @@ public class NetworkInfo {
     private String lastEditUser;
 
     private Integer region;
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
 
     public Long getNetworkId() {
         return networkId;

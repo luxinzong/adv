@@ -28,4 +28,6 @@ public class AdvMaterialVO {
     private Integer region;
 
     private Integer materialType;
+
+    private String typeIds;
 }

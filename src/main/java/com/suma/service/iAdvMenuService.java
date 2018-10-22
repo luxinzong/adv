@@ -29,9 +29,6 @@ public interface iAdvMenuService {
 
     public int selectAdvMenuCountByParentId(Integer parentId);
 
-    public boolean checkExistRoleInMenu(Integer menuId);
-
-
 
 
 

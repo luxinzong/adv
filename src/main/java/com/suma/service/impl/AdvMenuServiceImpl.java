@@ -88,19 +88,6 @@ public class AdvMenuServiceImpl implements iAdvMenuService {
         if(selectAdvMenu == null){
             throw new MenuException(ExceptionConstants.MENU_EXCEPTION_DEPT_ID_NOT_EXIST);
         }
-        //如果将菜单状态修改为无效，要判是否该菜单存在子菜单
-        String updateStatus = advMenu.getStatus();
-        if(updateStatus.equals(CommonConstants.UNUSUAL_STATUS)){
-            List<AdvMenu> menuList = advMenuMapper.selectAdvMenuByParentId(advMenu.getMenuId());
-            if(menuList.size() > 0){ //如果存在子部门
-                //判断子部门状态是否存在有效
-                menuList.forEach(childMenu ->{
-                    if(childMenu.getStatus().equals(CommonConstants.NORMAL_STATUS)){
-                        throw new MenuException(ExceptionConstants.MENU_EXCEPTION_NEXT_DEPT_IS_VALID);
-                    }
-                });
-            }
-        }
         //修改对应祖先对应数据
         AdvMenu parentAdvMenu = advMenuMapper.selectByPrimaryKey(advMenu.getParentId());
         if(parentAdvMenu == null){
@@ -169,6 +156,7 @@ public class AdvMenuServiceImpl implements iAdvMenuService {
         if(CollectionUtils.isEmpty(advMenuList)){
             return null;
         }
+
         List<AdvMenuDto> advMenuDtoList = Lists.newArrayList();
         Map<Integer,String> parentNameMap = Maps.newConcurrentMap();
         advMenuList.forEach(advMenu -> {
@@ -301,11 +289,4 @@ public class AdvMenuServiceImpl implements iAdvMenuService {
         return advMenuMapper.deleteByPrimaryKey(menuId);
     }
 
-    @Override
-    public boolean checkExistRoleInMenu(Integer menuId) {
-        //查询当前菜单id是否有角色绑定
-        int isBoundCount = advMenuMapper.checkExistRoleInMenu(menuId);
-
-        return isBoundCount>0?true:false;
-    }
 }

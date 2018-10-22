@@ -7,15 +7,21 @@ import com.suma.dao.NetworkInfoMapper;
 import com.suma.dao.TsInfoMapper;
 import com.suma.exception.BaseException;
 import com.suma.pojo.*;
+import com.suma.service.NetworkService;
 import com.suma.service.ServiceInfoService;
+import com.suma.service.TsService;
+import com.suma.utils.Insert;
 import com.suma.utils.Result;
-import com.suma.vo.AdvServiceVO;
+import com.suma.vo.ServiceQueryVO;
 import org.checkerframework.checker.units.qual.A;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
 import java.util.ArrayList;
 import java.util.List;
@@ -33,37 +39,43 @@ public class AdvServiceController extends BaseController {
     @Autowired
     private ServiceInfoService serviceInfoService;
     @Autowired
-    private TsInfoMapper tsInfoMapper;
+    private TsService tsService;
+    @Autowired
+    private NetworkService networkService;
 
     @RequestMapping("query")
-    public Result queryService(AdvServiceVO serviceVO, Integer pageNum, Integer pageSize) {
+    public Result queryService(ServiceQueryVO serviceVO, Integer pageNum, Integer pageSize) {
         if (pageNum == null || pageSize == null) {
             throw new BaseException(ExceptionConstants.BASE_EXCEPTION_MISSING_PARAMETERS);
         }
-        List<Long> tsIds = new ArrayList<>();
+        List<Long> tIds = new ArrayList<>();
 
         TsInfoExample tsExample = new TsInfoExample();
         TsInfoExample.Criteria tsCriteria = tsExample.createCriteria();
         if (serviceVO.getNetworkId() != null) {
-            tsCriteria = tsCriteria.andNetworkIdEqualTo(serviceVO.getNetworkId());
+            Long nId = networkService.findPKByNetworkId(serviceVO.getNetworkId());
+            if (nId != null)
+                tsCriteria = tsCriteria.andNidEqualTo(nId);
+            else
+                return Result.success(new PageInfo<ServiceInfo>(null));
         }
         if (serviceVO.getTsId() != null) {
             tsCriteria.andTsIdEqualTo(serviceVO.getTsId());
         }
 
-        List<TsInfo> tsInfos = tsInfoMapper.selectByExample(tsExample);
+        List<TsInfo> tsInfos = tsService.selectByExample(tsExample);
         for (TsInfo tsInfo : tsInfos) {
-            tsIds.add(tsInfo.getTsId());
+            tIds.add(tsInfo.getId());
         }
 
-        if (tsIds.size() == 0 && (serviceVO.getNetworkId() != null || serviceVO.getTsId() != null)) {
+        if (tIds.size() == 0 && (serviceVO.getNetworkId() != null || serviceVO.getTsId() != null)) {
             return Result.success(new PageInfo<ServiceInfo>(null));
         }
 
         ServiceInfoExample serviceExample = new ServiceInfoExample();
         ServiceInfoExample.Criteria criteria = serviceExample.createCriteria();
-        if (tsIds.size() > 0) {
-            criteria = criteria.andTsIdIn(tsIds);
+        if (tIds.size() > 0) {
+            criteria = criteria.andTidIn(tIds);
         }
         if (serviceVO.getServiceId() != null) {
             criteria.andServiceIdEqualTo(serviceVO.getServiceId());
@@ -71,9 +83,65 @@ public class AdvServiceController extends BaseController {
         if (serviceVO.getServiceName() != null) {
             criteria.andServiceNameEqualTo(serviceVO.getServiceName());
         }
+
         PageHelper.startPage(pageNum, pageSize);
         List<ServiceInfo> serviceInfos = serviceInfoService.selectByExample(serviceExample);
+        PageInfo<ServiceInfo> oldPageInfo = new PageInfo<>(serviceInfos);
 
-        return Result.success(new PageInfo<ServiceInfo>(serviceInfos));
+        List<ServiceQueryVO> serviceInfoVOs = new ArrayList<>();
+        for (ServiceInfo serviceInfo : serviceInfos) {
+            ServiceQueryVO vo = new ServiceQueryVO();
+            BeanUtils.copyProperties(serviceInfo, vo);
+            TsInfo tsInfo = tsService.findByPK(serviceInfo.getTid());
+            vo.setNetworkId(networkService.findNetworkIdByPk(tsInfo.getNid()));
+            vo.setTsName(tsInfo.getTsName());
+            vo.setTsId(tsInfo.getTsId());
+            NetworkInfo networkInfo = networkService.findByPK(tsInfo.getNid());
+            vo.setNetworkName(networkInfo.getNetworkName());
+            serviceInfoVOs.add(vo);
+        }
+
+        PageInfo<ServiceQueryVO> resultPageInfo = new PageInfo<>();
+        BeanUtils.copyProperties(oldPageInfo, resultPageInfo);
+        resultPageInfo.setList(serviceInfoVOs);
+        return Result.success(resultPageInfo);
+    }
+
+
+    @RequestMapping("getInfo")
+    public Result getInfo(Long id) {
+        if (id == null) {
+            throw new BaseException(ExceptionConstants.BASE_EXCEPTION_MISSING_PARAMETERS);
+        }
+        ServiceInfo service = serviceInfoService.findByPK(id);
+        return Result.success(service);
+    }
+
+
+    @RequestMapping("update")
+    public Result updateService(@Validated ServiceInfo serviceInfo) {
+        ServiceInfo oldInfo = serviceInfoService.findByPK(serviceInfo.getId());
+        oldInfo.setServiceId(serviceInfo.getServiceId());
+        oldInfo.setServiceName(serviceInfo.getServiceName());
+        oldInfo.setType(serviceInfo.getType());
+
+        return toResult(serviceInfoService.update(oldInfo));
+    }
+
+    @RequestMapping("delete")
+    public Result deleteService(Long[] ids) {
+        if (ids == null)
+            throw new BaseException(ExceptionConstants.BASE_EXCEPTION_MISSING_PARAMETERS);
+
+        for (Long id : ids) {
+            serviceInfoService.deleteByPK(id);
+        }
+
+        return Result.success();
+    }
+
+    @RequestMapping("add")
+    public Result addService(@Validated({Insert.class}) ServiceInfo serviceInfo) {
+        return toResult(serviceInfoService.save(serviceInfo));
     }
 }
