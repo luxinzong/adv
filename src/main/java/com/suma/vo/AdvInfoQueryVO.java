@@ -14,6 +14,10 @@ import java.util.Date;
 @Data
 public class AdvInfoQueryVO {
 
+    private String advType;//广告类型
+
+    private String advTypeName;//广告类型名称
+
     private String name;//广告名称
 
     private Date start;//广告起始日期
@@ -25,6 +29,7 @@ public class AdvInfoQueryVO {
     private Integer pageSize;//页面条数
 
     private Integer pageNum;//页码数
+
 
 
 }

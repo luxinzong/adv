@@ -465,21 +465,24 @@
       RESERVED_INT = #{reservedInt,jdbcType=BIGINT}
     where ID = #{id,jdbcType=BIGINT}
   </update>
-    <select id="selectAdvInfo" resultType="AdvInfo">
-      select
-      <include refid="Base_Column_List"/>
+    <select id="selectAdvInfo" resultMap="BaseResultMap" parameterType="map">
+      select <include refid="Base_Column_List"/>
       from adv_info
       <where>
-        <if test="name != null and name != ''">name = #{name}</if>
-        <if test="status != null and status != ''">and status=#{status}</if>
-        <if test="startDate != null and startDate != ''">and startDate &gt;=#{startDate}</if>
-        <if test="endDate != null and endDate != ''">and endDate &lt;= #{endDate}</if>
-        <if test="advTypeId != null and advTypeId != ''">and advTypeId=#{advType}</if>
+        <if test="map.name != null and map.name != ''"> NAME = #{map.name}</if>
+        <if test="map.status != null and map.status != ''">and STATUS=#{map.status}</if>
+        <if test="map.startDate != null and map.startDate != ''">and START_DATE &lt;=#{map.startDate}</if>
+        <if test="map.endDate != null and map.endDate != ''">and END_DATE &gt;= #{map.endDate}</if>
+        <if test="map.ids != null">
+          and ADV_TYPE_ID IN
+          <foreach collection="map.ids" item="item" open="(" separator="," close=")">
+            #{item}
+          </foreach>
+        </if>
       </where>
-      limit (#{pageSizi}-1) * #{pageSize},#{pageSize} * #{pageNum}
     </select>
 
-  <select id="findById">
+  <select id="findById" resultType="AdvInfo">
     select  <include refid="Base_Column_List"/>
     from adv_info
     where

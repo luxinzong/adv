@@ -15,10 +15,9 @@ import java.util.List;
 @Data
 public class AdvDeptDto extends AdvDept {
     //属性结构
-    private List<AdvDeptDto> deptDtoList = Lists.newArrayList();
+    private List<AdvDeptDto> children = Lists.newArrayList();
 
     private String parentName;
-
 
     public static AdvDeptDto adapt(AdvDept advDept){
         AdvDeptDto advDeptDto = new AdvDeptDto();

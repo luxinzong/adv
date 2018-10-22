@@ -13,12 +13,12 @@ public class AdvCheckDetail {
 
     private Integer region;//区域码
 
-    private String username;//审核人
+    private String checkUser;//审核人
 
     private Integer status;//广告状态
 
     private String mark;//备注
 
-    private Date times;//审核时间
+    private Date checkTime;//审核时间
 
 }

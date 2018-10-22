@@ -3,7 +3,6 @@ package com.suma.vo;
 import lombok.Data;
 import org.hibernate.validator.constraints.Length;
 
-import javax.validation.constraints.Max;
 import javax.validation.constraints.NotBlank;
 
 /**

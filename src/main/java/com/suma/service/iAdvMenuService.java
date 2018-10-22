@@ -19,7 +19,7 @@ public interface iAdvMenuService {
 
     public int deleteMenuById(Integer menuId);
 
-    public List<AdvMenu> selectMenuAll();
+    public List<AdvMenuDto> selectMenuAll();
 
     public List<AdvMenuDto> selectMenuTree();
 
@@ -28,6 +28,9 @@ public interface iAdvMenuService {
     public List<AdvMenuDto> selectMenuTreeStatusIsValid();
 
     public int selectAdvMenuCountByParentId(Integer parentId);
+
+    public boolean checkExistRoleInMenu(Integer menuId);
+
 
 
 

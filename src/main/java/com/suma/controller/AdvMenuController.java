@@ -2,17 +2,15 @@ package com.suma.controller;
 
 import com.suma.constants.ExceptionConstants;
 import com.suma.dto.AdvMenuDto;
-import com.suma.exception.DefaultExceptionHandler;
 import com.suma.exception.MenuException;
 import com.suma.pojo.AdvMenu;
 import com.suma.service.iAdvMenuService;
 import com.suma.utils.Result;
 import com.suma.vo.AdvMenuVO;
 import org.apache.commons.lang3.StringUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.util.CollectionUtils;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
@@ -59,7 +57,9 @@ public class AdvMenuController extends BaseController{
         if(advMenuService.selectAdvMenuCountByParentId(menuId) > 0){
             throw new MenuException(ExceptionConstants.MENU_EXCEPTION_EXIST_NEXT_DEPT);
         }
-        //todo 检测是否有角色绑定菜单
+        if(advMenuService.checkExistRoleInMenu(menuId)){
+            throw new MenuException(ExceptionConstants.MENU_EXCEPTION_MENU_EXIST_ROLE);
+        }
 
         return toResult(advMenuService.deleteMenuById(menuId));
     }
@@ -79,8 +79,13 @@ public class AdvMenuController extends BaseController{
      */
     @GetMapping("/listAll")
     public Result listAllAdvMenu(){
-        List<AdvMenu> advMenuList = advMenuService.selectMenuAll();
-        return Result.success(advMenuList);
+        List<AdvMenuDto> advMenuDtoList = advMenuService.selectMenuAll();
+        AdvMenuDto advMenu = new AdvMenuDto();
+        //添加一个为无
+        advMenu.setMenuId(0);
+        advMenu.setMenuName("无");
+        advMenuDtoList.add(0,advMenu);
+        return Result.success(advMenuDtoList);
     }
 
     /**
@@ -110,11 +115,25 @@ public class AdvMenuController extends BaseController{
         }
         //生成带查询条件的AdvMenu,以待扩展使用
         AdvMenu advMenu = new AdvMenu();
-        advMenu.setMenuName(menuName);
+        //进行格式有效性
+        advMenu.setMenuName(StringUtils.trim(menuName));
         advMenu.setStatus(status);
 
         List<AdvMenuDto> menuDtoList = advMenuService.selectAdvMenuList(advMenu);
+        if(CollectionUtils.isEmpty(menuDtoList)){
+            return Result.selectIsNullError();
+        }
         return Result.success(menuDtoList);
     }
 
+    /**
+     * 获取有效菜单树
+     *
+     * @return
+     */
+    @GetMapping("/getValidMenuTree")
+    public Result getValidMenuTree(){
+        List<AdvMenuDto> advMenuDtoList = advMenuService.selectMenuTreeStatusIsValid();
+        return Result.success(advMenuDtoList);
+    }
 }

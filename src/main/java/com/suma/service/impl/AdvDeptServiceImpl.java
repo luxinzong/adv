@@ -4,6 +4,7 @@ import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Multimap;
+import com.suma.constants.CommonConstants;
 import com.suma.constants.ExceptionConstants;
 import com.suma.dao.AdvDeptMapper;
 import com.suma.dto.AdvDeptDto;
@@ -31,18 +32,19 @@ public class AdvDeptServiceImpl implements iAdvDeptService {
     private AdvDeptMapper advDeptMapper;
 
     @Override
-    public List<AdvDeptDto> selectAdvDeptList(AdvDept advDept) {
+    public List<AdvDept> selectAdvDeptList(AdvDept advDept) {
         List<AdvDept> advDeptList = advDeptMapper.selectAdvDeptList(advDept);
-        return produceAdvDeptDto(advDeptList);
+        return advDeptList;
 
     }
     @Override
-    public List<AdvDept> selectAdvDeptAll() {
+    public List<AdvDeptDto> selectAdvDeptAll() {
         List<AdvDept> advDeptList = advDeptMapper.selectAdvDeptAll();
         if(!CollectionUtils.isEmpty(advDeptList)){
             Collections.sort(advDeptList,advDeptComparator);
         }
-        return advDeptList;
+
+        return produceAdvDeptDto(advDeptList);
     }
 
     /**
@@ -69,6 +71,7 @@ public class AdvDeptServiceImpl implements iAdvDeptService {
         }
         List<AdvDeptDto> advDeptDtoList = Lists.newArrayList();
         Map<Integer,String> parentNameMap = Maps.newConcurrentMap();
+        System.out.println(advDeptList);
         advDeptList.forEach(dept ->{
             parentNameMap.put(dept.getDeptId(),dept.getDeptName());
         });
@@ -76,7 +79,7 @@ public class AdvDeptServiceImpl implements iAdvDeptService {
             AdvDeptDto advDeptDto = AdvDeptDto.adapt(dept);
             //添加parentName
             if(dept.getParentId() == 0){//说明当前是父类id
-                advDeptDto.setParentName("-");
+                advDeptDto.setParentName("无");
             }else{
                 //获取当前父类名称
                 String parentName = parentNameMap.get(dept.getParentId());
@@ -128,7 +131,7 @@ public class AdvDeptServiceImpl implements iAdvDeptService {
                 //排序
                 Collections.sort(tempAdvDeptList,advDeptDtoComparator);
                 //进行下一层处理
-                advDeptDto.setDeptDtoList(tempAdvDeptList);
+                advDeptDto.setChildren(tempAdvDeptList);
                 transformAdvDeptTree(tempAdvDeptList,nextAncestor,ancestorMutiMap);
             }
         });
@@ -241,6 +244,19 @@ public class AdvDeptServiceImpl implements iAdvDeptService {
         AdvDept selectAdvDept = advDeptMapper.selectByPrimaryKey(deptId);
         if(selectAdvDept == null){
             throw new DeptException(ExceptionConstants.DEPT_EXCEPTION_DEPT_ID_NOT_EXIST);
+        }
+        //如果将部门状态修改为无效，要判断是否该部门存在子部门
+        String updateStatus = advDept.getStatus();
+        if(updateStatus.equals(CommonConstants.UNUSUAL_STATUS)){
+            List<AdvDept> advDeptList = advDeptMapper.selectAdvDeptListByParentId(advDept.getDeptId());
+            if(advDeptList.size() > 0){ //说明存在子部门
+                //判断子部门状态是否存在有效
+                advDeptList.forEach(childDept ->{
+                    if(childDept.getStatus().equals(CommonConstants.NORMAL_STATUS)){
+                        throw new DeptException(ExceptionConstants.DEPT_EXCEPTION_NEXT_DEPT_IS_VALID);
+                    }
+                });
+            }
         }
 
         //修改对应祖先数据

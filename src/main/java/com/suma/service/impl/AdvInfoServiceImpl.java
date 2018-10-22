@@ -4,11 +4,13 @@ import com.suma.dao.AdvInfoMapper;
 import com.suma.pojo.AdvInfo;
 import com.suma.pojo.AdvInfoExample;
 import com.suma.service.AdvInfoService;
+import com.suma.vo.AdvInfoQueryVO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
 import java.util.List;
+import java.util.Map;
 
 /**
  * @auther: luxinzong
@@ -26,8 +28,8 @@ public class AdvInfoServiceImpl extends BaseServiceImpl<AdvInfo, AdvInfoExample,
     }
 
     @Override
-    public AdvInfo selectAdvInfo(String name,String startDate,String endDate,Integer status,Long advTypeId) {
-        return advInfoMapper.selectAdvInfo(name, startDate, endDate,status, advTypeId);
+    public List<AdvInfo> selectAdvInfo(Map<String,Object> map) {
+        return advInfoMapper.selectAdvInfo(map);
     }
 
     @Override

@@ -5,12 +5,12 @@ package com.suma.exception;
  * @Date 2018/10/15 0015
  * @Description
  **/
-class BaseException extends RuntimeException {
-    BaseException() {
+public class BaseException extends RuntimeException {
+    public BaseException() {
         super();
     }
 
-    BaseException(String message) {
+    public BaseException(String message) {
         super(message);
     }
 }

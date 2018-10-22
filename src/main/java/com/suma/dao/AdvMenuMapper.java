@@ -22,6 +22,8 @@ public interface AdvMenuMapper {
 
     List<AdvMenu> selectAdvMenuList(AdvMenu advMenu);
 
+    List<AdvMenu> selectAdvMenuByParentId(Integer parentId);
+
     int checkAdvMenuUnique(@Param("menuName") String menuName);
 
     int updateByPrimaryKeySelective(AdvMenu record);
@@ -29,5 +31,8 @@ public interface AdvMenuMapper {
     int updateByPrimaryKey(AdvMenu record);
 
     int getMaxAdvMenuOrderNum(@Param("parentId") Integer parentId);
+
+    int checkExistRoleInMenu(Integer menuId);
+
 
 }

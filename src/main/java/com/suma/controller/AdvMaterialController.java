@@ -1,6 +1,7 @@
 package com.suma.controller;
 
 import com.github.pagehelper.PageHelper;
+import com.github.pagehelper.PageInfo;
 import com.suma.constants.ExceptionConstants;
 import com.suma.exception.MaterialException;
 import com.suma.pojo.*;
@@ -45,14 +46,20 @@ public class AdvMaterialController extends BaseController {
         Long[] ids = materialTypeService.getMeterialByTypeId(advTypeId);
         //分页
         PageHelper.startPage(pageNum, pageSize);
-        List<AdvMaterial> list = advMaterialService.findListByMaterialType(ids,materialType);
+        List<AdvMaterial> list = advMaterialService.findListByMaterialType(ids, materialType);
+        PageInfo<AdvMaterial> pageInfoOld = new PageInfo<>(list);
+
         List<AdvMaterialVO> VOList = new ArrayList<>();
         for (AdvMaterial material : list) {
             AdvMaterialVO vo = new AdvMaterialVO();
             BeanUtils.copyProperties(material, vo);
             VOList.add(vo);
         }
-        return Result.success(VOList);
+        PageInfo<AdvMaterialVO> pageInfoResult = new PageInfo<>();
+        BeanUtils.copyProperties(pageInfoOld, pageInfoResult);
+        pageInfoResult.setList(VOList);
+
+        return Result.success(pageInfoResult);
     }
 
     @RequestMapping("upload")
@@ -80,11 +87,13 @@ public class AdvMaterialController extends BaseController {
     }
 
     @RequestMapping("delete")
-    public Result deleteMaterial(Long id) {
-        if (id == null) {
+    public Result deleteMaterial(Long[] ids) {
+        if (ids == null) {
             throw new MaterialException(ExceptionConstants.BASE_EXCEPTION_MISSING_PARAMETERS);
         }
-        advMaterialService.cascadeDelete(id);
+        for (Long id : ids) {
+            advMaterialService.cascadeDelete(id);
+        }
         return Result.success();
     }
 

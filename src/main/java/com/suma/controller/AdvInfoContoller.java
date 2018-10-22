@@ -1,6 +1,8 @@
 package com.suma.controller;
 
 import com.github.pagehelper.PageHelper;
+import com.github.pagehelper.PageInfo;
+import com.suma.constants.CommonConstants;
 import com.suma.constants.ExceptionConstants;
 import com.suma.exception.AdvInfoException;
 import com.suma.exception.DefaultExceptionHandler;
@@ -11,7 +13,9 @@ import com.suma.service.AdvTypeService;
 import com.suma.service.InfoMaterialService;
 import com.suma.utils.Result;
 import com.suma.vo.AdvInfoInsertVO;
+import com.suma.vo.AdvInfoQueryVO;
 import com.suma.vo.AdvInfoUpdateVO;
+import org.apache.commons.collections.map.HashedMap;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -23,9 +27,7 @@ import org.springframework.web.bind.annotation.*;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 
 /**
  * 广告信息 增删改查
@@ -33,7 +35,7 @@ import java.util.List;
  * @date: 2018/10/15
  */
 @RestController
-@RequestMapping(value = "info")
+@RequestMapping(value = "info",produces = "application/json;charset=utf-8")
 public class AdvInfoContoller extends BaseController{
 
     Logger logger = LoggerFactory.getLogger(AdvInfoContoller.class);
@@ -57,23 +59,30 @@ public class AdvInfoContoller extends BaseController{
     @RequestMapping(value = "query", method = RequestMethod.GET)
     public Result queryAdvInfo(Integer status,String name,String start,String end,
                                Integer pageNum,Integer pageSize,String advType) throws ParseException {
-        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
-        //判断日期是否合理
-        AdvInfoExample example = new AdvInfoExample();
         if (pageNum == null || pageSize == null || status == null || advType == null) {//检查页码参数和广告状态是否为空
             throw new AdvInfoException(ExceptionConstants.INFO_EXCEPTION_QUERYPARAMS_IS_NULL);
         }
         AdvTypeExample example1 = new AdvTypeExample();
         example1.createCriteria().andAdvtypeEqualTo(advType);
         List<AdvType> advTypes = advTypeService.selectByExample(example1);
-        List<AdvInfo> advInfoList = new ArrayList<>();
         PageHelper.startPage(pageNum, pageSize);
+        List<Long> list = new ArrayList<>();
         for (AdvType advType1 : advTypes) {
-            advInfoList.add(advInfoService.selectAdvInfo(name, start, end, status, advType1.getId()));
+            System.out.println(advType1.getId());
+            list.add(advType1.getId());
         }
-        return  Result.success(advInfoList);
+        Map<String, Object> map = new HashMap<>();
+        map.put("name", name);
+        map.put("status", status);
+        map.put("startDate", start);
+        map.put("endDate", end);
+        map.put("ids", list);
+        List<AdvInfo> advInfoList = advInfoService.selectAdvInfo(map);
+        PageInfo<AdvInfo> listPageInfo = new PageInfo<>();
+        listPageInfo.setList(advInfoList);
+        listPageInfo.setTotal(advInfoList.size());
+        return Result.success(listPageInfo);
     }
-
 
     /**
      * 删除广告信息
@@ -93,23 +102,23 @@ public class AdvInfoContoller extends BaseController{
 
     /**
      * 批量删除广告信息
-     * @param ids
+     * @param idsStr
      * @return
      */
     @Transactional(rollbackFor = Exception.class)
     @RequestMapping(value = "delete", method = RequestMethod.POST)
-    public Result deleteAdvInfos(Long[] ids) {
-        System.out.println(ids.toString());
+    public Result deleteAdvInfos(String idsStr) {
+        String[] ids = idsStr.substring(0,idsStr.lastIndexOf(",")).split(",");
         int count = 0;
         try {
-            if (ids == null) {
+            if (ids.equals("")) {
                 throw new AdvInfoException(ExceptionConstants.INFO_EXCEPTION_MISSING_REQUIRED_PARAMS);
             }
-            for (Long id : ids) {
+            for (String id : ids) {
                 //删除所有广告及所对应资源关系
-                advInfoService.deleteByPK(id);
+                advInfoService.deleteByPK(Long.valueOf(id));
                 InfoMaterialExample example = new InfoMaterialExample();
-                example.createCriteria().andAdvInfoIdEqualTo(id);
+                example.createCriteria().andAdvInfoIdEqualTo(Long.valueOf(id));
                 infoMaterialService.deleteByExample(example);
                 count++;
             }
@@ -130,7 +139,7 @@ public class AdvInfoContoller extends BaseController{
      * @return
      */
     @Transactional(rollbackFor = Exception.class)
-    @RequestMapping(value = "save", method = RequestMethod.POST)
+    @RequestMapping(value = "select", method = RequestMethod.POST)
     public Result insertAdvInfo (AdvInfoInsertVO advInfoInsertVO) throws ParseException {
         System.out.println(advInfoInsertVO);
         DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");

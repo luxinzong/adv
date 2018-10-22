@@ -22,6 +22,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -130,18 +131,13 @@ public class AdvMaterialServiceImpl extends BaseServiceImpl<AdvMaterial, AdvMate
 
     @Override
     public List<AdvMaterial> findListByMaterialType(Long[] ids, Integer materialType) {
-        List<AdvMaterial> res = new ArrayList<>();
-        if (ids != null) {
-            for (Long id : ids) {
-                AdvMaterialExample example = new AdvMaterialExample();
-                example.createCriteria().andIdEqualTo(id).andMaterialTypeEqualTo(materialType);
-                List<AdvMaterial> advMaterials = selectByExample(example);
-                if (advMaterials != null && advMaterials.size() > 0) {
-                    res.add(advMaterials.get(0));
-                }
-            }
+        List<AdvMaterial> advMaterials = new ArrayList<>();
+        if (ids.length > 0) {
+            AdvMaterialExample example = new AdvMaterialExample();
+            example.createCriteria().andIdIn(Arrays.asList(ids)).andMaterialTypeEqualTo(materialType);
+            advMaterials = selectByExample(example);
         }
-        return res;
+        return advMaterials;
     }
 
 }

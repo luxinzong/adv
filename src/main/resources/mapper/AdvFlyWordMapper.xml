@@ -1,0 +1,292 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.suma.dao.AdvFlyWordMapper">
+  <resultMap id="BaseResultMap" type="com.suma.pojo.AdvFlyWord">
+    <id column="ID" jdbcType="BIGINT" property="id" />
+    <result column="ADV_INFO_ID" jdbcType="BIGINT" property="advInfoId" />
+    <result column="CONTENT" jdbcType="VARCHAR" property="content" />
+    <result column="DISPLAY_TIMES" jdbcType="BIGINT" property="displayTimes" />
+    <result column="INTERVAL_TIME" jdbcType="BIGINT" property="intervalTime" />
+    <result column="FONT_COLOUR" jdbcType="VARCHAR" property="fontColour" />
+    <result column="BACKGROUND_COLOUR" jdbcType="VARCHAR" property="backgroundColour" />
+    <result column="SPEED" jdbcType="BIGINT" property="speed" />
+    <result column="DIRECT" jdbcType="BIGINT" property="direct" />
+    <result column="DURATION" jdbcType="BIGINT" property="duration" />
+  </resultMap>
+  <sql id="Example_Where_Clause">
+    <where>
+      <foreach collection="oredCriteria" item="criteria" separator="or">
+        <if test="criteria.valid">
+          <trim prefix="(" prefixOverrides="and" suffix=")">
+            <foreach collection="criteria.criteria" item="criterion">
+              <choose>
+                <when test="criterion.noValue">
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue">
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue">
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue">
+                  and ${criterion.condition}
+                  <foreach close=")" collection="criterion.value" item="listItem" open="(" separator=",">
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Update_By_Example_Where_Clause">
+    <where>
+      <foreach collection="example.oredCriteria" item="criteria" separator="or">
+        <if test="criteria.valid">
+          <trim prefix="(" prefixOverrides="and" suffix=")">
+            <foreach collection="criteria.criteria" item="criterion">
+              <choose>
+                <when test="criterion.noValue">
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue">
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue">
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue">
+                  and ${criterion.condition}
+                  <foreach close=")" collection="criterion.value" item="listItem" open="(" separator=",">
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Base_Column_List">
+    ID, ADV_INFO_ID, CONTENT, DISPLAY_TIMES, INTERVAL_TIME, FONT_COLOUR, BACKGROUND_COLOUR, 
+    SPEED, DIRECT, DURATION
+  </sql>
+  <select id="selectByExample" parameterType="com.suma.pojo.AdvFlyWordExample" resultMap="BaseResultMap">
+    select
+    <if test="distinct">
+      distinct
+    </if>
+    'true' as QUERYID,
+    <include refid="Base_Column_List" />
+    from adv_flyword
+    <if test="_parameter != null">
+      <include refid="Example_Where_Clause" />
+    </if>
+    <if test="orderByClause != null">
+      order by ${orderByClause}
+    </if>
+  </select>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from adv_flyword
+    where ID = #{id,jdbcType=BIGINT}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
+    delete from adv_flyword
+    where ID = #{id,jdbcType=BIGINT}
+  </delete>
+  <delete id="deleteByExample" parameterType="com.suma.pojo.AdvFlyWordExample">
+    delete from adv_flyword
+    <if test="_parameter != null">
+      <include refid="Example_Where_Clause" />
+    </if>
+  </delete>
+  <insert id="insert" parameterType="com.suma.pojo.AdvFlyWord">
+    insert into adv_flyword (ID, ADV_INFO_ID, CONTENT, 
+      DISPLAY_TIMES, INTERVAL_TIME, FONT_COLOUR, 
+      BACKGROUND_COLOUR, SPEED, DIRECT, 
+      DURATION)
+    values (#{id,jdbcType=BIGINT}, #{advInfoId,jdbcType=BIGINT}, #{content,jdbcType=VARCHAR}, 
+      #{displayTimes,jdbcType=BIGINT}, #{intervalTime,jdbcType=BIGINT}, #{fontColour,jdbcType=VARCHAR}, 
+      #{backgroundColour,jdbcType=VARCHAR}, #{speed,jdbcType=BIGINT}, #{direct,jdbcType=BIGINT}, 
+      #{duration,jdbcType=BIGINT})
+  </insert>
+  <insert id="insertSelective" parameterType="com.suma.pojo.AdvFlyWord">
+    insert into adv_flyword
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        ID,
+      </if>
+      <if test="advInfoId != null">
+        ADV_INFO_ID,
+      </if>
+      <if test="content != null">
+        CONTENT,
+      </if>
+      <if test="displayTimes != null">
+        DISPLAY_TIMES,
+      </if>
+      <if test="intervalTime != null">
+        INTERVAL_TIME,
+      </if>
+      <if test="fontColour != null">
+        FONT_COLOUR,
+      </if>
+      <if test="backgroundColour != null">
+        BACKGROUND_COLOUR,
+      </if>
+      <if test="speed != null">
+        SPEED,
+      </if>
+      <if test="direct != null">
+        DIRECT,
+      </if>
+      <if test="duration != null">
+        DURATION,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        #{id,jdbcType=BIGINT},
+      </if>
+      <if test="advInfoId != null">
+        #{advInfoId,jdbcType=BIGINT},
+      </if>
+      <if test="content != null">
+        #{content,jdbcType=VARCHAR},
+      </if>
+      <if test="displayTimes != null">
+        #{displayTimes,jdbcType=BIGINT},
+      </if>
+      <if test="intervalTime != null">
+        #{intervalTime,jdbcType=BIGINT},
+      </if>
+      <if test="fontColour != null">
+        #{fontColour,jdbcType=VARCHAR},
+      </if>
+      <if test="backgroundColour != null">
+        #{backgroundColour,jdbcType=VARCHAR},
+      </if>
+      <if test="speed != null">
+        #{speed,jdbcType=BIGINT},
+      </if>
+      <if test="direct != null">
+        #{direct,jdbcType=BIGINT},
+      </if>
+      <if test="duration != null">
+        #{duration,jdbcType=BIGINT},
+      </if>
+    </trim>
+  </insert>
+  <select id="countByExample" parameterType="com.suma.pojo.AdvFlyWordExample" resultType="java.lang.Long">
+    select count(*) from adv_flyword
+    <if test="_parameter != null">
+      <include refid="Example_Where_Clause" />
+    </if>
+  </select>
+  <update id="updateByExampleSelective" parameterType="map">
+    update adv_flyword
+    <set>
+      <if test="record.id != null">
+        ID = #{record.id,jdbcType=BIGINT},
+      </if>
+      <if test="record.advInfoId != null">
+        ADV_INFO_ID = #{record.advInfoId,jdbcType=BIGINT},
+      </if>
+      <if test="record.content != null">
+        CONTENT = #{record.content,jdbcType=VARCHAR},
+      </if>
+      <if test="record.displayTimes != null">
+        DISPLAY_TIMES = #{record.displayTimes,jdbcType=BIGINT},
+      </if>
+      <if test="record.intervalTime != null">
+        INTERVAL_TIME = #{record.intervalTime,jdbcType=BIGINT},
+      </if>
+      <if test="record.fontColour != null">
+        FONT_COLOUR = #{record.fontColour,jdbcType=VARCHAR},
+      </if>
+      <if test="record.backgroundColour != null">
+        BACKGROUND_COLOUR = #{record.backgroundColour,jdbcType=VARCHAR},
+      </if>
+      <if test="record.speed != null">
+        SPEED = #{record.speed,jdbcType=BIGINT},
+      </if>
+      <if test="record.direct != null">
+        DIRECT = #{record.direct,jdbcType=BIGINT},
+      </if>
+      <if test="record.duration != null">
+        DURATION = #{record.duration,jdbcType=BIGINT},
+      </if>
+    </set>
+    <if test="_parameter != null">
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByExample" parameterType="map">
+    update adv_flyword
+    set ID = #{record.id,jdbcType=BIGINT},
+      ADV_INFO_ID = #{record.advInfoId,jdbcType=BIGINT},
+      CONTENT = #{record.content,jdbcType=VARCHAR},
+      DISPLAY_TIMES = #{record.displayTimes,jdbcType=BIGINT},
+      INTERVAL_TIME = #{record.intervalTime,jdbcType=BIGINT},
+      FONT_COLOUR = #{record.fontColour,jdbcType=VARCHAR},
+      BACKGROUND_COLOUR = #{record.backgroundColour,jdbcType=VARCHAR},
+      SPEED = #{record.speed,jdbcType=BIGINT},
+      DIRECT = #{record.direct,jdbcType=BIGINT},
+      DURATION = #{record.duration,jdbcType=BIGINT}
+    <if test="_parameter != null">
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByPrimaryKeySelective" parameterType="com.suma.pojo.AdvFlyWord">
+    update adv_flyword
+    <set>
+      <if test="advInfoId != null">
+        ADV_INFO_ID = #{advInfoId,jdbcType=BIGINT},
+      </if>
+      <if test="content != null">
+        CONTENT = #{content,jdbcType=VARCHAR},
+      </if>
+      <if test="displayTimes != null">
+        DISPLAY_TIMES = #{displayTimes,jdbcType=BIGINT},
+      </if>
+      <if test="intervalTime != null">
+        INTERVAL_TIME = #{intervalTime,jdbcType=BIGINT},
+      </if>
+      <if test="fontColour != null">
+        FONT_COLOUR = #{fontColour,jdbcType=VARCHAR},
+      </if>
+      <if test="backgroundColour != null">
+        BACKGROUND_COLOUR = #{backgroundColour,jdbcType=VARCHAR},
+      </if>
+      <if test="speed != null">
+        SPEED = #{speed,jdbcType=BIGINT},
+      </if>
+      <if test="direct != null">
+        DIRECT = #{direct,jdbcType=BIGINT},
+      </if>
+      <if test="duration != null">
+        DURATION = #{duration,jdbcType=BIGINT},
+      </if>
+    </set>
+    where ID = #{id,jdbcType=BIGINT}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.suma.pojo.AdvFlyWord">
+    update adv_flyword
+    set ADV_INFO_ID = #{advInfoId,jdbcType=BIGINT},
+      CONTENT = #{content,jdbcType=VARCHAR},
+      DISPLAY_TIMES = #{displayTimes,jdbcType=BIGINT},
+      INTERVAL_TIME = #{intervalTime,jdbcType=BIGINT},
+      FONT_COLOUR = #{fontColour,jdbcType=VARCHAR},
+      BACKGROUND_COLOUR = #{backgroundColour,jdbcType=VARCHAR},
+      SPEED = #{speed,jdbcType=BIGINT},
+      DIRECT = #{direct,jdbcType=BIGINT},
+      DURATION = #{duration,jdbcType=BIGINT}
+    where ID = #{id,jdbcType=BIGINT}
+  </update>
+</mapper>

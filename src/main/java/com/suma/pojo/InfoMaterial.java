@@ -5,11 +5,11 @@ import lombok.Data;
 
 @Data
 public class InfoMaterial {
-    private Long advInfoId;
+    private Long advInfoId; //广告信息ID
 
-    private Long materialId;
+    private Long materialId;//素材ID
 
-    private Integer sequence;
+    private Integer sequence;//顺序
 
-    private Integer duration;
+    private Integer duration;//持续时间
 }

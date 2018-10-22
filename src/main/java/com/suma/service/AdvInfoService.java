@@ -2,15 +2,17 @@ package com.suma.service;
 
 import com.suma.pojo.AdvInfo;
 import com.suma.pojo.AdvInfoExample;
+import com.suma.vo.AdvInfoQueryVO;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * @auther: luxinzong
  * @date: 2018/10/15
  */
 public interface AdvInfoService extends BaseService<AdvInfo, AdvInfoExample, Long> {
-    AdvInfo selectAdvInfo(String name,String startDate,String endDate,Integer status,Long advTypeId);
+    List<AdvInfo> selectAdvInfo(Map<String,Object> map);
 
     AdvInfo findById(Long id);
 }

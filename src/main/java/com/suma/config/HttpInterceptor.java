@@ -1,16 +1,11 @@
 package com.suma.config;
 
 import com.alibaba.fastjson.JSON;
-import com.alibaba.fastjson.JSONObject;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.servlet.handler.HandlerInterceptorAdapter;
-import sun.security.krb5.internal.PAData;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.io.BufferedReader;
-import java.io.InputStreamReader;
 import java.util.Map;
 
 /**
@@ -26,22 +21,11 @@ public class HttpInterceptor extends HandlerInterceptorAdapter {
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
         //获得请求url
         String url = request.getRequestURI();
-        //获取参数
-        BufferedReader streamReader = new BufferedReader(new InputStreamReader(request.getInputStream()));
-        StringBuilder responseStrBuilder = new StringBuilder();
-        String inputStr = null;
-        while((inputStr = streamReader.readLine()) != null){
-            responseStrBuilder.append(inputStr);
-        }
+        //获取json传输参数
+        Map<String,String[]> map = request.getParameterMap();
+        String requestMap = JSON.toJSONString(map);
 
-        JSONObject jsonObject = JSONObject.parseObject(responseStrBuilder.toString());
-        String param = null;
-        if(jsonObject != null){
-            param = jsonObject.toJSONString();
-
-        }
-        //记录日志
-        log.info("请求开始，url:{},params:{}",url,param);
+        log.info("请求开始，url:{},params:{}",url,requestMap);
         return true;
     }
 }

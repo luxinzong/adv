@@ -10,6 +10,7 @@ import com.suma.vo.AdvDeptVO;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.util.CollectionUtils;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
@@ -22,7 +23,7 @@ import java.util.Map;
  * @Description 部门信息controller
  **/
 @RestController
-@RequestMapping(value = "/system/dept",consumes = "application/json;charset=utf-8")
+@RequestMapping(value = "/system/dept")
 public class AdvDeptController extends BaseController{
 
     @Autowired
@@ -92,13 +93,14 @@ public class AdvDeptController extends BaseController{
      */
     @GetMapping("/listAll")
     public Result listAll(){
-        List<AdvDept> advDeptList = advDeptService.selectAdvDeptAll();
-        //应前台要求在返回list中，增加-以便使用
-        AdvDept advDept = new AdvDept();
-        advDept.setParentId(0);
-        advDept.setDeptName("-");
-        advDeptList.add(advDept);
-        return Result.success(advDeptList);
+        List<AdvDeptDto> advDeptDtoList = advDeptService.selectAdvDeptAll();
+        //应前台要求在返回list中，增加无以便使用
+        AdvDeptDto advDeptDto = new AdvDeptDto();
+        advDeptDto.setDeptId(0);
+        advDeptDto.setDeptName("无");
+        advDeptDto.setParentName("无");
+        advDeptDtoList.add(0,advDeptDto);
+        return Result.success(advDeptDtoList);
     }
 
     /**
@@ -123,19 +125,24 @@ public class AdvDeptController extends BaseController{
     public Result query(@RequestBody Map<String,Object> requestMap){
         String deptName = (String) requestMap.get("deptName");
         String status = (String) requestMap.get("status");
+        System.out.println(deptName+status);
         //无有效参数，返回treeData
         if(StringUtils.isBlank(deptName) && StringUtils.isBlank(status)){
             return treeData();
         }
+        System.out.println("x");
         //使用advDept作为参数的目的是为了，方便未来扩展
         AdvDept advDept = new AdvDept();
-        advDept.setDeptName(deptName);
+        advDept.setDeptName(StringUtils.trim(deptName));
         advDept.setStatus(status);
 
-
-        List<AdvDeptDto> advDeptDtoList = advDeptService.selectAdvDeptList(advDept);
-        return Result.success(advDeptDtoList);
+        List<AdvDept> advDeptList = advDeptService.selectAdvDeptList(advDept);
+        if(CollectionUtils.isEmpty(advDeptList)){
+            return Result.selectIsNullError();
+        }
+        return Result.success(advDeptList);
     }
+
 
 
 }

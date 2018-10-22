@@ -18,6 +18,11 @@ public class CommonConstants {
     public static final int SUCCESS = 0;
 
     /**
+     * 通用成功描述
+     */
+    public static final String SUCCESS_DESC = "操作成功";
+
+    /**
      * 通过系统错误码
      */
     public static final int SYSTEM_ERROR = -1;

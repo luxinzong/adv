@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.suma.dao.AdvUseRoleMapper">
+    <resultMap id="AdvUserRoleResult" type="AdvUserRole">
+        <result property="userId" column="user_id"></result>
+        <result property="menuId" column="menu_id"></result>
+    </resultMap>
+
+
+    <select id="selectRoleIdsByUserId" resultType="java.lang.Integer">
+        select role_id from adv_user_role where user_id = #{userId};
+    </select>
+
+    <insert id="batchUserRole">
+        insert into adv_user_role (user_id,role_id) values
+        <foreach collection="list" index="index" item="item" separator=",">
+            (#{item.userId},#{item.roleId})
+        </foreach>
+    </insert>
+
+    <delete id="deleteRoleIdsByUserId" parameterType="java.lang.Integer">
+        delete from adv_user_role where user_id = #{userId};
+    </delete>
+
+</mapper>

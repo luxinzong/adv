@@ -2,14 +2,11 @@ package com.suma.exception;
 
 
 import com.suma.utils.Result;
-import com.sun.org.apache.regexp.internal.RE;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.validation.BindException;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
-import org.springframework.web.bind.MissingServletRequestParameterException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
@@ -38,27 +35,39 @@ public class DefaultExceptionHandler {
         return Result.error(e.getMessage());
     }
 
+    @ExceptionHandler(RoleException.class)
+    public Result roleException(RoleException e) {
+        log.error(e.getMessage(), e);
+        return Result.error(e.getMessage());
+    }
+
+    @ExceptionHandler(AdvFlyWordException.class)
+    public Result advFlyWordException(AdvFlyWordException e) {
+        log.error(e.getMessage(), e);
+        return Result.error(e.getMessage());
+    }
     @ExceptionHandler(AdvInfoException.class)
-    public Result advInfoException(AdvInfoException e) {
+    public Result advInfoException (AdvInfoException e){
         log.error(e.getMessage(), e);
         return Result.error(e.getMessage());
     }
 
     @ExceptionHandler(InfoMaterialException.class)
-    public Result infoMaterialException(InfoMaterialException e) {
+    public Result infoMaterialException (InfoMaterialException e){
         log.error(e.getMessage(), e);
         return Result.error(e.getMessage());
     }
 
-    @ExceptionHandler(MissingServletRequestParameterException.class)
-    public Result missingServletRequestParameterException(MissingServletRequestParameterException e) {
-        log.error(e.getMessage(), e);
-        return Result.error(e.getParameterName() + "不能为空");
-    }
 
-    @ExceptionHandler(BindException.class)
-    public Result handleBindException(BindException bindException) {
-        log.error(bindException.getMessage(), bindException);
+        /**'
+         * 通过form表单传递参数异常
+         *
+         * @param bindException
+         * @return
+         */
+        @ExceptionHandler(BindException.class)
+        public Result handleBindException (BindException bindException){
+                log.error(bindException.getMessage(), bindException);
         List<FieldError> fieldErrors = bindException.getFieldErrors();
         StringBuilder stringBuilder = new StringBuilder();
         fieldErrors.forEach(fieldError -> {
@@ -68,15 +77,14 @@ public class DefaultExceptionHandler {
         return Result.error(stringBuilder.toString());
     }
 
-    @ExceptionHandler(HttpMessageNotReadableException.class)
-    public Result handlerHttpMessageNotReadableException(HttpMessageNotReadableException exception){
-        log.error(exception.getMessage(), exception);
-        return Result.error(exception.getMessage());
-    }
-
-
+    /**
+     * 通过json传递，出现参数错误异常
+     *
+     * @param exception
+     * @return
+     */
     @ExceptionHandler(MethodArgumentNotValidException.class)
-    public Result handleMethodArgumentNotValidException(MethodArgumentNotValidException exception) {
+    public Result handleMethodArgumentNotValidException (MethodArgumentNotValidException exception){
         log.error(exception.getMessage(), exception);
         List<FieldError> fieldErrors = exception.getBindingResult().getFieldErrors();
         StringBuilder stringBuilder = new StringBuilder();
@@ -87,9 +95,8 @@ public class DefaultExceptionHandler {
         return Result.error(stringBuilder.toString());
     }
     @ExceptionHandler(BaseException.class)
-    public Result baseException(BaseException e) {
-        log.error(e.getMessage(), e);
+    public Result baseException (BaseException e){
+        log.error(e.getMessage());
         return Result.error(e.getMessage());
     }
-
 }

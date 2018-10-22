@@ -1,6 +1,7 @@
 package com.suma.pojo;
 
 public class AdvLocation {
+
     private Long id;
 
     private String name;

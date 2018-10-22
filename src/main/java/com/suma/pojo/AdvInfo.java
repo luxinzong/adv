@@ -28,23 +28,23 @@ public class AdvInfo {
 
     private Date periodTimeEnd;//有效期结束日期
 
-    private String checkUser;
+    private String checkUser;//审核人
 
-    private String checkNote;
+    private String checkNote;//审核意见
 
-    private Date checkTime;
+    private Date checkTime;//审核时间
 
-    private String createdUser;
+    private String createdUser;//创建用户
 
-    private Date createdTime;
+    private Date createdTime;//创建时间
 
-    private Date lastEditTime;
+    private Date lastEditTime;//编辑时间
 
-    private String lastEditUser;
+    private String lastEditUser;//编辑用户
 
-    private String lastEditModule;
+    private String lastEditModule;//编辑模块
 
-    private Integer region;
+    private Integer region;//区域码
 
     private String reservedString;
 

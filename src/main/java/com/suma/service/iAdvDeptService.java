@@ -19,14 +19,14 @@ public interface iAdvDeptService {
      * @param advDept
      * @return 部门信息集合
      */
-    public List<AdvDeptDto> selectAdvDeptList(AdvDept advDept);
+    public List<AdvDept> selectAdvDeptList(AdvDept advDept);
 
     /**
      * 查询部门所有数据
      *
      * @return 部门信息集合
      */
-    public List<AdvDept> selectAdvDeptAll();
+    public List<AdvDeptDto> selectAdvDeptAll();
 
     /**
      * 查询部门管理树
@@ -58,9 +58,7 @@ public interface iAdvDeptService {
      * @return
      */
     public int deleteAdvDeptById(Integer advDeptId);
-
-
-
+    
     /**
      * 修改保存部门信息
      *

@@ -19,6 +19,9 @@ public class AdvDeptMapperTest extends AdvApplicationTests {
     @Autowired
     private AdvDeptMapper advDeptMapper;
 
+    @Autowired
+    private AdvFlyWordMapper advFlyWordMapper;
+
     @Test
     public void testMultiMap(){
         Multimap<String,Integer> multimap = ArrayListMultimap.create();
@@ -29,6 +32,10 @@ public class AdvDeptMapperTest extends AdvApplicationTests {
 
     }
 
+    @Test
+    public void insert() {
+
+    }
 
     @Test
     public void testAns(){

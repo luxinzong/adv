@@ -2,6 +2,7 @@ package com.suma.controller;
 
 import com.alibaba.fastjson.JSON;
 import com.github.pagehelper.PageHelper;
+import com.github.pagehelper.PageInfo;
 import com.suma.pojo.AdvLocation;
 import com.suma.pojo.AdvLocationExample;
 import com.suma.service.AdvLocationService;
@@ -28,17 +29,6 @@ public class AdvLocationController extends BaseController {
     @Autowired
     private AdvLocationService advLocationService;
 
-    /**
-     * 获取location总数，方便分页显示
-     *
-     * @return
-     */
-    @RequestMapping("getLocationNum")
-    public Result getLocationNum() {
-        Result result = new Result();
-        return Result.success(advLocationService.countByExample(null));
-    }
-
 
     /**
      * @param advTypeId 广告位ID
@@ -62,8 +52,8 @@ public class AdvLocationController extends BaseController {
         //分页
         PageHelper.startPage(pageNum, pageSize);
         List<AdvLocation> advLocations = advLocationService.selectByExample(example);
-
-        return Result.success(advLocations);
+        PageInfo<AdvLocation> pageInfo = new PageInfo<>(advLocations);
+        return Result.success(pageInfo);
     }
 
     @RequestMapping("addLocation")

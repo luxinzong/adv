@@ -11,7 +11,7 @@ import java.util.List;
 public class AdvMenuDto extends AdvMenu {
 
     //属性结构
-    private List<AdvMenuDto> menuDtoList = Lists.newArrayList();
+    private List<AdvMenuDto> children = Lists.newArrayList();
     //父类名称
     private String parentName;
 
