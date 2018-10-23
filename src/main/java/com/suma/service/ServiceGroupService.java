@@ -2,9 +2,7 @@ package com.suma.service;
 
 import com.suma.pojo.ServiceGroup;
 import com.suma.pojo.ServiceGroupExample;
-import com.suma.vo.ServiceGroupVO;
 
-import javax.validation.constraints.NotNull;
 import java.util.List;
 
 /**
@@ -20,3 +18,4 @@ public interface ServiceGroupService extends BaseService<ServiceGroup, ServiceGr
 
     void update(ServiceGroup serviceGroup, List<String> serviceNames);
 }
+

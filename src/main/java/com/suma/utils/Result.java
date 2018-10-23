@@ -38,6 +38,15 @@ public class Result {
         return buildResult(CommonConstants.SUCCESS,"操作成功",null);
     }
 
+    public static Result loginSuccess(){
+        return buildResult(CommonConstants.SUCCESS,"登录成功",null);
+    }
+
+    public static Result loginOut(){
+        return buildResult(CommonConstants.SUCCESS,"登出成功",null);
+    }
+
+
     public static Result success(Object resultData){
         return buildResult(CommonConstants.SUCCESS,"操作成功",resultData);
     }
@@ -51,6 +60,8 @@ public class Result {
     public static Result error(){
         return buildResult(CommonConstants.FAIL,"操作失败",null);
     }
+
+    public static Result selectIsNullError(){return buildResult(CommonConstants.FAIL,"查询数据为空",null);}
 
     public static Result sysytemError(){
         return buildResult(CommonConstants.SYSTEM_ERROR,"系统错误",null);
@@ -67,3 +78,4 @@ public class Result {
     }
 
 }
+

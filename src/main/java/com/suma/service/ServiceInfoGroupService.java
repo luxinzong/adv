@@ -1,7 +1,6 @@
+
 package com.suma.service;
 
-import com.suma.pojo.ServiceGroup;
-import com.suma.pojo.ServiceGroupExample;
 import com.suma.pojo.ServiceInfoGroup;
 import com.suma.pojo.ServiceInfoGroupExample;
 

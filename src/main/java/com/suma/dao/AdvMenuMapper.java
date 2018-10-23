@@ -22,6 +22,12 @@ public interface AdvMenuMapper {
 
     List<AdvMenu> selectAdvMenuList(AdvMenu advMenu);
 
+    List<String> selectAdvMenuPerms(List<Integer> roleIds);
+
+    List<AdvMenu> selectAdvMenuByParentId(Integer parentId);
+
+
+
     int checkAdvMenuUnique(@Param("menuName") String menuName);
 
     int updateByPrimaryKeySelective(AdvMenu record);

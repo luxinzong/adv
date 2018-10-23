@@ -50,10 +50,22 @@
       </if>
     </where>
   </select>
+  <select id="selectAdvRoleKeys" parameterType="java.lang.Integer" resultType="java.lang.String">
+    select role_key from adv_role where role_id in
+    <foreach collection="list" item="item" open="(" separator="," close=")">
+      #{item}
+    </foreach>
+  </select>
 
   <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
     delete from adv_role
     where role_id = #{roleId,jdbcType=INTEGER}
+  </delete>
+  <delete id="batchDelete" parameterType="java.lang.Integer">
+    delete from adv_role where role_id in
+    <foreach collection="list" item="roleId" open="(" separator="," close=")">
+      #{roleId}
+    </foreach>
   </delete>
   <insert id="insert" parameterType="com.suma.pojo.AdvRole" >
     insert into adv_role (role_id, role_name, role_key, 

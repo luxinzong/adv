@@ -3,8 +3,6 @@ package com.suma.controller;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import com.suma.constants.ExceptionConstants;
-import com.suma.dao.NetworkInfoMapper;
-import com.suma.dao.TsInfoMapper;
 import com.suma.exception.BaseException;
 import com.suma.pojo.*;
 import com.suma.service.NetworkService;
@@ -13,16 +11,12 @@ import com.suma.service.TsService;
 import com.suma.utils.Insert;
 import com.suma.utils.Result;
 import com.suma.vo.ServiceQueryVO;
-import org.checkerframework.checker.units.qual.A;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.transaction.annotation.Transactional;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import javax.validation.Valid;
-import javax.validation.constraints.NotNull;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -97,7 +91,8 @@ public class AdvServiceController extends BaseController {
             vo.setTsName(tsInfo.getTsName());
             vo.setTsId(tsInfo.getTsId());
             NetworkInfo networkInfo = networkService.findByPK(tsInfo.getNid());
-            vo.setNetworkName(networkInfo.getNetworkName());
+            if (networkInfo != null)
+                vo.setNetworkName(networkInfo.getNetworkName());
             serviceInfoVOs.add(vo);
         }
 

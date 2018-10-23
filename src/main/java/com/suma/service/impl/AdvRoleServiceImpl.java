@@ -2,17 +2,22 @@ package com.suma.service.impl;
 
 import com.github.pagehelper.PageInfo;
 import com.google.common.collect.Lists;
+import com.google.common.collect.Sets;
 import com.suma.constants.ExceptionConstants;
 import com.suma.dao.AdvRoleMapper;
 import com.suma.dao.AdvRoleMenuMapper;
+import com.suma.dao.AdvUseRoleMapper;
 import com.suma.exception.RoleException;
 import com.suma.pojo.AdvRole;
 import com.suma.pojo.AdvRoleMenu;
+import com.suma.utils.ShiroUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import com.suma.service.iAdvRoleService;
+import org.springframework.util.CollectionUtils;
 
 import java.util.List;
+import java.util.Set;
 
 /**
  * @Autor gaozhongbao
@@ -20,17 +25,43 @@ import java.util.List;
  * @Description
  **/
 @Service
-public class AdvRoleSerivceImpl implements iAdvRoleService {
+public class AdvRoleServiceImpl implements iAdvRoleService {
 
     @Autowired
     private AdvRoleMapper advRoleMapper;
     @Autowired
     private AdvRoleMenuMapper advRoleMenuMapper;
+    @Autowired
+    private AdvUseRoleMapper advUseRoleMapper;
 
     @Override
     public List<AdvRole> selectRoleAll() {
         return null;
     }
+
+    @Override
+    public Set<String> selectRoleKeys(Integer userId) {
+        List<Integer> roleIds = advUseRoleMapper.selectRoleIdsByUserId(userId);
+        if(CollectionUtils.isEmpty(roleIds)){
+            return null;
+        }
+        List<String> roleKeysList = advRoleMapper.selectAdvRoleKeys(roleIds);
+        Set<String> roleKeys = Sets.newHashSet(roleKeysList);
+        if(CollectionUtils.isEmpty(roleIds)){
+            return null;
+        }
+
+        return roleKeys;
+    }
+
+    /**
+     * 根据用户id查询权限
+     *
+     * @param userId
+     * @return
+     */
+
+
 
     /**
      * 通过参数查询角色列表
@@ -46,7 +77,9 @@ public class AdvRoleSerivceImpl implements iAdvRoleService {
     public PageInfo<AdvRole> selectRoleList(String roleName, String roleKey, String status, String startTime, String endTime) {
         List<AdvRole> roleList = advRoleMapper.selectRoleList(roleName,roleKey,status,startTime,endTime);
         //将查询出来的roleList添加对应的menuId
-        addMenuIdForAdvRole(roleList);
+        if(!CollectionUtils.isEmpty(roleList)){
+            addMenuIdForAdvRole(roleList);
+        }
         PageInfo<AdvRole> pageInfo = new PageInfo<>(roleList);
 
         return pageInfo;
@@ -78,7 +111,7 @@ public class AdvRoleSerivceImpl implements iAdvRoleService {
         if(checkAdvRole != null){
             throw new RoleException(ExceptionConstants.ROLE_EXCEPTION_EXIST_NAME);
         }
-        //todo 添加创建人
+//        advRole.setCreateBy(ShiroUtils.getUser().getUserName());
         //新增角色信息
         Integer roleSort = advRole.getRoleSort();
         if(roleSort == null){
@@ -87,12 +120,13 @@ public class AdvRoleSerivceImpl implements iAdvRoleService {
             advRole.setRoleSort(resultRoleSort);
         }
 
-        int updateRows = advRoleMapper.insertSelective(advRole);
+        int insertRows = advRoleMapper.insertSelective(advRole);
         //提交数据后获取对应存入对应角色id，以便增加对应菜单id
         AdvRole tempAdvRole = advRoleMapper.selectByAdvRoleName(roleName);
         advRole.setRoleId(tempAdvRole.getRoleId());
         int insertAdcRoleMenuRows = insertAdvRoleMenu(advRole);
-        return updateRows + insertAdcRoleMenuRows;
+//        advRole.setCreateBy(ShiroUtils.getUser().getUserName());
+        return insertRows + insertAdcRoleMenuRows;
     }
 
     /**
@@ -101,9 +135,8 @@ public class AdvRoleSerivceImpl implements iAdvRoleService {
      * @return AdvRole 角色对象
      */
     private int insertAdvRoleMenu(AdvRole advRole){
-        //如果没有为role添加对应菜单信息，添加也为成功
         int rows = 0;
-        //新增用户和角色管理
+        //新增角色和菜单管理
         List<AdvRoleMenu> advRoleMenuList = Lists.newArrayList();
         advRole.getMenuIds().forEach(advMenuId -> {
             AdvRoleMenu advRoleMenu = new AdvRoleMenu();
@@ -137,7 +170,12 @@ public class AdvRoleSerivceImpl implements iAdvRoleService {
         //对应菜单进行修改,先删除后添加
         int deleteRows = advRoleMenuMapper.deleteAdvRoleMenuByAdvRoleId(advRole.getRoleId());
         //说明删除了数据,则需要进行添加，否则不需要添加
-        int insertRows = insertAdvRoleMenu(advRole);
+        int insertRows = 0;
+        if(deleteRows > 0){
+            insertRows = insertAdvRoleMenu(advRole);
+        }
+
+//        advRole.setUpdateBy(advRole.getUpdateBy());
         //返回影响表的行数
         return updateRows + insertRows + deleteRows;
     }
@@ -158,11 +196,30 @@ public class AdvRoleSerivceImpl implements iAdvRoleService {
         //删除对应role信息
         int rows = advRoleMapper.deleteByPrimaryKey(advRoleId);
         int deleteMenuIdsRows = deleteMenuIdsBYAdvRoleId(rows);
-        if(deleteMenuIdsRows == 0){//如果没有对应的menuIds直接返回删除role的结果
-            return rows;
-        }
 
-        return deleteMenuIdsRows;
+        return rows + deleteMenuIdsRows;
+    }
+
+    /**
+     * 批量删除角色信息
+     *
+     * @param advRoleIds
+     * @return
+     */
+    @Override
+    public int deleteRoleByIds(List<Integer> advRoleIds) {
+        //先删除角色的id是否存在
+        advRoleIds.forEach(roleId ->{
+            AdvRole advRole = advRoleMapper.selectByPrimaryKey(roleId);
+            if(advRole == null){
+                throw new RoleException(ExceptionConstants.ROLE_EXCEPTION_ID_NOT_EXIST);
+            }
+        });
+        //删除对应role信息
+        int rows = advRoleMapper.batchDelete(advRoleIds);
+        int deleteMenuIdsRows = deleteMenuIdsByAdvRoleIds(advRoleIds);
+
+        return rows + deleteMenuIdsRows;
     }
 
     /**
@@ -173,6 +230,16 @@ public class AdvRoleSerivceImpl implements iAdvRoleService {
      */
     private int deleteMenuIdsBYAdvRoleId(Integer roleId){
         return advRoleMenuMapper.deleteAdvRoleMenuByAdvRoleId(roleId);
+    }
+
+    /**
+     * 根据角色id批量删除对应菜单id
+     *
+     * @param roleIds
+     * @return
+     */
+    private int deleteMenuIdsByAdvRoleIds(List<Integer> roleIds){
+        return advRoleMenuMapper.batchDelete(roleIds);
     }
 
     @Override

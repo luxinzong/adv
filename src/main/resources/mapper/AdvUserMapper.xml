@@ -27,9 +27,43 @@
     from adv_user
     where user_id = #{userId,jdbcType=INTEGER}
   </select>
+  <select id="selectAdvUserByUserName" resultMap="BaseResultMap" parameterType="java.lang.String">
+    select
+    <include refid="Base_Column_List"/>
+    from adv_user
+    WHERE user_name = #{userName};
+  </select>
+
+  <select id="selectUserList" resultMap="BaseResultMap">
+    select <include refid="Base_Column_List"/>
+    from adv_user
+    <where>
+      <if test="userName != null and userName !=''">
+        and user_name like concat('%',#{userName},'%')
+      </if>
+      <if test="phoneNumber != null and phoneNumber != ''">
+        and phone_number = #{phoneNumber}
+      </if>
+      <if test="status != null and status != ''">
+        and status = #{status}
+      </if>
+      <if test="startTime != null and endTime != ''">
+        and create_time &lt;= #{startTime}
+      </if>
+      <if test="endTime != null and endTime != null">
+        and create_time &gt;= #{endTime}
+      </if>
+    </where>
+  </select>
   <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
     delete from adv_user
     where user_id = #{userId,jdbcType=INTEGER}
+  </delete>
+  <delete id="batchDeleteUser" parameterType="java.lang.Integer">
+    delete from adv_user where user_id in
+    <foreach collection="list" item="userId" open="(" separator="," close=")">
+      #{userId}
+    </foreach>
   </delete>
   <insert id="insert" parameterType="com.suma.pojo.AdvUser" >
     insert into adv_user (user_id, dept_id, user_name, 
@@ -37,7 +71,7 @@
       status, login_ip, login_date, 
       create_by, create_time, update_by, 
       update_time, remark)
-    values (#{userId,jdbcType=INTEGER}, #{deptId,jdbcType=INTEGER}, #{userName,jdbcType=VARCHAR}, 
+    values (#{userId,jdbcType=INTEGER}, #{deptId,jdbcType=INTEGER}, #{userName,jdbcType=VARCHAR},
       #{password,jdbcType=VARCHAR}, #{phoneNumber,jdbcType=VARCHAR}, #{salt,jdbcType=VARCHAR}, 
       #{status,jdbcType=CHAR}, #{loginIp,jdbcType=VARCHAR}, #{loginDate,jdbcType=TIMESTAMP}, 
       #{createBy,jdbcType=VARCHAR}, #{createTime,jdbcType=TIMESTAMP}, #{updateBy,jdbcType=VARCHAR}, 

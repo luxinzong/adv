@@ -4,9 +4,10 @@ import lombok.Data;
 import lombok.ToString;
 
 import java.util.Date;
+import java.util.List;
 
 @Data
-public class AdvUser {
+public class AdvUser extends BasePojo{
 
     private Integer userId;
 
@@ -26,6 +27,6 @@ public class AdvUser {
 
     private Date loginDate;
 
-
+    private List<Integer> roleIds;
 
 }

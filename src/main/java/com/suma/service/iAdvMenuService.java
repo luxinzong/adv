@@ -4,6 +4,7 @@ import com.suma.dto.AdvMenuDto;
 import com.suma.pojo.AdvMenu;
 
 import java.util.List;
+import java.util.Set;
 
 /**
  * @Autor gaozhongbao
@@ -23,9 +24,13 @@ public interface iAdvMenuService {
 
     public List<AdvMenuDto> selectMenuTree();
 
+    public Set<String> selectMenuPermsByUserId(Integer userId);
+
     public List<AdvMenuDto> selectAdvMenuList(AdvMenu advMenu);
 
     public List<AdvMenuDto> selectMenuTreeStatusIsValid();
+
+    public boolean checkRoleInMenuByMenuId(Integer menuId);
 
     public int selectAdvMenuCountByParentId(Integer parentId);
 

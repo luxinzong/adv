@@ -45,15 +45,20 @@ public class CommonConstants {
     /**
      * 文件上传路径
      */
-    public static final String MATERIAL_FILE_PATH = "e:/logs/adv/";
+    public static final String MATERIAL_FILE_PATH = "/usr/share/nginx/html/download/adv/";
 
     /**
      * 文件获取路径
      */
-    public static final String MATERIAL_FILE_URL = "http://192.166.65.174:80/download/";
+    public static final String MATERIAL_FILE_URL = "http://192.166.65.174:80/download/adv/";
 
-    /**
-     *
-     */
-    public static final String REQUEST_START_TIME = "requestStartTime";
+    public static final String LOGIN_SUCCESS = "登陆成功";
+
+    public static final String NO_LOGIN = "请登录";
+
+    public static final String NO_PERMS = "没有对应权限";
+
+    public static final String LOGIN_OUT = "登出成功";
+
+
 }

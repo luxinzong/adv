@@ -85,7 +85,7 @@
         #{mark,jdbcType=VARCHAR},
       </if>
       <if test="checkTime != null" >
-        #{checkTime,jdbcType=TIMESTAMP},
+       sysdate(),
       </if>
     </trim>
   </insert>

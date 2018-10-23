@@ -1,15 +1,6 @@
 package com.suma.vo;
-
 import lombok.Data;
 
-import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotEmpty;
-
-/**
- * @auther: zhangzhaoyuan
- * @date: 2018/10/17
- * @description: 频道查询
- */
 @Data
 public class ServiceQueryVO {
 

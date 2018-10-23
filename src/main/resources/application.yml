@@ -1,7 +1,7 @@
 #开发配置
 server:
   #默认端口
-  port: 8080
+  port: 16000
   servlet:
     context-path: /adv
   tomcat:
@@ -25,4 +25,23 @@ spring:
 mybatis:
   mapper-locations: classpath*:/mapper/*.xml
   type-aliases-package: com.suma.pojo
+
+
+#Shiro
+shiro:
+  user:
+    #登录地址
+    loginUrl: /login
+    #权限认证失败地址
+    unauthorizedUrl: /unauth
+  cookie:
+      # 设置Cookie的域名 默认空，即当前访问的域名
+      domain:
+      # 设置cookie的有效访问路径
+      path: /
+      # 设置HttpOnly属性
+      httpOnly: true
+      # 设置Cookie的过期时间，天为单位
+      maxAge: 30
+
 

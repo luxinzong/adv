@@ -8,6 +8,8 @@ import java.util.List;
 public interface AdvRoleMapper {
     int deleteByPrimaryKey(Integer roleId);
 
+    int batchDelete(List<Integer> roleIds);
+
     int insert(AdvRole record);
 
     int insertSelective(AdvRole record);
@@ -15,6 +17,8 @@ public interface AdvRoleMapper {
     AdvRole selectByPrimaryKey(Integer roleId);
 
     AdvRole selectByAdvRoleName(@Param("roleName") String roleName);
+
+    List<String> selectAdvRoleKeys(List<Integer> roleIds);
 
     List<AdvRole> selectRoleList(@Param("roleName")String roleName,@Param("roleKey")String roleKey,
                                     @Param("status")String status,@Param("startTime")String startTime,

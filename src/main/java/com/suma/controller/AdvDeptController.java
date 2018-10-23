@@ -8,8 +8,10 @@ import com.suma.service.iAdvDeptService;
 import com.suma.utils.Result;
 import com.suma.vo.AdvDeptVO;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.util.CollectionUtils;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
@@ -34,7 +36,7 @@ public class AdvDeptController extends BaseController{
      * @param advDeptVO
      * @return
      */
-    @PostMapping("/add")
+    @RequestMapping("/add")
     public Result addAdvDept(@RequestBody @Validated AdvDeptVO advDeptVO){
         AdvDept advDept = new AdvDept();
         BeanUtils.copyProperties(advDeptVO,advDept);
@@ -137,6 +139,21 @@ public class AdvDeptController extends BaseController{
 
         List<AdvDept> advDeptList = advDeptService.selectAdvDeptList(advDept);
         return Result.success(advDeptList);
+    }
+
+    /**
+     * 查询有效状态树
+     *
+     * @return
+     */
+    @GetMapping("/selectValidDept")
+    public Result selectValidDept(){
+        List<AdvDeptDto> advDeptDtoList = advDeptService.selectDeptTreeStatusIsValid();
+        if(CollectionUtils.isEmpty(advDeptDtoList)){
+            return Result.selectIsNullError();
+        }
+
+        return Result.success(advDeptDtoList);
     }
 
 

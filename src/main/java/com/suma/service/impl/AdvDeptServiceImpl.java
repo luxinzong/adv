@@ -1,9 +1,11 @@
 package com.suma.service.impl;
 
+import com.google.common.base.Strings;
 import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Multimap;
+import com.suma.constants.CommonConstants;
 import com.suma.constants.ExceptionConstants;
 import com.suma.dao.AdvDeptMapper;
 import com.suma.dto.AdvDeptDto;
@@ -11,6 +13,7 @@ import com.suma.exception.DeptException;
 import com.suma.pojo.AdvDept;
 import com.suma.service.iAdvDeptService;
 import com.suma.utils.AncestorUtil;
+import com.suma.utils.ShiroUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
@@ -56,7 +59,18 @@ public class AdvDeptServiceImpl implements iAdvDeptService {
         //先获取全部部门信息
         List<AdvDept> deptList = advDeptMapper.selectAdvDeptAll();
         //进行拼装部门树
-        return CollectionUtils.isEmpty(deptList)?null:produceAdvDeptTree(deptList,AncestorUtil.ROOT);
+        return CollectionUtils.isEmpty(deptList)?null:produceAdvDeptTree(deptList,AncestorUtil.ROOT,null);
+    }
+
+    /**
+     * 查询有效状态树
+     *
+     * @return
+     */
+    @Override
+    public List<AdvDeptDto> selectDeptTreeStatusIsValid() {
+        List<AdvDept> deptList = advDeptMapper.selectAdvDeptAll();
+        return produceAdvDeptTree(deptList,AncestorUtil.ROOT,CommonConstants.NORMAL_STATUS);
     }
 
     /**
@@ -90,14 +104,14 @@ public class AdvDeptServiceImpl implements iAdvDeptService {
         return advDeptDtoList;
     }
 
-    private List<AdvDeptDto> produceAdvDeptTree(List<AdvDept> advDeptList,String ancestor){
+    private List<AdvDeptDto> produceAdvDeptTree(List<AdvDept> advDeptList,String ancestor,String status){
         //对部门id和部门名称进行存储以便后续拼装使用
         //生成dtoList
         List<AdvDeptDto> dtoList = produceAdvDeptDto(advDeptList);
-        return advDeptListToTree(dtoList,ancestor);
+        return advDeptListToTree(dtoList,ancestor,status);
     }
 
-    private List<AdvDeptDto> advDeptListToTree(List<AdvDeptDto> deptDtoList,String ancestor){
+    private List<AdvDeptDto> advDeptListToTree(List<AdvDeptDto> deptDtoList,String ancestor,String status){
         //如果deptDtoList为空，直接新生成一个list
         if(CollectionUtils.isEmpty(deptDtoList)){
             return Lists.newArrayList();
@@ -109,9 +123,19 @@ public class AdvDeptServiceImpl implements iAdvDeptService {
         //遍历deptDtoList
         deptDtoList.forEach(deptDto -> {
             //根据ancestor,存储对应dept对象
-            ancestorMutimap.put(deptDto.getAncestors(),deptDto);
-            if(deptDto.getAncestors().equals(ancestor)){//todo 代码优化
-                rootList.add(deptDto);
+            if(Strings.isNullOrEmpty(status)){
+                ancestorMutimap.put(deptDto.getAncestors(),deptDto);
+                if(deptDto.getAncestors().equals(ancestor)){
+                    rootList.add(deptDto);
+                }
+            }else{
+                if(deptDto.getStatus().equals(status)){
+                    ancestorMutimap.put(deptDto.getAncestors(),deptDto);
+                    int x;//todo 优化
+                }
+                if(deptDto.getAncestors().equals(ancestor) && deptDto.getStatus().equals(status)){
+                    rootList.add(deptDto);
+                }
             }
         });
         //对root按照从大到小排序
@@ -192,7 +216,7 @@ public class AdvDeptServiceImpl implements iAdvDeptService {
         }else{//当前部门没有父部门
             advDept.setAncestors(AncestorUtil.ROOT);
         }
-        //todo 登录工具添加登录用户名
+//        advDept.setCreateBy(ShiroUtils.getUser().getUserName());
         return advDeptMapper.insertSelective(advDept);
     }
 
@@ -252,7 +276,7 @@ public class AdvDeptServiceImpl implements iAdvDeptService {
         }else{
             advDept.setAncestors(parentAdvDept.getAncestors() + "," + advDept.getParentId());
         }
-        //todo 添加修改用户名
+//        advDept.setUpdateBy(ShiroUtils.getUser().getUserName());
         return advDeptMapper.updateByPrimaryKeySelective(advDept);
     }
 

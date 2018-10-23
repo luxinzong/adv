@@ -5,6 +5,7 @@ import com.suma.dto.AdvRoleDto;
 import com.suma.pojo.AdvRole;
 
 import java.util.List;
+import java.util.Set;
 
 /**
  * @Autor gaozhongbao
@@ -20,9 +21,19 @@ public interface iAdvRoleService {
      */
     public List<AdvRole> selectRoleAll();
 
-
+    /**
+     * 查询角色列表
+     *
+     * @param roleName
+     * @param roleKey
+     * @param status
+     * @param startTime
+     * @param endTime
+     * @return
+     */
     public PageInfo<AdvRole> selectRoleList(String roleName, String roleKey, String status,
                                    String startTime, String endTime);
+
 
     /**
      * 新增保存角色信息
@@ -49,11 +60,31 @@ public interface iAdvRoleService {
     public int deleteRoleById(Integer advRoleId);
 
     /**
+     * 批量删除角色
+     *
+     * @param advRoleIds
+     * @return
+     */
+    public int deleteRoleByIds(List<Integer> advRoleIds);
+
+    /**
      * 通过id查询角色信息
      *
      * @param advRoleId
      * @return
      */
     public AdvRole selectRoleById(Integer advRoleId);
+
+    /**
+     * 根据用户id查询对应角色id
+     *
+     * @param userId
+     * @return
+     */
+    public Set<String> selectRoleKeys(Integer userId);
+
+
+
+
 
 }

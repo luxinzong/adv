@@ -1,7 +1,6 @@
+
 package com.suma.service;
 
-import com.suma.pojo.NetworkInfo;
-import com.suma.pojo.NetworkInfoExample;
 import com.suma.pojo.TsInfo;
 import com.suma.pojo.TsInfoExample;
 

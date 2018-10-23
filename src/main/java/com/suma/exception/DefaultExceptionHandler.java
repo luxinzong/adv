@@ -1,7 +1,12 @@
 package com.suma.exception;
 
 
+import com.suma.constants.ExceptionConstants;
 import com.suma.utils.Result;
+import org.apache.shiro.authc.AuthenticationException;
+import org.apache.shiro.authz.AuthorizationException;
+import org.apache.tomcat.util.http.parser.Authorization;
+import org.omg.CORBA.UserException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.validation.BindException;
@@ -41,6 +46,19 @@ public class DefaultExceptionHandler {
         return Result.error(e.getMessage());
     }
 
+    @ExceptionHandler(AdvMaterialException.class)
+    public Result advMaterialException(AdvMaterialException e) {
+        log.error(e.getMessage(), e);
+        return Result.error(e.getMessage());
+    }
+
+
+    @ExceptionHandler(AdvCheckException.class)
+    public Result advCheckException(AdvCheckException e) {
+        log.error(e.getMessage(), e);
+        return Result.error(e.getMessage());
+    }
+
     @ExceptionHandler(AdvFlyWordException.class)
     public Result advFlyWordException(AdvFlyWordException e) {
         log.error(e.getMessage(), e);
@@ -57,7 +75,29 @@ public class DefaultExceptionHandler {
         log.error(e.getMessage(), e);
         return Result.error(e.getMessage());
     }
+    @ExceptionHandler(UserException.class)
+    public Result userException(UserException e){
+        log.error(e.getMessage(),e);
+        return Result.error(e.getMessage());
+    }
+    @ExceptionHandler(AuthorizationException.class)
+    public Result authorizationException(AuthorizationException e){
+        log.error(e.getMessage(),e);
+        return Result.error(ExceptionConstants.NO_MENU_PERMISSION);
+    }
+    @ExceptionHandler(LoginException.class)
+    public Result loginException(LoginException e){
+        log.error(e.getMessage(),e);
+        return Result.error(e.getMessage());
+    }
 
+
+        /**'
+         * 通过form表单传递参数异常
+         *
+         * @param bindException
+         * @return
+         */
 
     /**
      * '
@@ -77,7 +117,6 @@ public class DefaultExceptionHandler {
         });
         return Result.error(stringBuilder.toString());
     }
-
 
     /**
      * 通过json传递，出现参数错误异常

@@ -16,6 +16,10 @@
         </foreach>
     </insert>
 
+    <select id="selectCountRoleMenuByMenuId" resultType="java.lang.Integer">
+      select count(role_id) from adv_role_menu where menu_id = #{menuId}
+    </select>
+
     <select id="selectMenuIdsByAdvRoleId" resultType="java.lang.Integer" parameterType="java.lang.Integer">
         select menu_id from adv_role_menu where role_id = #{roleId};
     </select>
@@ -24,5 +28,10 @@
         delete from adv_role_menu where role_id = #{roleId};
     </delete>
 
-
+    <delete id="batchDelete" parameterType="java.lang.Integer">
+        delete from adv_role_menu where role_id in
+        <foreach collection="list" item="roleId" open="(" separator="," close=")">
+            #{roleId}
+        </foreach>
+    </delete>
 </mapper>

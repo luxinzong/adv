@@ -107,6 +107,9 @@ public interface iAdvDeptService {
      */
     public int getAdvDeptCount();
 
+
+    public List<AdvDeptDto> selectDeptTreeStatusIsValid();
+
 }
 
 

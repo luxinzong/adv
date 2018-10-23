@@ -1,9 +1,9 @@
+
 package com.suma.service.impl;
 
 import com.suma.dao.NetworkInfoMapper;
 import com.suma.pojo.NetworkInfo;
 import com.suma.pojo.NetworkInfoExample;
-import com.suma.service.BaseService;
 import com.suma.service.NetworkService;
 import org.springframework.stereotype.Service;
 

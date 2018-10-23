@@ -58,6 +58,12 @@
     SELECT count(*) FROM adv_menu
       WHERE menu_name = #{menuName};
   </select>
+  <select id="selectAdvMenuPerms" parameterType="java.lang.Integer" resultType="java.lang.String">
+    select perms from adv_menu where menu_id in
+    <foreach collection="list" item="item" open="(" separator="," close=")">
+      #{item}
+    </foreach>
+  </select>
   <select id="getMaxAdvMenuOrderNum" parameterType="java.lang.Integer" resultType="java.lang.Integer">
     select IFNULL(MAX(order_num),0) from adv_menu
     where parent_id = #{parentId};

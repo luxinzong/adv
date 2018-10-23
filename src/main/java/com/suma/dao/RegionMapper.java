@@ -1,10 +1,8 @@
 package com.suma.dao;
-
 import com.suma.pojo.Region;
 import com.suma.pojo.RegionExample;
-import java.util.List;
 import org.apache.ibatis.annotations.Param;
-
+import java.util.List;
 public interface RegionMapper {
     long countByExample(RegionExample example);
 

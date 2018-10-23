@@ -21,6 +21,14 @@ public interface AdvRoleMenuMapper {
     public int deleteAdvRoleMenuByAdvRoleId(Integer advRoleId);
 
     /**
+     * 批量删除角色信息
+     *
+     * @param roleIds
+     * @return
+     */
+    public int batchDelete(List<Integer> roleIds);
+
+    /**
      * 批量删除角色菜单关联信息
      *
      * @param ids

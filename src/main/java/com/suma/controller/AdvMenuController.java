@@ -2,7 +2,6 @@ package com.suma.controller;
 
 import com.suma.constants.ExceptionConstants;
 import com.suma.dto.AdvMenuDto;
-import com.suma.exception.DefaultExceptionHandler;
 import com.suma.exception.MenuException;
 import com.suma.pojo.AdvMenu;
 import com.suma.service.iAdvMenuService;
@@ -11,6 +10,7 @@ import com.suma.vo.AdvMenuVO;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.util.CollectionUtils;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
@@ -57,7 +57,9 @@ public class AdvMenuController extends BaseController{
         if(advMenuService.selectAdvMenuCountByParentId(menuId) > 0){
             throw new MenuException(ExceptionConstants.MENU_EXCEPTION_EXIST_NEXT_DEPT);
         }
-        //todo 检测是否有角色绑定菜单
+        if(advMenuService.checkRoleInMenuByMenuId(menuId)){
+            throw new MenuException(ExceptionConstants.MENU_EXCEPTION_EXIST_ROLE_BIND_MENU);
+        }
 
         return toResult(advMenuService.deleteMenuById(menuId));
     }
@@ -119,6 +121,16 @@ public class AdvMenuController extends BaseController{
 
         List<AdvMenuDto> menuDtoList = advMenuService.selectAdvMenuList(advMenu);
         return Result.success(menuDtoList);
+    }
+
+    @GetMapping("/getValidMenuTree")
+    public Result selectMenuTreeStatusIsValid(){
+        List<AdvMenuDto> advMenuDtoList = advMenuService.selectMenuTreeStatusIsValid();
+        if(CollectionUtils.isEmpty(advMenuDtoList)){
+            return Result.selectIsNullError();
+        }
+
+        return Result.success(advMenuDtoList);
     }
 
 }

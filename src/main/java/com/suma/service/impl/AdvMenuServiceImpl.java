@@ -1,26 +1,23 @@
 package com.suma.service.impl;
 
 import com.google.common.base.Strings;
-import com.google.common.collect.ArrayListMultimap;
-import com.google.common.collect.Lists;
-import com.google.common.collect.Maps;
-import com.google.common.collect.Multimap;
+import com.google.common.collect.*;
 import com.suma.constants.CommonConstants;
 import com.suma.constants.ExceptionConstants;
 import com.suma.dao.AdvMenuMapper;
+import com.suma.dao.AdvRoleMenuMapper;
+import com.suma.dao.AdvUseRoleMapper;
 import com.suma.dto.AdvMenuDto;
 import com.suma.exception.MenuException;
 import com.suma.pojo.AdvMenu;
 import com.suma.service.iAdvMenuService;
 import com.suma.utils.AncestorUtil;
+import com.suma.utils.ShiroUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * @Autor gaozhongbao
@@ -32,6 +29,10 @@ public class AdvMenuServiceImpl implements iAdvMenuService {
 
     @Autowired
     private AdvMenuMapper advMenuMapper;
+    @Autowired
+    private AdvUseRoleMapper advUseRoleMapper;
+    @Autowired
+    private AdvRoleMenuMapper advRoleMenuMapper;
 
     /**
      * 添加部门
@@ -70,7 +71,7 @@ public class AdvMenuServiceImpl implements iAdvMenuService {
         }
         //默认状态为显示
         advMenu.setStatus(CommonConstants.NORMAL_STATUS);
-        //todo 登录工具添加用户名
+//        advMenu.setCreateBy(ShiroUtils.getUser().getUserName());
         return advMenuMapper.insertSelective(advMenu);
     }
 
@@ -95,7 +96,7 @@ public class AdvMenuServiceImpl implements iAdvMenuService {
         }else{
             advMenu.setAncestors(parentAdvMenu.getAncestors() + "," +advMenu.getParentId());
         }
-        //todo 添加修改用户名
+//        advMenu.setUpdateBy(ShiroUtils.getUser().getUserName());
         return advMenuMapper.updateByPrimaryKeySelective(advMenu);
     }
 
@@ -136,6 +137,28 @@ public class AdvMenuServiceImpl implements iAdvMenuService {
         List<AdvMenu> menuList = advMenuMapper.selectAdvMenuAll();
         return produceAdvMenuTree(menuList,null);
     }
+
+    public Set<String> selectMenuPermsByUserId(Integer userId){
+        //通过userId查询对应角色ids
+        List<Integer> roleIds = advUseRoleMapper.selectRoleIdsByUserId(userId);
+        if(CollectionUtils.isEmpty(roleIds)){
+            return null;
+        }
+
+        List<Integer> menuIds = Lists.newArrayList();
+        roleIds.forEach(roleId ->{
+            List<Integer> tempMenuIds = advRoleMenuMapper.selectMenuIdsByAdvRoleId(roleId);
+            tempMenuIds.forEach(tempMenuId ->{
+                menuIds.add(tempMenuId);
+            });
+        });
+        //通过角色id查询菜单权限
+        List<String> menuPerms = advMenuMapper.selectAdvMenuPerms(menuIds);
+        Set<String> permsSet = Sets.newHashSet(menuPerms);
+
+        return permsSet;
+    }
+
 
     /**
      * 有效菜单管理树
@@ -289,4 +312,11 @@ public class AdvMenuServiceImpl implements iAdvMenuService {
         return advMenuMapper.deleteByPrimaryKey(menuId);
     }
 
+    @Override
+    public boolean checkRoleInMenuByMenuId(Integer menuId) {
+        int rows = advRoleMenuMapper.selectCountRoleMenuByMenuId(menuId);
+
+        return rows>0?true:false;
+
+    }
 }

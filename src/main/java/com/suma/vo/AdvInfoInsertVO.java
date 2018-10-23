@@ -1,6 +1,9 @@
 package com.suma.vo;
 
+import com.suma.pojo.AdvMaterial;
 import lombok.Data;
+
+import java.util.List;
 
 /**
  * @auther: luxinzong
@@ -9,6 +12,9 @@ import lombok.Data;
  */
 @Data
 public class AdvInfoInsertVO {
+
+    private Integer advTypeId;//广告类型
+
     private String name;//广告名称
 
     private String start;//起始日期
@@ -23,9 +29,5 @@ public class AdvInfoInsertVO {
 
     private Integer materialType;//素材类型
 
-    private String fileName;//资源文件名
-
-    private Integer duration;//持续时间
-
-    private Integer sequence;//播放顺序
+    private List<InfoMaterialVO> infoMaterialVOS;//对应关系列表
 }

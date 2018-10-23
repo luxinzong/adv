@@ -3,6 +3,7 @@ package com.suma.utils;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.Date;
 
 /**
@@ -32,6 +33,17 @@ public class DateUtil {
     public static Date dateFormat2(String str) throws ParseException {
         DateFormat dateFormat = new SimpleDateFormat("HH:mm:ss");
         return  dateFormat.parse(str);
+    }
+
+    /**
+     * 获取当前年
+     * @return
+     */
+    public static String getYear(Date date) {
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTime(date);
+        int year = calendar.get(Calendar.YEAR);
+        return String.valueOf(year);
     }
 
 }

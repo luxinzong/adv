@@ -21,6 +21,7 @@ public class WebAppConfig implements WebMvcConfigurer {
 
         //需要统一日志处理，在这里加路径
         registry.addInterceptor(new HttpInterceptor()).addPathPatterns("/system/role/**");
+        registry.addInterceptor(new HttpInterceptor()).addPathPatterns("/login");
         registry.addInterceptor(new HttpInterceptor()).addPathPatterns("/location/**");
     }
 }

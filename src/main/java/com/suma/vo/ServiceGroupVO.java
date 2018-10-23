@@ -1,6 +1,6 @@
+
 package com.suma.vo;
 
-import com.suma.pojo.ServiceGroup;
 import com.suma.utils.Insert;
 import com.suma.utils.Update;
 import lombok.Data;

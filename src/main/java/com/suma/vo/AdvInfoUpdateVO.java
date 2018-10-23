@@ -29,10 +29,6 @@ public class AdvInfoUpdateVO {
 
     private Integer status;//广告状态
 
-    private Integer duration;//持续时间
-
-    private String fileName;//资源文件名
-
-    private Integer sequence;//播放顺序
+    private List<InfoMaterialVO> infoMaterialVOS;//广告资源列表
 
 }
