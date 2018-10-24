@@ -1,9 +1,11 @@
 package com.suma.vo;
 
 
+import com.suma.pojo.InfoMaterial;
 import lombok.Data;
 
 import java.util.Date;
+import java.util.List;
 
 
 /**
@@ -24,12 +26,17 @@ public class AdvInfoQueryVO {
 
     private Date end;//广告终止日期
 
+    private Date periodTimeStart;//有效期生效日期
+
+    private Date periodTimeEnd;//有效期结束日期
+
     private Integer status;//广告状态
 
     private Integer pageSize;//页面条数
 
     private Integer pageNum;//页码数
 
+    private List<InfoMaterialVO> infoMaterialsVO;
 
 
 }

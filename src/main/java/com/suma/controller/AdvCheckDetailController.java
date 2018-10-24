@@ -110,6 +110,7 @@ public class AdvCheckDetailController extends BaseController{
      */
     @RequestMapping(value = "update", method = RequestMethod.POST)
     public Result update(AdvCheckDetail advCheckDetail) {
+        System.out.println(advCheckDetail);
         if (advCheckDetail.getId() == null || advCheckDetail.getAdvInfoId() == null) {
             throw new AdvCheckException(ExceptionConstants.ADV_CHECK_REQUESTPARAM_IS_NULL);
         }

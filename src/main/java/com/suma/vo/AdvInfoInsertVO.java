@@ -13,7 +13,7 @@ import java.util.List;
 @Data
 public class AdvInfoInsertVO {
 
-    private Integer advTypeId;//广告类型
+    private Long advTypeId;//广告类型
 
     private String name;//广告名称
 

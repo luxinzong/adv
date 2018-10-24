@@ -469,7 +469,7 @@
       select <include refid="Base_Column_List"/>
       from adv_info
       <where>
-        <if test="map.name != null and map.name != ''"> NAME = #{map.name}</if>
+        <if test="map.name != null and map.name != ''"> NAME LIKE concat('%',#{map.name},'%')</if>
         <if test="map.status != null and map.status != ''">and STATUS=#{map.status}</if>
         <if test="map.startDate != null and map.startDate != ''">and START_DATE &lt;=#{map.startDate}</if>
         <if test="map.endDate != null and map.endDate != ''">and END_DATE &gt;= #{map.endDate}</if>

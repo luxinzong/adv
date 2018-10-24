@@ -13,10 +13,8 @@ import com.suma.service.AdvMaterialService;
 import com.suma.service.AdvTypeService;
 import com.suma.service.InfoMaterialService;
 import com.suma.utils.Result;
-import com.suma.vo.AdvInfoInsertVO;
-import com.suma.vo.AdvInfoUpdateVO;
-import com.suma.vo.AdvMaterialVO;
-import com.suma.vo.InfoMaterialVO;
+import com.suma.vo.*;
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeanUtils;
@@ -62,7 +60,31 @@ public class AdvInfoContoller extends BaseController {
      */
     @RequestMapping(value = "queryById")
     public Result query(Long id) {
-        return Result.success(advInfoService.findById(id));
+        AdvInfoQueryVO advInfoQueryVO = new AdvInfoQueryVO();
+        InfoMaterialExample example = new InfoMaterialExample();
+        example.createCriteria().andAdvInfoIdEqualTo(id);
+        List<InfoMaterial> infoMaterials = infoMaterialService.selectByExample(example);
+        List<InfoMaterialVO> infoMaterialVOS = new ArrayList<>();
+        for (InfoMaterial infoMaterial : infoMaterials) {
+            if (advMaterialService.findByPK(infoMaterial.getMaterialId()) == null) {
+                throw new AdvMaterialException(ExceptionConstants.ADV_MATERIAL_IS_NULL);
+            }
+            String fileName = advMaterialService.findByPK(infoMaterial.getMaterialId()).getFileName();
+            InfoMaterialVO infoMaterialVO = new InfoMaterialVO();
+            BeanUtils.copyProperties(infoMaterial,infoMaterialVO);
+            infoMaterialVO.setFileName(fileName);
+            infoMaterialVOS.add(infoMaterialVO);
+        }
+        AdvInfo advInfo = advInfoService.findById(id);
+        if (advInfo == null) {
+            throw new AdvInfoException(ExceptionConstants.INFO_EXCEPTION_INFO_IS_NOT_EXIT);
+        }
+        BeanUtils.copyProperties(advInfo, advInfoQueryVO);
+        System.out.println(advInfoQueryVO);
+        advInfoQueryVO.setStart(advInfo.getStartDate());
+        advInfoQueryVO.setEnd(advInfo.getEndDate());
+        advInfoQueryVO.setInfoMaterialsVO(infoMaterialVOS);
+        return Result.success(advInfoQueryVO);
     }
 
     /**
@@ -104,10 +126,8 @@ public class AdvInfoContoller extends BaseController {
             //将广告信息和查询出来的总数存入PageInfo中返回给前端
             listPageInfo.setList(advInfoList);
             listPageInfo.setTotal(advInfoList.size());
-        } else {
-            List<AdvInfo> advInfoList = new ArrayList<AdvInfo>();
-            listPageInfo.setList(advInfoList);
         }
+        System.out.println(listPageInfo);
         return Result.success(listPageInfo);
     }
 
@@ -120,6 +140,9 @@ public class AdvInfoContoller extends BaseController {
     @Transactional(rollbackFor = Exception.class)
     @RequestMapping(value = "delete", method = RequestMethod.POST)
     public Result deleteAdvInfo(Long id) {
+        if (id == null) {
+            throw new AdvInfoException(ExceptionConstants.INFO_EXCEPTION_MISSING_REQUIRED_PARAMS);
+        }
         System.out.println(id);
         int a = advInfoService.deleteByPK(id);
         InfoMaterialExample example = new InfoMaterialExample();
@@ -139,6 +162,9 @@ public class AdvInfoContoller extends BaseController {
     @Transactional(rollbackFor = Exception.class)
     @RequestMapping(value = "deleteAll", method = RequestMethod.POST)
     public Result deleteAdvInfos(String idsStr) {
+        if (StringUtils.isBlank(idsStr)) {
+            throw new AdvInfoException(ExceptionConstants.INFO_EXCEPTION_MISSING_REQUIRED_PARAMS);
+        }
         String[] ids = idsStr.substring(0, idsStr.lastIndexOf(",")).split(",");
         int count = 0;
         try {
@@ -176,7 +202,9 @@ public class AdvInfoContoller extends BaseController {
     @Transactional(rollbackFor = Exception.class)
     @RequestMapping(value = "insert")
     public Result insertAdvInfo(String data) throws ParseException {
+        System.out.println(data);
         AdvInfoInsertVO advInfoInsertVO = JSON.parseObject(data, AdvInfoInsertVO.class);
+        System.out.println(advInfoInsertVO);
         DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
         DateFormat df = new SimpleDateFormat("HH:mm");
         AdvInfo advInfo = new AdvInfo();
