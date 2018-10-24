@@ -23,6 +23,9 @@ public class ServiceGroupVO {
     @NotNull(groups = {Update.class, Insert.class})
     private String groupName;
 
+    @NotNull(groups = {Update.class, Insert.class})
+    private Integer type;
+
     private String comment;
 
     private Integer regionId;

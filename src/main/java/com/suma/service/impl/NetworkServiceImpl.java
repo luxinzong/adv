@@ -24,7 +24,7 @@ public class NetworkServiceImpl extends BaseServiceImpl<NetworkInfo, NetworkInfo
     }
 
     @Override
-    public Long findPKByNetworkId(Long networkId) {
+    public Long findPKByNetworkId(String networkId) {
         NetworkInfoExample example = new NetworkInfoExample();
         example.createCriteria().andNetworkIdEqualTo(networkId);
         List<NetworkInfo> networkInfos = selectByExample(example);
@@ -35,7 +35,7 @@ public class NetworkServiceImpl extends BaseServiceImpl<NetworkInfo, NetworkInfo
     }
 
     @Override
-    public Long findNetworkIdByPk(Long nid) {
+    public String findNetworkIdByPk(Long nid) {
         NetworkInfo networkInfo = findByPK(nid);
         if (networkInfo != null)
             return networkInfo.getNetworkId();

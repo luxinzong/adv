@@ -3,7 +3,7 @@
 <mapper namespace="com.suma.dao.TsInfoMapper">
   <resultMap id="BaseResultMap" type="com.suma.pojo.TsInfo">
     <id column="ID" jdbcType="BIGINT" property="id" />
-    <result column="TS_ID" jdbcType="BIGINT" property="tsId" />
+    <result column="TS_ID" jdbcType="VARCHAR" property="tsId" />
     <result column="TS_NAME" jdbcType="VARCHAR" property="tsName" />
     <result column="NID" jdbcType="BIGINT" property="nid" />
     <result column="CREATED_USER" jdbcType="VARCHAR" property="createdUser" />
@@ -109,7 +109,7 @@
       NID, CREATED_USER, CREATED_TIME, 
       LAST_EDIT_USER, LAST_EDIT_TIME, REGION
       )
-    values (#{id,jdbcType=BIGINT}, #{tsId,jdbcType=BIGINT}, #{tsName,jdbcType=VARCHAR}, 
+    values (#{id,jdbcType=BIGINT}, #{tsId,jdbcType=VARCHAR}, #{tsName,jdbcType=VARCHAR}, 
       #{nid,jdbcType=BIGINT}, #{createdUser,jdbcType=VARCHAR}, #{createdTime,jdbcType=TIMESTAMP}, 
       #{lastEditUser,jdbcType=VARCHAR}, #{lastEditTime,jdbcType=TIMESTAMP}, #{region,jdbcType=INTEGER}
       )
@@ -150,7 +150,7 @@
         #{id,jdbcType=BIGINT},
       </if>
       <if test="tsId != null">
-        #{tsId,jdbcType=BIGINT},
+        #{tsId,jdbcType=VARCHAR},
       </if>
       <if test="tsName != null">
         #{tsName,jdbcType=VARCHAR},
@@ -188,7 +188,7 @@
         ID = #{record.id,jdbcType=BIGINT},
       </if>
       <if test="record.tsId != null">
-        TS_ID = #{record.tsId,jdbcType=BIGINT},
+        TS_ID = #{record.tsId,jdbcType=VARCHAR},
       </if>
       <if test="record.tsName != null">
         TS_NAME = #{record.tsName,jdbcType=VARCHAR},
@@ -219,7 +219,7 @@
   <update id="updateByExample" parameterType="map">
     update ts_info
     set ID = #{record.id,jdbcType=BIGINT},
-      TS_ID = #{record.tsId,jdbcType=BIGINT},
+      TS_ID = #{record.tsId,jdbcType=VARCHAR},
       TS_NAME = #{record.tsName,jdbcType=VARCHAR},
       NID = #{record.nid,jdbcType=BIGINT},
       CREATED_USER = #{record.createdUser,jdbcType=VARCHAR},
@@ -235,7 +235,7 @@
     update ts_info
     <set>
       <if test="tsId != null">
-        TS_ID = #{tsId,jdbcType=BIGINT},
+        TS_ID = #{tsId,jdbcType=VARCHAR},
       </if>
       <if test="tsName != null">
         TS_NAME = #{tsName,jdbcType=VARCHAR},
@@ -263,7 +263,7 @@
   </update>
   <update id="updateByPrimaryKey" parameterType="com.suma.pojo.TsInfo">
     update ts_info
-    set TS_ID = #{tsId,jdbcType=BIGINT},
+    set TS_ID = #{tsId,jdbcType=VARCHAR},
       TS_NAME = #{tsName,jdbcType=VARCHAR},
       NID = #{nid,jdbcType=BIGINT},
       CREATED_USER = #{createdUser,jdbcType=VARCHAR},

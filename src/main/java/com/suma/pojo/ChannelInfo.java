@@ -6,19 +6,15 @@ import com.suma.utils.Update;
 import javax.validation.constraints.NotNull;
 import java.util.Date;
 
-public class ServiceInfo {
+public class ChannelInfo {
 
-    @NotNull(groups = Update.class)
+    @NotNull(groups = {Update.class})
     private Long id;
 
     @NotNull(groups = {Insert.class, Update.class})
-    private String serviceId;
-
-    private Long tid;
-
+    private String channelId;
     @NotNull(groups = {Insert.class, Update.class})
-    private String serviceName;
-
+    private String channelName;
     @NotNull(groups = {Insert.class, Update.class})
     private Integer type;
 
@@ -44,28 +40,20 @@ public class ServiceInfo {
         this.id = id;
     }
 
-    public String getServiceId() {
-        return serviceId;
+    public String getChannelId() {
+        return channelId;
     }
 
-    public void setServiceId(String serviceId) {
-        this.serviceId = serviceId == null ? null : serviceId.trim();
+    public void setChannelId(String channelId) {
+        this.channelId = channelId == null ? null : channelId.trim();
     }
 
-    public Long getTid() {
-        return tid;
+    public String getChannelName() {
+        return channelName;
     }
 
-    public void setTid(Long tid) {
-        this.tid = tid;
-    }
-
-    public String getServiceName() {
-        return serviceName;
-    }
-
-    public void setServiceName(String serviceName) {
-        this.serviceName = serviceName == null ? null : serviceName.trim();
+    public void setChannelName(String channelName) {
+        this.channelName = channelName == null ? null : channelName.trim();
     }
 
     public Integer getType() {

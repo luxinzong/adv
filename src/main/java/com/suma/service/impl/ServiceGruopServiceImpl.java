@@ -1,6 +1,7 @@
 
 package com.suma.service.impl;
 
+import com.suma.dao.ChannelInfoMapper;
 import com.suma.dao.ServiceGroupMapper;
 import com.suma.dao.ServiceInfoGroupMapper;
 import com.suma.dao.ServiceInfoMapper;
@@ -36,6 +37,8 @@ public class ServiceGruopServiceImpl extends BaseServiceImpl<ServiceGroup, Servi
     private ServiceInfoGroupService serviceInfoGroupService;
     @Autowired
     private ServiceInfoMapper serviceInfoMapper;
+    @Autowired
+    private ChannelInfoMapper channelInfoMapper;
 
     @Override
     public List<ServiceGroup> findByName(String groupName) {
@@ -49,7 +52,7 @@ public class ServiceGruopServiceImpl extends BaseServiceImpl<ServiceGroup, Servi
     public void save(ServiceGroup serviceGroup, List<String> serviceNames) {
         try {
             serviceGroupMapper.insert(serviceGroup);
-            addInfoGroup(serviceGroup.getSgid(), serviceNames);
+            addInfoGroup(serviceGroup, serviceNames);
         } catch (Exception e) {
             e.printStackTrace();
             throw new BaseException("增加失败");
@@ -62,23 +65,38 @@ public class ServiceGruopServiceImpl extends BaseServiceImpl<ServiceGroup, Servi
         serviceInfoGroupService.deleteByGroupId(serviceGroup.getSgid());
         try {
             serviceGroupMapper.updateByPrimaryKey(serviceGroup);
-            addInfoGroup(serviceGroup.getSgid(), serviceNames);
+            addInfoGroup(serviceGroup, serviceNames);
         } catch (Exception e) {
             e.printStackTrace();
             throw new BaseException("修改失败");
         }
     }
 
-    private void addInfoGroup(Long gId, List<String> serviceNames) {
-        for (String serviceName : serviceNames) {
-            ServiceInfoGroup serviceInfoGroup = new ServiceInfoGroup();
-            serviceInfoGroup.setSgid(gId);
-            ServiceInfoExample example = new ServiceInfoExample();
-            example.createCriteria().andServiceNameEqualTo(serviceName);
-            List<ServiceInfo> serviceInfos = serviceInfoMapper.selectByExample(example);
-            if (serviceInfos != null && serviceInfos.size() > 0)
-                serviceInfoGroup.setSid(serviceInfos.get(0).getId());
-            serviceInfoGroupService.save(serviceInfoGroup);
+    private void addInfoGroup(ServiceGroup serviceGroup, List<String> serviceNames) {
+        if (serviceGroup.getType() == 0) {
+            for (String serviceName : serviceNames) {
+                ServiceInfoGroup serviceInfoGroup = new ServiceInfoGroup();
+                serviceInfoGroup.setSgid(serviceGroup.getSgid());
+                ServiceInfoExample example = new ServiceInfoExample();
+                example.createCriteria().andServiceNameEqualTo(serviceName);
+                List<ServiceInfo> serviceInfos = serviceInfoMapper.selectByExample(example);
+                if (serviceInfos != null && serviceInfos.size() > 0) {
+                    serviceInfoGroup.setSid(serviceInfos.get(0).getId());
+                    serviceInfoGroupService.save(serviceInfoGroup);
+                }
+            }
+        } else {
+            for (String serviceName : serviceNames) {
+                ServiceInfoGroup serviceInfoGroup = new ServiceInfoGroup();
+                serviceInfoGroup.setSgid(serviceGroup.getSgid());
+                ChannelInfoExample example = new ChannelInfoExample();
+                example.createCriteria().andChannelNameEqualTo(serviceName);
+                List<ChannelInfo> channelInfos = channelInfoMapper.selectByExample(example);
+                if (channelInfos != null && channelInfos.size() > 0) {
+                    serviceInfoGroup.setSid(channelInfos.get(0).getId());
+                    serviceInfoGroupService.save(serviceInfoGroup);
+                }
+            }
         }
     }
 }

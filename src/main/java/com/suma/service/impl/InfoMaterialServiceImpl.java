@@ -1,9 +1,11 @@
 package com.suma.service.impl;
 
+import com.suma.dao.AdvInfoMapper;
 import com.suma.dao.InfoMaterialMapper;
 import com.suma.pojo.InfoMaterial;
 import com.suma.pojo.InfoMaterialExample;
 import com.suma.service.InfoMaterialService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
@@ -17,5 +19,13 @@ public class InfoMaterialServiceImpl extends BaseServiceImpl<InfoMaterial,InfoMa
     @Resource
     public void setBaseDao(InfoMaterialMapper baseDao) {
         super.setBaseDao(baseDao);
+    }
+
+    @Autowired
+    InfoMaterialMapper infoMaterialMapper;
+
+    @Override
+    public int updateByDoubleId(InfoMaterial infoMaterial) {
+        return infoMaterialMapper.updateByDoubleId(infoMaterial);
     }
 }

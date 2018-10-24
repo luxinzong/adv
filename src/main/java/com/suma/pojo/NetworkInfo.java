@@ -2,13 +2,12 @@ package com.suma.pojo;
 
 import java.util.Date;
 
-
 public class NetworkInfo {
     private Long id;
 
-    private Long networkId;
+    private String networkId;
 
-    private Long orNetworkId;
+    private String orNetworkId;
 
     private String networkName;
 
@@ -30,20 +29,20 @@ public class NetworkInfo {
         this.id = id;
     }
 
-    public Long getNetworkId() {
+    public String getNetworkId() {
         return networkId;
     }
 
-    public void setNetworkId(Long networkId) {
-        this.networkId = networkId;
+    public void setNetworkId(String networkId) {
+        this.networkId = networkId == null ? null : networkId.trim();
     }
 
-    public Long getOrNetworkId() {
+    public String getOrNetworkId() {
         return orNetworkId;
     }
 
-    public void setOrNetworkId(Long orNetworkId) {
-        this.orNetworkId = orNetworkId;
+    public void setOrNetworkId(String orNetworkId) {
+        this.orNetworkId = orNetworkId == null ? null : orNetworkId.trim();
     }
 
     public String getNetworkName() {

@@ -1,16 +1,18 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.suma.dao.NetworkInfoMapper">
-  <resultMap id="BaseResultMap" type="com.suma.pojo.NetworkInfo">
+<mapper namespace="com.suma.dao.ChannelInfoMapper">
+  <resultMap id="BaseResultMap" type="com.suma.pojo.ChannelInfo">
     <id column="ID" jdbcType="BIGINT" property="id" />
-    <result column="NETWORK_ID" jdbcType="VARCHAR" property="networkId" />
-    <result column="OR_NETWORK_ID" jdbcType="VARCHAR" property="orNetworkId" />
-    <result column="NETWORK_NAME" jdbcType="VARCHAR" property="networkName" />
+    <result column="CHANNEL_ID" jdbcType="VARCHAR" property="channelId" />
+    <result column="CHANNEL_NAME" jdbcType="VARCHAR" property="channelName" />
+    <result column="TYPE" jdbcType="INTEGER" property="type" />
+    <result column="MARK" jdbcType="VARCHAR" property="mark" />
     <result column="CREATED_USER" jdbcType="VARCHAR" property="createdUser" />
     <result column="CREATED_TIME" jdbcType="TIMESTAMP" property="createdTime" />
     <result column="LAST_EDIT_TIME" jdbcType="TIMESTAMP" property="lastEditTime" />
     <result column="LAST_EDIT_USER" jdbcType="VARCHAR" property="lastEditUser" />
     <result column="REGION" jdbcType="INTEGER" property="region" />
+    <result column="FREQ" jdbcType="VARCHAR" property="freq" />
   </resultMap>
   <sql id="Example_Where_Clause">
     <where>
@@ -71,16 +73,16 @@
     </where>
   </sql>
   <sql id="Base_Column_List">
-    ID, NETWORK_ID, OR_NETWORK_ID, NETWORK_NAME, CREATED_USER, CREATED_TIME, LAST_EDIT_TIME, 
-    LAST_EDIT_USER, REGION
+    ID, CHANNEL_ID, CHANNEL_NAME, TYPE, MARK, CREATED_USER, CREATED_TIME, LAST_EDIT_TIME, 
+    LAST_EDIT_USER, REGION, FREQ
   </sql>
-  <select id="selectByExample" parameterType="com.suma.pojo.NetworkInfoExample" resultMap="BaseResultMap">
+  <select id="selectByExample" parameterType="com.suma.pojo.ChannelInfoExample" resultMap="BaseResultMap">
     select
     <if test="distinct">
       distinct
     </if>
     <include refid="Base_Column_List" />
-    from network_info
+    from channel_info
     <if test="_parameter != null">
       <include refid="Example_Where_Clause" />
     </if>
@@ -91,43 +93,46 @@
   <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
     select 
     <include refid="Base_Column_List" />
-    from network_info
+    from channel_info
     where ID = #{id,jdbcType=BIGINT}
   </select>
   <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
-    delete from network_info
+    delete from channel_info
     where ID = #{id,jdbcType=BIGINT}
   </delete>
-  <delete id="deleteByExample" parameterType="com.suma.pojo.NetworkInfoExample">
-    delete from network_info
+  <delete id="deleteByExample" parameterType="com.suma.pojo.ChannelInfoExample">
+    delete from channel_info
     <if test="_parameter != null">
       <include refid="Example_Where_Clause" />
     </if>
   </delete>
-  <insert id="insert" parameterType="com.suma.pojo.NetworkInfo">
-    insert into network_info (ID, NETWORK_ID, OR_NETWORK_ID, 
-      NETWORK_NAME, CREATED_USER, CREATED_TIME, 
-      LAST_EDIT_TIME, LAST_EDIT_USER, REGION
-      )
-    values (#{id,jdbcType=BIGINT}, #{networkId,jdbcType=VARCHAR}, #{orNetworkId,jdbcType=VARCHAR}, 
-      #{networkName,jdbcType=VARCHAR}, #{createdUser,jdbcType=VARCHAR}, #{createdTime,jdbcType=TIMESTAMP}, 
-      #{lastEditTime,jdbcType=TIMESTAMP}, #{lastEditUser,jdbcType=VARCHAR}, #{region,jdbcType=INTEGER}
-      )
+  <insert id="insert" parameterType="com.suma.pojo.ChannelInfo">
+    insert into channel_info (ID, CHANNEL_ID, CHANNEL_NAME, 
+      TYPE, MARK, CREATED_USER, 
+      CREATED_TIME, LAST_EDIT_TIME, LAST_EDIT_USER, 
+      REGION, FREQ)
+    values (#{id,jdbcType=BIGINT}, #{channelId,jdbcType=VARCHAR}, #{channelName,jdbcType=VARCHAR}, 
+      #{type,jdbcType=INTEGER}, #{mark,jdbcType=VARCHAR}, #{createdUser,jdbcType=VARCHAR}, 
+      #{createdTime,jdbcType=TIMESTAMP}, #{lastEditTime,jdbcType=TIMESTAMP}, #{lastEditUser,jdbcType=VARCHAR}, 
+      #{region,jdbcType=INTEGER}, #{freq,jdbcType=VARCHAR})
   </insert>
-  <insert id="insertSelective" parameterType="com.suma.pojo.NetworkInfo">
-    insert into network_info
+  <insert id="insertSelective" parameterType="com.suma.pojo.ChannelInfo">
+    insert into channel_info
     <trim prefix="(" suffix=")" suffixOverrides=",">
       <if test="id != null">
         ID,
       </if>
-      <if test="networkId != null">
-        NETWORK_ID,
+      <if test="channelId != null">
+        CHANNEL_ID,
       </if>
-      <if test="orNetworkId != null">
-        OR_NETWORK_ID,
+      <if test="channelName != null">
+        CHANNEL_NAME,
       </if>
-      <if test="networkName != null">
-        NETWORK_NAME,
+      <if test="type != null">
+        TYPE,
+      </if>
+      <if test="mark != null">
+        MARK,
       </if>
       <if test="createdUser != null">
         CREATED_USER,
@@ -144,19 +149,25 @@
       <if test="region != null">
         REGION,
       </if>
+      <if test="freq != null">
+        FREQ,
+      </if>
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides=",">
       <if test="id != null">
         #{id,jdbcType=BIGINT},
       </if>
-      <if test="networkId != null">
-        #{networkId,jdbcType=VARCHAR},
+      <if test="channelId != null">
+        #{channelId,jdbcType=VARCHAR},
       </if>
-      <if test="orNetworkId != null">
-        #{orNetworkId,jdbcType=VARCHAR},
+      <if test="channelName != null">
+        #{channelName,jdbcType=VARCHAR},
       </if>
-      <if test="networkName != null">
-        #{networkName,jdbcType=VARCHAR},
+      <if test="type != null">
+        #{type,jdbcType=INTEGER},
+      </if>
+      <if test="mark != null">
+        #{mark,jdbcType=VARCHAR},
       </if>
       <if test="createdUser != null">
         #{createdUser,jdbcType=VARCHAR},
@@ -173,28 +184,34 @@
       <if test="region != null">
         #{region,jdbcType=INTEGER},
       </if>
+      <if test="freq != null">
+        #{freq,jdbcType=VARCHAR},
+      </if>
     </trim>
   </insert>
-  <select id="countByExample" parameterType="com.suma.pojo.NetworkInfoExample" resultType="java.lang.Long">
-    select count(*) from network_info
+  <select id="countByExample" parameterType="com.suma.pojo.ChannelInfoExample" resultType="java.lang.Long">
+    select count(*) from channel_info
     <if test="_parameter != null">
       <include refid="Example_Where_Clause" />
     </if>
   </select>
   <update id="updateByExampleSelective" parameterType="map">
-    update network_info
+    update channel_info
     <set>
       <if test="record.id != null">
         ID = #{record.id,jdbcType=BIGINT},
       </if>
-      <if test="record.networkId != null">
-        NETWORK_ID = #{record.networkId,jdbcType=VARCHAR},
+      <if test="record.channelId != null">
+        CHANNEL_ID = #{record.channelId,jdbcType=VARCHAR},
       </if>
-      <if test="record.orNetworkId != null">
-        OR_NETWORK_ID = #{record.orNetworkId,jdbcType=VARCHAR},
+      <if test="record.channelName != null">
+        CHANNEL_NAME = #{record.channelName,jdbcType=VARCHAR},
       </if>
-      <if test="record.networkName != null">
-        NETWORK_NAME = #{record.networkName,jdbcType=VARCHAR},
+      <if test="record.type != null">
+        TYPE = #{record.type,jdbcType=INTEGER},
+      </if>
+      <if test="record.mark != null">
+        MARK = #{record.mark,jdbcType=VARCHAR},
       </if>
       <if test="record.createdUser != null">
         CREATED_USER = #{record.createdUser,jdbcType=VARCHAR},
@@ -211,37 +228,45 @@
       <if test="record.region != null">
         REGION = #{record.region,jdbcType=INTEGER},
       </if>
+      <if test="record.freq != null">
+        FREQ = #{record.freq,jdbcType=VARCHAR},
+      </if>
     </set>
     <if test="_parameter != null">
       <include refid="Update_By_Example_Where_Clause" />
     </if>
   </update>
   <update id="updateByExample" parameterType="map">
-    update network_info
+    update channel_info
     set ID = #{record.id,jdbcType=BIGINT},
-      NETWORK_ID = #{record.networkId,jdbcType=VARCHAR},
-      OR_NETWORK_ID = #{record.orNetworkId,jdbcType=VARCHAR},
-      NETWORK_NAME = #{record.networkName,jdbcType=VARCHAR},
+      CHANNEL_ID = #{record.channelId,jdbcType=VARCHAR},
+      CHANNEL_NAME = #{record.channelName,jdbcType=VARCHAR},
+      TYPE = #{record.type,jdbcType=INTEGER},
+      MARK = #{record.mark,jdbcType=VARCHAR},
       CREATED_USER = #{record.createdUser,jdbcType=VARCHAR},
       CREATED_TIME = #{record.createdTime,jdbcType=TIMESTAMP},
       LAST_EDIT_TIME = #{record.lastEditTime,jdbcType=TIMESTAMP},
       LAST_EDIT_USER = #{record.lastEditUser,jdbcType=VARCHAR},
-      REGION = #{record.region,jdbcType=INTEGER}
+      REGION = #{record.region,jdbcType=INTEGER},
+      FREQ = #{record.freq,jdbcType=VARCHAR}
     <if test="_parameter != null">
       <include refid="Update_By_Example_Where_Clause" />
     </if>
   </update>
-  <update id="updateByPrimaryKeySelective" parameterType="com.suma.pojo.NetworkInfo">
-    update network_info
+  <update id="updateByPrimaryKeySelective" parameterType="com.suma.pojo.ChannelInfo">
+    update channel_info
     <set>
-      <if test="networkId != null">
-        NETWORK_ID = #{networkId,jdbcType=VARCHAR},
+      <if test="channelId != null">
+        CHANNEL_ID = #{channelId,jdbcType=VARCHAR},
       </if>
-      <if test="orNetworkId != null">
-        OR_NETWORK_ID = #{orNetworkId,jdbcType=VARCHAR},
+      <if test="channelName != null">
+        CHANNEL_NAME = #{channelName,jdbcType=VARCHAR},
       </if>
-      <if test="networkName != null">
-        NETWORK_NAME = #{networkName,jdbcType=VARCHAR},
+      <if test="type != null">
+        TYPE = #{type,jdbcType=INTEGER},
+      </if>
+      <if test="mark != null">
+        MARK = #{mark,jdbcType=VARCHAR},
       </if>
       <if test="createdUser != null">
         CREATED_USER = #{createdUser,jdbcType=VARCHAR},
@@ -258,19 +283,24 @@
       <if test="region != null">
         REGION = #{region,jdbcType=INTEGER},
       </if>
+      <if test="freq != null">
+        FREQ = #{freq,jdbcType=VARCHAR},
+      </if>
     </set>
     where ID = #{id,jdbcType=BIGINT}
   </update>
-  <update id="updateByPrimaryKey" parameterType="com.suma.pojo.NetworkInfo">
-    update network_info
-    set NETWORK_ID = #{networkId,jdbcType=VARCHAR},
-      OR_NETWORK_ID = #{orNetworkId,jdbcType=VARCHAR},
-      NETWORK_NAME = #{networkName,jdbcType=VARCHAR},
+  <update id="updateByPrimaryKey" parameterType="com.suma.pojo.ChannelInfo">
+    update channel_info
+    set CHANNEL_ID = #{channelId,jdbcType=VARCHAR},
+      CHANNEL_NAME = #{channelName,jdbcType=VARCHAR},
+      TYPE = #{type,jdbcType=INTEGER},
+      MARK = #{mark,jdbcType=VARCHAR},
       CREATED_USER = #{createdUser,jdbcType=VARCHAR},
       CREATED_TIME = #{createdTime,jdbcType=TIMESTAMP},
       LAST_EDIT_TIME = #{lastEditTime,jdbcType=TIMESTAMP},
       LAST_EDIT_USER = #{lastEditUser,jdbcType=VARCHAR},
-      REGION = #{region,jdbcType=INTEGER}
+      REGION = #{region,jdbcType=INTEGER},
+      FREQ = #{freq,jdbcType=VARCHAR}
     where ID = #{id,jdbcType=BIGINT}
   </update>
 </mapper>

@@ -9,7 +9,7 @@ import com.suma.pojo.NetworkInfoExample;
  * @description:
  */
 public interface NetworkService extends BaseService<NetworkInfo, NetworkInfoExample, Long> {
-    Long findPKByNetworkId(Long networkId);
+    Long findPKByNetworkId(String networkId);
 
-    Long findNetworkIdByPk(Long nid);
+    String findNetworkIdByPk(Long nid);
 }

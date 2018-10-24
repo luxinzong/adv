@@ -1,7 +1,9 @@
 package com.suma.utils;
 
 import com.suma.constants.CommonConstants;
+import com.suma.dto.AdvLoginDto;
 import lombok.Data;
+
 
 /**
  * @Autor gaozhongbao
@@ -39,8 +41,13 @@ public class Result {
     }
 
     public static Result loginSuccess(){
-        return buildResult(CommonConstants.SUCCESS,"登录成功",null);
+        AdvLoginDto advLoginDto = new AdvLoginDto();
+        advLoginDto.setUsername(ShiroUtils.getUser().getUserName());
+        advLoginDto.setToken((String) ShiroUtils.getSession().getId());
+        return buildResult(CommonConstants.SUCCESS,"登录成功",advLoginDto);
     }
+
+    public static Result hasLogined(){return buildResult(CommonConstants.SUCCESS,"你已经成功登录",null);}
 
     public static Result loginOut(){
         return buildResult(CommonConstants.SUCCESS,"登出成功",null);
@@ -61,6 +68,7 @@ public class Result {
         return buildResult(CommonConstants.FAIL,"操作失败",null);
     }
 
+
     public static Result selectIsNullError(){return buildResult(CommonConstants.FAIL,"查询数据为空",null);}
 
     public static Result sysytemError(){
@@ -76,6 +84,17 @@ public class Result {
     public static Result error(String msg){
         return buildResult(CommonConstants.FAIL,msg,null);
     }
+
+    /**
+     * 其他异常，为了前端使用
+     *
+     * @param msg
+     * @return
+     */
+    public static Result otherError(String msg){
+        return buildResult(CommonConstants.SYSTEM_ERROR,msg,null);
+    }
+
 
 }
 

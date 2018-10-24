@@ -78,6 +78,7 @@ public class AdvRoleController extends BaseController{
                        @RequestParam(value = "pageSize",defaultValue = "10") Integer pageSize){
 
         PageHelper.startPage(pageNum,pageSize);
+        System.out.println(roleName);
         PageInfo<AdvRole> advRolePageInfo = advRoleService.selectRoleList(roleName,roleKey,status,startTime,endTime);
         //如果查询数据为空,返回数据不存在
         if(CollectionUtils.isEmpty(advRolePageInfo.getList())){

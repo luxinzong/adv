@@ -4,14 +4,14 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-public class TsInfoExample {
+public class ChannelInfoExample {
     protected String orderByClause;
 
     protected boolean distinct;
 
     protected List<Criteria> oredCriteria;
 
-    public TsInfoExample() {
+    public ChannelInfoExample() {
         oredCriteria = new ArrayList<Criteria>();
     }
 
@@ -165,203 +165,273 @@ public class TsInfoExample {
             return (Criteria) this;
         }
 
-        public Criteria andTsIdIsNull() {
-            addCriterion("TS_ID is null");
+        public Criteria andChannelIdIsNull() {
+            addCriterion("CHANNEL_ID is null");
             return (Criteria) this;
         }
 
-        public Criteria andTsIdIsNotNull() {
-            addCriterion("TS_ID is not null");
+        public Criteria andChannelIdIsNotNull() {
+            addCriterion("CHANNEL_ID is not null");
             return (Criteria) this;
         }
 
-        public Criteria andTsIdEqualTo(String value) {
-            addCriterion("TS_ID =", value, "tsId");
+        public Criteria andChannelIdEqualTo(String value) {
+            addCriterion("CHANNEL_ID =", value, "channelId");
             return (Criteria) this;
         }
 
-        public Criteria andTsIdNotEqualTo(String value) {
-            addCriterion("TS_ID <>", value, "tsId");
+        public Criteria andChannelIdNotEqualTo(String value) {
+            addCriterion("CHANNEL_ID <>", value, "channelId");
             return (Criteria) this;
         }
 
-        public Criteria andTsIdGreaterThan(String value) {
-            addCriterion("TS_ID >", value, "tsId");
+        public Criteria andChannelIdGreaterThan(String value) {
+            addCriterion("CHANNEL_ID >", value, "channelId");
             return (Criteria) this;
         }
 
-        public Criteria andTsIdGreaterThanOrEqualTo(String value) {
-            addCriterion("TS_ID >=", value, "tsId");
+        public Criteria andChannelIdGreaterThanOrEqualTo(String value) {
+            addCriterion("CHANNEL_ID >=", value, "channelId");
             return (Criteria) this;
         }
 
-        public Criteria andTsIdLessThan(String value) {
-            addCriterion("TS_ID <", value, "tsId");
+        public Criteria andChannelIdLessThan(String value) {
+            addCriterion("CHANNEL_ID <", value, "channelId");
             return (Criteria) this;
         }
 
-        public Criteria andTsIdLessThanOrEqualTo(String value) {
-            addCriterion("TS_ID <=", value, "tsId");
+        public Criteria andChannelIdLessThanOrEqualTo(String value) {
+            addCriterion("CHANNEL_ID <=", value, "channelId");
             return (Criteria) this;
         }
 
-        public Criteria andTsIdLike(String value) {
-            addCriterion("TS_ID like", value, "tsId");
+        public Criteria andChannelIdLike(String value) {
+            addCriterion("CHANNEL_ID like", value, "channelId");
             return (Criteria) this;
         }
 
-        public Criteria andTsIdNotLike(String value) {
-            addCriterion("TS_ID not like", value, "tsId");
+        public Criteria andChannelIdNotLike(String value) {
+            addCriterion("CHANNEL_ID not like", value, "channelId");
             return (Criteria) this;
         }
 
-        public Criteria andTsIdIn(List<String> values) {
-            addCriterion("TS_ID in", values, "tsId");
+        public Criteria andChannelIdIn(List<String> values) {
+            addCriterion("CHANNEL_ID in", values, "channelId");
             return (Criteria) this;
         }
 
-        public Criteria andTsIdNotIn(List<String> values) {
-            addCriterion("TS_ID not in", values, "tsId");
+        public Criteria andChannelIdNotIn(List<String> values) {
+            addCriterion("CHANNEL_ID not in", values, "channelId");
             return (Criteria) this;
         }
 
-        public Criteria andTsIdBetween(String value1, String value2) {
-            addCriterion("TS_ID between", value1, value2, "tsId");
+        public Criteria andChannelIdBetween(String value1, String value2) {
+            addCriterion("CHANNEL_ID between", value1, value2, "channelId");
             return (Criteria) this;
         }
 
-        public Criteria andTsIdNotBetween(String value1, String value2) {
-            addCriterion("TS_ID not between", value1, value2, "tsId");
+        public Criteria andChannelIdNotBetween(String value1, String value2) {
+            addCriterion("CHANNEL_ID not between", value1, value2, "channelId");
             return (Criteria) this;
         }
 
-        public Criteria andTsNameIsNull() {
-            addCriterion("TS_NAME is null");
+        public Criteria andChannelNameIsNull() {
+            addCriterion("CHANNEL_NAME is null");
             return (Criteria) this;
         }
 
-        public Criteria andTsNameIsNotNull() {
-            addCriterion("TS_NAME is not null");
+        public Criteria andChannelNameIsNotNull() {
+            addCriterion("CHANNEL_NAME is not null");
             return (Criteria) this;
         }
 
-        public Criteria andTsNameEqualTo(String value) {
-            addCriterion("TS_NAME =", value, "tsName");
+        public Criteria andChannelNameEqualTo(String value) {
+            addCriterion("CHANNEL_NAME =", value, "channelName");
             return (Criteria) this;
         }
 
-        public Criteria andTsNameNotEqualTo(String value) {
-            addCriterion("TS_NAME <>", value, "tsName");
+        public Criteria andChannelNameNotEqualTo(String value) {
+            addCriterion("CHANNEL_NAME <>", value, "channelName");
             return (Criteria) this;
         }
 
-        public Criteria andTsNameGreaterThan(String value) {
-            addCriterion("TS_NAME >", value, "tsName");
+        public Criteria andChannelNameGreaterThan(String value) {
+            addCriterion("CHANNEL_NAME >", value, "channelName");
             return (Criteria) this;
         }
 
-        public Criteria andTsNameGreaterThanOrEqualTo(String value) {
-            addCriterion("TS_NAME >=", value, "tsName");
+        public Criteria andChannelNameGreaterThanOrEqualTo(String value) {
+            addCriterion("CHANNEL_NAME >=", value, "channelName");
             return (Criteria) this;
         }
 
-        public Criteria andTsNameLessThan(String value) {
-            addCriterion("TS_NAME <", value, "tsName");
+        public Criteria andChannelNameLessThan(String value) {
+            addCriterion("CHANNEL_NAME <", value, "channelName");
             return (Criteria) this;
         }
 
-        public Criteria andTsNameLessThanOrEqualTo(String value) {
-            addCriterion("TS_NAME <=", value, "tsName");
+        public Criteria andChannelNameLessThanOrEqualTo(String value) {
+            addCriterion("CHANNEL_NAME <=", value, "channelName");
             return (Criteria) this;
         }
 
-        public Criteria andTsNameLike(String value) {
-            addCriterion("TS_NAME like", value, "tsName");
+        public Criteria andChannelNameLike(String value) {
+            addCriterion("CHANNEL_NAME like", value, "channelName");
             return (Criteria) this;
         }
 
-        public Criteria andTsNameNotLike(String value) {
-            addCriterion("TS_NAME not like", value, "tsName");
+        public Criteria andChannelNameNotLike(String value) {
+            addCriterion("CHANNEL_NAME not like", value, "channelName");
             return (Criteria) this;
         }
 
-        public Criteria andTsNameIn(List<String> values) {
-            addCriterion("TS_NAME in", values, "tsName");
+        public Criteria andChannelNameIn(List<String> values) {
+            addCriterion("CHANNEL_NAME in", values, "channelName");
             return (Criteria) this;
         }
 
-        public Criteria andTsNameNotIn(List<String> values) {
-            addCriterion("TS_NAME not in", values, "tsName");
+        public Criteria andChannelNameNotIn(List<String> values) {
+            addCriterion("CHANNEL_NAME not in", values, "channelName");
             return (Criteria) this;
         }
 
-        public Criteria andTsNameBetween(String value1, String value2) {
-            addCriterion("TS_NAME between", value1, value2, "tsName");
+        public Criteria andChannelNameBetween(String value1, String value2) {
+            addCriterion("CHANNEL_NAME between", value1, value2, "channelName");
             return (Criteria) this;
         }
 
-        public Criteria andTsNameNotBetween(String value1, String value2) {
-            addCriterion("TS_NAME not between", value1, value2, "tsName");
+        public Criteria andChannelNameNotBetween(String value1, String value2) {
+            addCriterion("CHANNEL_NAME not between", value1, value2, "channelName");
             return (Criteria) this;
         }
 
-        public Criteria andNidIsNull() {
-            addCriterion("NID is null");
+        public Criteria andTypeIsNull() {
+            addCriterion("TYPE is null");
             return (Criteria) this;
         }
 
-        public Criteria andNidIsNotNull() {
-            addCriterion("NID is not null");
+        public Criteria andTypeIsNotNull() {
+            addCriterion("TYPE is not null");
             return (Criteria) this;
         }
 
-        public Criteria andNidEqualTo(Long value) {
-            addCriterion("NID =", value, "nid");
+        public Criteria andTypeEqualTo(Integer value) {
+            addCriterion("TYPE =", value, "type");
             return (Criteria) this;
         }
 
-        public Criteria andNidNotEqualTo(Long value) {
-            addCriterion("NID <>", value, "nid");
+        public Criteria andTypeNotEqualTo(Integer value) {
+            addCriterion("TYPE <>", value, "type");
             return (Criteria) this;
         }
 
-        public Criteria andNidGreaterThan(Long value) {
-            addCriterion("NID >", value, "nid");
+        public Criteria andTypeGreaterThan(Integer value) {
+            addCriterion("TYPE >", value, "type");
             return (Criteria) this;
         }
 
-        public Criteria andNidGreaterThanOrEqualTo(Long value) {
-            addCriterion("NID >=", value, "nid");
+        public Criteria andTypeGreaterThanOrEqualTo(Integer value) {
+            addCriterion("TYPE >=", value, "type");
             return (Criteria) this;
         }
 
-        public Criteria andNidLessThan(Long value) {
-            addCriterion("NID <", value, "nid");
+        public Criteria andTypeLessThan(Integer value) {
+            addCriterion("TYPE <", value, "type");
             return (Criteria) this;
         }
 
-        public Criteria andNidLessThanOrEqualTo(Long value) {
-            addCriterion("NID <=", value, "nid");
+        public Criteria andTypeLessThanOrEqualTo(Integer value) {
+            addCriterion("TYPE <=", value, "type");
             return (Criteria) this;
         }
 
-        public Criteria andNidIn(List<Long> values) {
-            addCriterion("NID in", values, "nid");
+        public Criteria andTypeIn(List<Integer> values) {
+            addCriterion("TYPE in", values, "type");
             return (Criteria) this;
         }
 
-        public Criteria andNidNotIn(List<Long> values) {
-            addCriterion("NID not in", values, "nid");
+        public Criteria andTypeNotIn(List<Integer> values) {
+            addCriterion("TYPE not in", values, "type");
             return (Criteria) this;
         }
 
-        public Criteria andNidBetween(Long value1, Long value2) {
-            addCriterion("NID between", value1, value2, "nid");
+        public Criteria andTypeBetween(Integer value1, Integer value2) {
+            addCriterion("TYPE between", value1, value2, "type");
             return (Criteria) this;
         }
 
-        public Criteria andNidNotBetween(Long value1, Long value2) {
-            addCriterion("NID not between", value1, value2, "nid");
+        public Criteria andTypeNotBetween(Integer value1, Integer value2) {
+            addCriterion("TYPE not between", value1, value2, "type");
+            return (Criteria) this;
+        }
+
+        public Criteria andMarkIsNull() {
+            addCriterion("MARK is null");
+            return (Criteria) this;
+        }
+
+        public Criteria andMarkIsNotNull() {
+            addCriterion("MARK is not null");
+            return (Criteria) this;
+        }
+
+        public Criteria andMarkEqualTo(String value) {
+            addCriterion("MARK =", value, "mark");
+            return (Criteria) this;
+        }
+
+        public Criteria andMarkNotEqualTo(String value) {
+            addCriterion("MARK <>", value, "mark");
+            return (Criteria) this;
+        }
+
+        public Criteria andMarkGreaterThan(String value) {
+            addCriterion("MARK >", value, "mark");
+            return (Criteria) this;
+        }
+
+        public Criteria andMarkGreaterThanOrEqualTo(String value) {
+            addCriterion("MARK >=", value, "mark");
+            return (Criteria) this;
+        }
+
+        public Criteria andMarkLessThan(String value) {
+            addCriterion("MARK <", value, "mark");
+            return (Criteria) this;
+        }
+
+        public Criteria andMarkLessThanOrEqualTo(String value) {
+            addCriterion("MARK <=", value, "mark");
+            return (Criteria) this;
+        }
+
+        public Criteria andMarkLike(String value) {
+            addCriterion("MARK like", value, "mark");
+            return (Criteria) this;
+        }
+
+        public Criteria andMarkNotLike(String value) {
+            addCriterion("MARK not like", value, "mark");
+            return (Criteria) this;
+        }
+
+        public Criteria andMarkIn(List<String> values) {
+            addCriterion("MARK in", values, "mark");
+            return (Criteria) this;
+        }
+
+        public Criteria andMarkNotIn(List<String> values) {
+            addCriterion("MARK not in", values, "mark");
+            return (Criteria) this;
+        }
+
+        public Criteria andMarkBetween(String value1, String value2) {
+            addCriterion("MARK between", value1, value2, "mark");
+            return (Criteria) this;
+        }
+
+        public Criteria andMarkNotBetween(String value1, String value2) {
+            addCriterion("MARK not between", value1, value2, "mark");
             return (Criteria) this;
         }
 
@@ -495,6 +565,66 @@ public class TsInfoExample {
             return (Criteria) this;
         }
 
+        public Criteria andLastEditTimeIsNull() {
+            addCriterion("LAST_EDIT_TIME is null");
+            return (Criteria) this;
+        }
+
+        public Criteria andLastEditTimeIsNotNull() {
+            addCriterion("LAST_EDIT_TIME is not null");
+            return (Criteria) this;
+        }
+
+        public Criteria andLastEditTimeEqualTo(Date value) {
+            addCriterion("LAST_EDIT_TIME =", value, "lastEditTime");
+            return (Criteria) this;
+        }
+
+        public Criteria andLastEditTimeNotEqualTo(Date value) {
+            addCriterion("LAST_EDIT_TIME <>", value, "lastEditTime");
+            return (Criteria) this;
+        }
+
+        public Criteria andLastEditTimeGreaterThan(Date value) {
+            addCriterion("LAST_EDIT_TIME >", value, "lastEditTime");
+            return (Criteria) this;
+        }
+
+        public Criteria andLastEditTimeGreaterThanOrEqualTo(Date value) {
+            addCriterion("LAST_EDIT_TIME >=", value, "lastEditTime");
+            return (Criteria) this;
+        }
+
+        public Criteria andLastEditTimeLessThan(Date value) {
+            addCriterion("LAST_EDIT_TIME <", value, "lastEditTime");
+            return (Criteria) this;
+        }
+
+        public Criteria andLastEditTimeLessThanOrEqualTo(Date value) {
+            addCriterion("LAST_EDIT_TIME <=", value, "lastEditTime");
+            return (Criteria) this;
+        }
+
+        public Criteria andLastEditTimeIn(List<Date> values) {
+            addCriterion("LAST_EDIT_TIME in", values, "lastEditTime");
+            return (Criteria) this;
+        }
+
+        public Criteria andLastEditTimeNotIn(List<Date> values) {
+            addCriterion("LAST_EDIT_TIME not in", values, "lastEditTime");
+            return (Criteria) this;
+        }
+
+        public Criteria andLastEditTimeBetween(Date value1, Date value2) {
+            addCriterion("LAST_EDIT_TIME between", value1, value2, "lastEditTime");
+            return (Criteria) this;
+        }
+
+        public Criteria andLastEditTimeNotBetween(Date value1, Date value2) {
+            addCriterion("LAST_EDIT_TIME not between", value1, value2, "lastEditTime");
+            return (Criteria) this;
+        }
+
         public Criteria andLastEditUserIsNull() {
             addCriterion("LAST_EDIT_USER is null");
             return (Criteria) this;
@@ -565,66 +695,6 @@ public class TsInfoExample {
             return (Criteria) this;
         }
 
-        public Criteria andLastEditTimeIsNull() {
-            addCriterion("LAST_EDIT_TIME is null");
-            return (Criteria) this;
-        }
-
-        public Criteria andLastEditTimeIsNotNull() {
-            addCriterion("LAST_EDIT_TIME is not null");
-            return (Criteria) this;
-        }
-
-        public Criteria andLastEditTimeEqualTo(Date value) {
-            addCriterion("LAST_EDIT_TIME =", value, "lastEditTime");
-            return (Criteria) this;
-        }
-
-        public Criteria andLastEditTimeNotEqualTo(Date value) {
-            addCriterion("LAST_EDIT_TIME <>", value, "lastEditTime");
-            return (Criteria) this;
-        }
-
-        public Criteria andLastEditTimeGreaterThan(Date value) {
-            addCriterion("LAST_EDIT_TIME >", value, "lastEditTime");
-            return (Criteria) this;
-        }
-
-        public Criteria andLastEditTimeGreaterThanOrEqualTo(Date value) {
-            addCriterion("LAST_EDIT_TIME >=", value, "lastEditTime");
-            return (Criteria) this;
-        }
-
-        public Criteria andLastEditTimeLessThan(Date value) {
-            addCriterion("LAST_EDIT_TIME <", value, "lastEditTime");
-            return (Criteria) this;
-        }
-
-        public Criteria andLastEditTimeLessThanOrEqualTo(Date value) {
-            addCriterion("LAST_EDIT_TIME <=", value, "lastEditTime");
-            return (Criteria) this;
-        }
-
-        public Criteria andLastEditTimeIn(List<Date> values) {
-            addCriterion("LAST_EDIT_TIME in", values, "lastEditTime");
-            return (Criteria) this;
-        }
-
-        public Criteria andLastEditTimeNotIn(List<Date> values) {
-            addCriterion("LAST_EDIT_TIME not in", values, "lastEditTime");
-            return (Criteria) this;
-        }
-
-        public Criteria andLastEditTimeBetween(Date value1, Date value2) {
-            addCriterion("LAST_EDIT_TIME between", value1, value2, "lastEditTime");
-            return (Criteria) this;
-        }
-
-        public Criteria andLastEditTimeNotBetween(Date value1, Date value2) {
-            addCriterion("LAST_EDIT_TIME not between", value1, value2, "lastEditTime");
-            return (Criteria) this;
-        }
-
         public Criteria andRegionIsNull() {
             addCriterion("REGION is null");
             return (Criteria) this;
@@ -682,6 +752,76 @@ public class TsInfoExample {
 
         public Criteria andRegionNotBetween(Integer value1, Integer value2) {
             addCriterion("REGION not between", value1, value2, "region");
+            return (Criteria) this;
+        }
+
+        public Criteria andFreqIsNull() {
+            addCriterion("FREQ is null");
+            return (Criteria) this;
+        }
+
+        public Criteria andFreqIsNotNull() {
+            addCriterion("FREQ is not null");
+            return (Criteria) this;
+        }
+
+        public Criteria andFreqEqualTo(String value) {
+            addCriterion("FREQ =", value, "freq");
+            return (Criteria) this;
+        }
+
+        public Criteria andFreqNotEqualTo(String value) {
+            addCriterion("FREQ <>", value, "freq");
+            return (Criteria) this;
+        }
+
+        public Criteria andFreqGreaterThan(String value) {
+            addCriterion("FREQ >", value, "freq");
+            return (Criteria) this;
+        }
+
+        public Criteria andFreqGreaterThanOrEqualTo(String value) {
+            addCriterion("FREQ >=", value, "freq");
+            return (Criteria) this;
+        }
+
+        public Criteria andFreqLessThan(String value) {
+            addCriterion("FREQ <", value, "freq");
+            return (Criteria) this;
+        }
+
+        public Criteria andFreqLessThanOrEqualTo(String value) {
+            addCriterion("FREQ <=", value, "freq");
+            return (Criteria) this;
+        }
+
+        public Criteria andFreqLike(String value) {
+            addCriterion("FREQ like", value, "freq");
+            return (Criteria) this;
+        }
+
+        public Criteria andFreqNotLike(String value) {
+            addCriterion("FREQ not like", value, "freq");
+            return (Criteria) this;
+        }
+
+        public Criteria andFreqIn(List<String> values) {
+            addCriterion("FREQ in", values, "freq");
+            return (Criteria) this;
+        }
+
+        public Criteria andFreqNotIn(List<String> values) {
+            addCriterion("FREQ not in", values, "freq");
+            return (Criteria) this;
+        }
+
+        public Criteria andFreqBetween(String value1, String value2) {
+            addCriterion("FREQ between", value1, value2, "freq");
+            return (Criteria) this;
+        }
+
+        public Criteria andFreqNotBetween(String value1, String value2) {
+            addCriterion("FREQ not between", value1, value2, "freq");
             return (Criteria) this;
         }
     }

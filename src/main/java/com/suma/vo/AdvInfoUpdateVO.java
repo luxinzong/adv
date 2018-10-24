@@ -13,7 +13,9 @@ import java.util.List;
 @Data
 public class AdvInfoUpdateVO {
 
-    private Long advInfoId;//广告ID
+    private Long id;//广告ID
+
+    private Long advTypeId;//广告类型ID
 
     private String name;//广告名称
 

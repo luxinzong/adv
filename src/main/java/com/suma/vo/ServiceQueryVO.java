@@ -1,4 +1,5 @@
 package com.suma.vo;
+
 import lombok.Data;
 
 @Data
@@ -6,15 +7,15 @@ public class ServiceQueryVO {
 
     private Long id;
     //网络ID
-    private Long networkId;
+    private String networkId;
     //网络名称
     private String networkName;
     //传输流ID
-    private Long tsId;
+    private String tsId;
     //传输流名称
     private String tsName;
     //业务ID
-    private Long serviceId;
+    private String serviceId;
     //业务名称
     private String serviceName;
 

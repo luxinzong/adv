@@ -9,6 +9,8 @@ public class ServiceGroup {
 
     private Integer regionId;
 
+    private Integer type;
+
     public Long getSgid() {
         return sgid;
     }
@@ -39,5 +41,13 @@ public class ServiceGroup {
 
     public void setRegionId(Integer regionId) {
         this.regionId = regionId;
+    }
+
+    public Integer getType() {
+        return type;
+    }
+
+    public void setType(Integer type) {
+        this.type = type;
     }
 }

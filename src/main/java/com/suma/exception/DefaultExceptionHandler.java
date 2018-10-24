@@ -2,6 +2,7 @@ package com.suma.exception;
 
 
 import com.suma.constants.ExceptionConstants;
+import com.suma.pojo.AdvResponseVO;
 import com.suma.utils.Result;
 import org.apache.shiro.authc.AuthenticationException;
 import org.apache.shiro.authz.AuthorizationException;
@@ -64,6 +65,7 @@ public class DefaultExceptionHandler {
         log.error(e.getMessage(), e);
         return Result.error(e.getMessage());
     }
+
     @ExceptionHandler(AdvInfoException.class)
     public Result advInfoException(AdvInfoException e) {
         log.error(e.getMessage(), e);
@@ -75,29 +77,45 @@ public class DefaultExceptionHandler {
         log.error(e.getMessage(), e);
         return Result.error(e.getMessage());
     }
+
     @ExceptionHandler(UserException.class)
-    public Result userException(UserException e){
-        log.error(e.getMessage(),e);
+    public Result userException(UserException e) {
+        log.error(e.getMessage(), e);
         return Result.error(e.getMessage());
     }
+
     @ExceptionHandler(AuthorizationException.class)
-    public Result authorizationException(AuthorizationException e){
-        log.error(e.getMessage(),e);
+    public Result authorizationException(AuthorizationException e) {
+        log.error(e.getMessage(), e);
         return Result.error(ExceptionConstants.NO_MENU_PERMISSION);
     }
+
     @ExceptionHandler(LoginException.class)
-    public Result loginException(LoginException e){
-        log.error(e.getMessage(),e);
+    public Result loginException(LoginException e) {
+        log.error(e.getMessage(), e);
         return Result.error(e.getMessage());
     }
 
+    @ExceptionHandler(AdvRequestException.class)
+    public AdvResponseVO advRequestException(AdvRequestException e) {
+        if (e.getOriginException() != null)
+            log.error(e.getOriginException().getMessage(), e.getOriginException());
+        log.error(e.getMessage(), e);
+        AdvResponseVO responseVO = new AdvResponseVO();
+        responseVO.setSessionId(e.getSessionId());
+        responseVO.setResultCode("1");
+        responseVO.setResultCount(0L);
+        responseVO.setResultDesc(e.getMessage());
+        return responseVO;
+    }
 
-        /**'
-         * 通过form表单传递参数异常
-         *
-         * @param bindException
-         * @return
-         */
+
+    /**'
+     * 通过form表单传递参数异常
+     *
+     * @param bindException
+     * @return
+     */
 
     /**
      * '

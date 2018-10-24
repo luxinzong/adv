@@ -244,8 +244,9 @@ public class AdvDeptServiceImpl implements iAdvDeptService {
 
     @Override
     public int deleteAdvDeptById(Integer advDeptId) {
-        if(advDeptId == null){
-            throw new DeptException(ExceptionConstants.DEPT_EXCEPTION_DEPT_ID_ISNULL);
+        AdvDept advDept = advDeptMapper.selectByPrimaryKey(advDeptId);
+        if(advDept == null){
+            throw new DeptException(ExceptionConstants.DEPT_EXCEPTION_DEPT_ID_NOT_EXIST);
         }
 
         return advDeptMapper.deleteByPrimaryKey(advDeptId);

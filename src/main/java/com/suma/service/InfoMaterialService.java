@@ -8,4 +8,5 @@ import com.suma.pojo.InfoMaterialExample;
  * @date: 2018/10/15
  */
 public interface InfoMaterialService extends BaseService<InfoMaterial,InfoMaterialExample,Long> {
+    int updateByDoubleId(InfoMaterial infoMaterial);
 }

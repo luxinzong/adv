@@ -1,18 +1,12 @@
 package com.suma.pojo;
 
-import com.suma.utils.Insert;
-import com.suma.utils.Update;
-
-import javax.validation.constraints.NotNull;
 import java.util.Date;
 
 public class TsInfo {
-    @NotNull(groups = {Update.class})
     private Long id;
 
-    @NotNull(groups = {Insert.class, Update.class})
-    private Long tsId;
-    @NotNull(groups = {Insert.class, Update.class})
+    private String tsId;
+
     private String tsName;
 
     private Long nid;
@@ -35,12 +29,12 @@ public class TsInfo {
         this.id = id;
     }
 
-    public Long getTsId() {
+    public String getTsId() {
         return tsId;
     }
 
-    public void setTsId(Long tsId) {
-        this.tsId = tsId;
+    public void setTsId(String tsId) {
+        this.tsId = tsId == null ? null : tsId.trim();
     }
 
     public String getTsName() {

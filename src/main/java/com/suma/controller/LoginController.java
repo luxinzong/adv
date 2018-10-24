@@ -5,15 +5,11 @@ import com.suma.pojo.AdvUser;
 import com.suma.utils.Result;
 import com.suma.utils.ShiroUtils;
 import com.suma.vo.LoginVO;
-import lombok.extern.slf4j.Slf4j;
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.authc.UsernamePasswordToken;
 import org.apache.shiro.subject.Subject;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 
 /**
@@ -22,12 +18,16 @@ import org.springframework.web.bind.annotation.RestController;
  * @Description 登录controller
  **/
 @RestController
-@Slf4j
 public class LoginController extends BaseController{
 
     @GetMapping("/index")
     public Result index(){
-        return Result.loginSuccess();
+        AdvUser advUser = ShiroUtils.getUser();
+        if(advUser != null){
+            return Result.loginSuccess();
+        }
+
+        return Result.error(CommonConstants.NO_LOGIN);
     }
 
     @GetMapping("/unauth")
@@ -40,7 +40,7 @@ public class LoginController extends BaseController{
     public Result login(){
         AdvUser advUser = ShiroUtils.getUser();
         if(advUser != null){
-            return index();
+            return Result.hasLogined();
         }
         return Result.error(CommonConstants.NO_LOGIN);
     }
@@ -48,11 +48,11 @@ public class LoginController extends BaseController{
     @PostMapping("/login")
     public Result login(@Validated LoginVO loginVO){
         AdvUser advUser = ShiroUtils.getUser();
-        if(advUser != null){
-            return index();
-        }
         Subject subject = SecurityUtils.getSubject();
-        UsernamePasswordToken token = new UsernamePasswordToken(loginVO.getUsername(), loginVO.getPassword(), loginVO.isRememberMe());
+        if(advUser != null){
+            return Result.hasLogined();
+        }
+        UsernamePasswordToken token = new UsernamePasswordToken(loginVO.getUsername(), loginVO.getPassword());
         subject.login(token);
         return Result.loginSuccess();
 

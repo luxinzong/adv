@@ -175,52 +175,62 @@ public class NetworkInfoExample {
             return (Criteria) this;
         }
 
-        public Criteria andNetworkIdEqualTo(Long value) {
+        public Criteria andNetworkIdEqualTo(String value) {
             addCriterion("NETWORK_ID =", value, "networkId");
             return (Criteria) this;
         }
 
-        public Criteria andNetworkIdNotEqualTo(Long value) {
+        public Criteria andNetworkIdNotEqualTo(String value) {
             addCriterion("NETWORK_ID <>", value, "networkId");
             return (Criteria) this;
         }
 
-        public Criteria andNetworkIdGreaterThan(Long value) {
+        public Criteria andNetworkIdGreaterThan(String value) {
             addCriterion("NETWORK_ID >", value, "networkId");
             return (Criteria) this;
         }
 
-        public Criteria andNetworkIdGreaterThanOrEqualTo(Long value) {
+        public Criteria andNetworkIdGreaterThanOrEqualTo(String value) {
             addCriterion("NETWORK_ID >=", value, "networkId");
             return (Criteria) this;
         }
 
-        public Criteria andNetworkIdLessThan(Long value) {
+        public Criteria andNetworkIdLessThan(String value) {
             addCriterion("NETWORK_ID <", value, "networkId");
             return (Criteria) this;
         }
 
-        public Criteria andNetworkIdLessThanOrEqualTo(Long value) {
+        public Criteria andNetworkIdLessThanOrEqualTo(String value) {
             addCriterion("NETWORK_ID <=", value, "networkId");
             return (Criteria) this;
         }
 
-        public Criteria andNetworkIdIn(List<Long> values) {
+        public Criteria andNetworkIdLike(String value) {
+            addCriterion("NETWORK_ID like", value, "networkId");
+            return (Criteria) this;
+        }
+
+        public Criteria andNetworkIdNotLike(String value) {
+            addCriterion("NETWORK_ID not like", value, "networkId");
+            return (Criteria) this;
+        }
+
+        public Criteria andNetworkIdIn(List<String> values) {
             addCriterion("NETWORK_ID in", values, "networkId");
             return (Criteria) this;
         }
 
-        public Criteria andNetworkIdNotIn(List<Long> values) {
+        public Criteria andNetworkIdNotIn(List<String> values) {
             addCriterion("NETWORK_ID not in", values, "networkId");
             return (Criteria) this;
         }
 
-        public Criteria andNetworkIdBetween(Long value1, Long value2) {
+        public Criteria andNetworkIdBetween(String value1, String value2) {
             addCriterion("NETWORK_ID between", value1, value2, "networkId");
             return (Criteria) this;
         }
 
-        public Criteria andNetworkIdNotBetween(Long value1, Long value2) {
+        public Criteria andNetworkIdNotBetween(String value1, String value2) {
             addCriterion("NETWORK_ID not between", value1, value2, "networkId");
             return (Criteria) this;
         }
@@ -235,52 +245,62 @@ public class NetworkInfoExample {
             return (Criteria) this;
         }
 
-        public Criteria andOrNetworkIdEqualTo(Long value) {
+        public Criteria andOrNetworkIdEqualTo(String value) {
             addCriterion("OR_NETWORK_ID =", value, "orNetworkId");
             return (Criteria) this;
         }
 
-        public Criteria andOrNetworkIdNotEqualTo(Long value) {
+        public Criteria andOrNetworkIdNotEqualTo(String value) {
             addCriterion("OR_NETWORK_ID <>", value, "orNetworkId");
             return (Criteria) this;
         }
 
-        public Criteria andOrNetworkIdGreaterThan(Long value) {
+        public Criteria andOrNetworkIdGreaterThan(String value) {
             addCriterion("OR_NETWORK_ID >", value, "orNetworkId");
             return (Criteria) this;
         }
 
-        public Criteria andOrNetworkIdGreaterThanOrEqualTo(Long value) {
+        public Criteria andOrNetworkIdGreaterThanOrEqualTo(String value) {
             addCriterion("OR_NETWORK_ID >=", value, "orNetworkId");
             return (Criteria) this;
         }
 
-        public Criteria andOrNetworkIdLessThan(Long value) {
+        public Criteria andOrNetworkIdLessThan(String value) {
             addCriterion("OR_NETWORK_ID <", value, "orNetworkId");
             return (Criteria) this;
         }
 
-        public Criteria andOrNetworkIdLessThanOrEqualTo(Long value) {
+        public Criteria andOrNetworkIdLessThanOrEqualTo(String value) {
             addCriterion("OR_NETWORK_ID <=", value, "orNetworkId");
             return (Criteria) this;
         }
 
-        public Criteria andOrNetworkIdIn(List<Long> values) {
+        public Criteria andOrNetworkIdLike(String value) {
+            addCriterion("OR_NETWORK_ID like", value, "orNetworkId");
+            return (Criteria) this;
+        }
+
+        public Criteria andOrNetworkIdNotLike(String value) {
+            addCriterion("OR_NETWORK_ID not like", value, "orNetworkId");
+            return (Criteria) this;
+        }
+
+        public Criteria andOrNetworkIdIn(List<String> values) {
             addCriterion("OR_NETWORK_ID in", values, "orNetworkId");
             return (Criteria) this;
         }
 
-        public Criteria andOrNetworkIdNotIn(List<Long> values) {
+        public Criteria andOrNetworkIdNotIn(List<String> values) {
             addCriterion("OR_NETWORK_ID not in", values, "orNetworkId");
             return (Criteria) this;
         }
 
-        public Criteria andOrNetworkIdBetween(Long value1, Long value2) {
+        public Criteria andOrNetworkIdBetween(String value1, String value2) {
             addCriterion("OR_NETWORK_ID between", value1, value2, "orNetworkId");
             return (Criteria) this;
         }
 
-        public Criteria andOrNetworkIdNotBetween(Long value1, Long value2) {
+        public Criteria andOrNetworkIdNotBetween(String value1, String value2) {
             addCriterion("OR_NETWORK_ID not between", value1, value2, "orNetworkId");
             return (Criteria) this;
         }

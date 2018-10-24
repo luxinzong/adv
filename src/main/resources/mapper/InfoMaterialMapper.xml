@@ -171,4 +171,19 @@
       <include refid="Update_By_Example_Where_Clause" />
     </if>
   </update>
+  <update id="updateByDoubleId" parameterType="InfoMaterial">
+  update info_material
+  set ADV_INFO_ID = #{advInfoId},
+      MATERIAL_ID = #{materialId},
+      SEQUENCE = #{sequence},
+      DURATION = #{duration}
+  <where>
+    <if test="advInfoId != null">
+      ADV_INFO_ID = #{advInfoId}
+    </if>
+    <if test="materialId != null">
+      and  MATERIAL_ID = #{materialId}
+    </if>
+  </where>
+  </update>
 </mapper>

@@ -9,4 +9,7 @@ import com.suma.pojo.ServiceInfoExample;
  * @description:
  */
 public interface ServiceInfoService extends BaseService<ServiceInfo, ServiceInfoExample, Long> {
+    ServiceInfoExample.Criteria queryServiceByThreeId(String networkId, String tsId, String serviceId, ServiceInfoExample serviceExample);
+
+    void checkDuplicate(ServiceInfo serviceInfo);
 }

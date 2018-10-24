@@ -48,10 +48,10 @@
         and status = #{status}
       </if>
       <if test="startTime != null and endTime != ''">
-        and create_time &lt;= #{startTime}
+        and create_time &gt;= #{startTime}
       </if>
       <if test="endTime != null and endTime != null">
-        and create_time &gt;= #{endTime}
+        and create_time &lt;= #{endTime}
       </if>
     </where>
   </select>
@@ -110,9 +110,7 @@
       <if test="createBy != null" >
         create_by,
       </if>
-      <if test="createTime != null" >
         create_time,
-      </if>
       <if test="updateBy != null" >
         update_by,
       </if>
@@ -154,9 +152,7 @@
       <if test="createBy != null" >
         #{createBy,jdbcType=VARCHAR},
       </if>
-      <if test="createTime != null" >
-        #{createTime,jdbcType=TIMESTAMP},
-      </if>
+        sysdate(),
       <if test="updateBy != null" >
         #{updateBy,jdbcType=VARCHAR},
       </if>
@@ -204,9 +200,7 @@
       <if test="updateBy != null" >
         update_by = #{updateBy,jdbcType=VARCHAR},
       </if>
-      <if test="updateTime != null" >
-        update_time = #{updateTime,jdbcType=TIMESTAMP},
-      </if>
+        update_time = sysdate(),
       <if test="remark != null" >
         remark = #{remark,jdbcType=VARCHAR},
       </if>

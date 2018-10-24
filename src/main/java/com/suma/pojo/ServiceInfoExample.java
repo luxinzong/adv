@@ -175,52 +175,62 @@ public class ServiceInfoExample {
             return (Criteria) this;
         }
 
-        public Criteria andServiceIdEqualTo(Long value) {
+        public Criteria andServiceIdEqualTo(String value) {
             addCriterion("SERVICE_ID =", value, "serviceId");
             return (Criteria) this;
         }
 
-        public Criteria andServiceIdNotEqualTo(Long value) {
+        public Criteria andServiceIdNotEqualTo(String value) {
             addCriterion("SERVICE_ID <>", value, "serviceId");
             return (Criteria) this;
         }
 
-        public Criteria andServiceIdGreaterThan(Long value) {
+        public Criteria andServiceIdGreaterThan(String value) {
             addCriterion("SERVICE_ID >", value, "serviceId");
             return (Criteria) this;
         }
 
-        public Criteria andServiceIdGreaterThanOrEqualTo(Long value) {
+        public Criteria andServiceIdGreaterThanOrEqualTo(String value) {
             addCriterion("SERVICE_ID >=", value, "serviceId");
             return (Criteria) this;
         }
 
-        public Criteria andServiceIdLessThan(Long value) {
+        public Criteria andServiceIdLessThan(String value) {
             addCriterion("SERVICE_ID <", value, "serviceId");
             return (Criteria) this;
         }
 
-        public Criteria andServiceIdLessThanOrEqualTo(Long value) {
+        public Criteria andServiceIdLessThanOrEqualTo(String value) {
             addCriterion("SERVICE_ID <=", value, "serviceId");
             return (Criteria) this;
         }
 
-        public Criteria andServiceIdIn(List<Long> values) {
+        public Criteria andServiceIdLike(String value) {
+            addCriterion("SERVICE_ID like", value, "serviceId");
+            return (Criteria) this;
+        }
+
+        public Criteria andServiceIdNotLike(String value) {
+            addCriterion("SERVICE_ID not like", value, "serviceId");
+            return (Criteria) this;
+        }
+
+        public Criteria andServiceIdIn(List<String> values) {
             addCriterion("SERVICE_ID in", values, "serviceId");
             return (Criteria) this;
         }
 
-        public Criteria andServiceIdNotIn(List<Long> values) {
+        public Criteria andServiceIdNotIn(List<String> values) {
             addCriterion("SERVICE_ID not in", values, "serviceId");
             return (Criteria) this;
         }
 
-        public Criteria andServiceIdBetween(Long value1, Long value2) {
+        public Criteria andServiceIdBetween(String value1, String value2) {
             addCriterion("SERVICE_ID between", value1, value2, "serviceId");
             return (Criteria) this;
         }
 
-        public Criteria andServiceIdNotBetween(Long value1, Long value2) {
+        public Criteria andServiceIdNotBetween(String value1, String value2) {
             addCriterion("SERVICE_ID not between", value1, value2, "serviceId");
             return (Criteria) this;
         }
@@ -802,6 +812,76 @@ public class ServiceInfoExample {
 
         public Criteria andRegionNotBetween(Integer value1, Integer value2) {
             addCriterion("REGION not between", value1, value2, "region");
+            return (Criteria) this;
+        }
+
+        public Criteria andFreqIsNull() {
+            addCriterion("FREQ is null");
+            return (Criteria) this;
+        }
+
+        public Criteria andFreqIsNotNull() {
+            addCriterion("FREQ is not null");
+            return (Criteria) this;
+        }
+
+        public Criteria andFreqEqualTo(String value) {
+            addCriterion("FREQ =", value, "freq");
+            return (Criteria) this;
+        }
+
+        public Criteria andFreqNotEqualTo(String value) {
+            addCriterion("FREQ <>", value, "freq");
+            return (Criteria) this;
+        }
+
+        public Criteria andFreqGreaterThan(String value) {
+            addCriterion("FREQ >", value, "freq");
+            return (Criteria) this;
+        }
+
+        public Criteria andFreqGreaterThanOrEqualTo(String value) {
+            addCriterion("FREQ >=", value, "freq");
+            return (Criteria) this;
+        }
+
+        public Criteria andFreqLessThan(String value) {
+            addCriterion("FREQ <", value, "freq");
+            return (Criteria) this;
+        }
+
+        public Criteria andFreqLessThanOrEqualTo(String value) {
+            addCriterion("FREQ <=", value, "freq");
+            return (Criteria) this;
+        }
+
+        public Criteria andFreqLike(String value) {
+            addCriterion("FREQ like", value, "freq");
+            return (Criteria) this;
+        }
+
+        public Criteria andFreqNotLike(String value) {
+            addCriterion("FREQ not like", value, "freq");
+            return (Criteria) this;
+        }
+
+        public Criteria andFreqIn(List<String> values) {
+            addCriterion("FREQ in", values, "freq");
+            return (Criteria) this;
+        }
+
+        public Criteria andFreqNotIn(List<String> values) {
+            addCriterion("FREQ not in", values, "freq");
+            return (Criteria) this;
+        }
+
+        public Criteria andFreqBetween(String value1, String value2) {
+            addCriterion("FREQ between", value1, value2, "freq");
+            return (Criteria) this;
+        }
+
+        public Criteria andFreqNotBetween(String value1, String value2) {
+            addCriterion("FREQ not between", value1, value2, "freq");
             return (Criteria) this;
         }
     }

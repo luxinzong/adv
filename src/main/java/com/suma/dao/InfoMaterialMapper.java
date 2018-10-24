@@ -6,5 +6,5 @@ import java.util.List;
 import org.apache.ibatis.annotations.Param;
 
 public interface InfoMaterialMapper extends BaseDAO<InfoMaterial, InfoMaterialExample, Long> {
-
+    int updateByDoubleId(InfoMaterial infoMaterial);
 }

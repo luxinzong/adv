@@ -3,7 +3,7 @@
 <mapper namespace="com.suma.dao.ServiceInfoMapper">
   <resultMap id="BaseResultMap" type="com.suma.pojo.ServiceInfo">
     <id column="ID" jdbcType="BIGINT" property="id" />
-    <result column="SERVICE_ID" jdbcType="BIGINT" property="serviceId" />
+    <result column="SERVICE_ID" jdbcType="VARCHAR" property="serviceId" />
     <result column="TID" jdbcType="BIGINT" property="tid" />
     <result column="SERVICE_NAME" jdbcType="VARCHAR" property="serviceName" />
     <result column="TYPE" jdbcType="INTEGER" property="type" />
@@ -13,6 +13,7 @@
     <result column="LAST_EDIT_TIME" jdbcType="TIMESTAMP" property="lastEditTime" />
     <result column="LAST_EDIT_USER" jdbcType="VARCHAR" property="lastEditUser" />
     <result column="REGION" jdbcType="INTEGER" property="region" />
+    <result column="FREQ" jdbcType="VARCHAR" property="freq" />
   </resultMap>
   <sql id="Example_Where_Clause">
     <where>
@@ -74,7 +75,7 @@
   </sql>
   <sql id="Base_Column_List">
     ID, SERVICE_ID, TID, SERVICE_NAME, TYPE, MARK, CREATED_USER, CREATED_TIME, LAST_EDIT_TIME, 
-    LAST_EDIT_USER, REGION
+    LAST_EDIT_USER, REGION, FREQ
   </sql>
   <select id="selectByExample" parameterType="com.suma.pojo.ServiceInfoExample" resultMap="BaseResultMap">
     select
@@ -110,11 +111,13 @@
     insert into service_info (ID, SERVICE_ID, TID, 
       SERVICE_NAME, TYPE, MARK, 
       CREATED_USER, CREATED_TIME, LAST_EDIT_TIME, 
-      LAST_EDIT_USER, REGION)
-    values (#{id,jdbcType=BIGINT}, #{serviceId,jdbcType=BIGINT}, #{tid,jdbcType=BIGINT}, 
+      LAST_EDIT_USER, REGION, FREQ
+      )
+    values (#{id,jdbcType=BIGINT}, #{serviceId,jdbcType=VARCHAR}, #{tid,jdbcType=BIGINT}, 
       #{serviceName,jdbcType=VARCHAR}, #{type,jdbcType=INTEGER}, #{mark,jdbcType=VARCHAR}, 
       #{createdUser,jdbcType=VARCHAR}, #{createdTime,jdbcType=TIMESTAMP}, #{lastEditTime,jdbcType=TIMESTAMP}, 
-      #{lastEditUser,jdbcType=VARCHAR}, #{region,jdbcType=INTEGER})
+      #{lastEditUser,jdbcType=VARCHAR}, #{region,jdbcType=INTEGER}, #{freq,jdbcType=VARCHAR}
+      )
   </insert>
   <insert id="insertSelective" parameterType="com.suma.pojo.ServiceInfo">
     insert into service_info
@@ -152,13 +155,16 @@
       <if test="region != null">
         REGION,
       </if>
+      <if test="freq != null">
+        FREQ,
+      </if>
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides=",">
       <if test="id != null">
         #{id,jdbcType=BIGINT},
       </if>
       <if test="serviceId != null">
-        #{serviceId,jdbcType=BIGINT},
+        #{serviceId,jdbcType=VARCHAR},
       </if>
       <if test="tid != null">
         #{tid,jdbcType=BIGINT},
@@ -187,6 +193,9 @@
       <if test="region != null">
         #{region,jdbcType=INTEGER},
       </if>
+      <if test="freq != null">
+        #{freq,jdbcType=VARCHAR},
+      </if>
     </trim>
   </insert>
   <select id="countByExample" parameterType="com.suma.pojo.ServiceInfoExample" resultType="java.lang.Long">
@@ -202,7 +211,7 @@
         ID = #{record.id,jdbcType=BIGINT},
       </if>
       <if test="record.serviceId != null">
-        SERVICE_ID = #{record.serviceId,jdbcType=BIGINT},
+        SERVICE_ID = #{record.serviceId,jdbcType=VARCHAR},
       </if>
       <if test="record.tid != null">
         TID = #{record.tid,jdbcType=BIGINT},
@@ -231,6 +240,9 @@
       <if test="record.region != null">
         REGION = #{record.region,jdbcType=INTEGER},
       </if>
+      <if test="record.freq != null">
+        FREQ = #{record.freq,jdbcType=VARCHAR},
+      </if>
     </set>
     <if test="_parameter != null">
       <include refid="Update_By_Example_Where_Clause" />
@@ -239,7 +251,7 @@
   <update id="updateByExample" parameterType="map">
     update service_info
     set ID = #{record.id,jdbcType=BIGINT},
-      SERVICE_ID = #{record.serviceId,jdbcType=BIGINT},
+      SERVICE_ID = #{record.serviceId,jdbcType=VARCHAR},
       TID = #{record.tid,jdbcType=BIGINT},
       SERVICE_NAME = #{record.serviceName,jdbcType=VARCHAR},
       TYPE = #{record.type,jdbcType=INTEGER},
@@ -248,7 +260,8 @@
       CREATED_TIME = #{record.createdTime,jdbcType=TIMESTAMP},
       LAST_EDIT_TIME = #{record.lastEditTime,jdbcType=TIMESTAMP},
       LAST_EDIT_USER = #{record.lastEditUser,jdbcType=VARCHAR},
-      REGION = #{record.region,jdbcType=INTEGER}
+      REGION = #{record.region,jdbcType=INTEGER},
+      FREQ = #{record.freq,jdbcType=VARCHAR}
     <if test="_parameter != null">
       <include refid="Update_By_Example_Where_Clause" />
     </if>
@@ -257,7 +270,7 @@
     update service_info
     <set>
       <if test="serviceId != null">
-        SERVICE_ID = #{serviceId,jdbcType=BIGINT},
+        SERVICE_ID = #{serviceId,jdbcType=VARCHAR},
       </if>
       <if test="tid != null">
         TID = #{tid,jdbcType=BIGINT},
@@ -286,12 +299,15 @@
       <if test="region != null">
         REGION = #{region,jdbcType=INTEGER},
       </if>
+      <if test="freq != null">
+        FREQ = #{freq,jdbcType=VARCHAR},
+      </if>
     </set>
     where ID = #{id,jdbcType=BIGINT}
   </update>
   <update id="updateByPrimaryKey" parameterType="com.suma.pojo.ServiceInfo">
     update service_info
-    set SERVICE_ID = #{serviceId,jdbcType=BIGINT},
+    set SERVICE_ID = #{serviceId,jdbcType=VARCHAR},
       TID = #{tid,jdbcType=BIGINT},
       SERVICE_NAME = #{serviceName,jdbcType=VARCHAR},
       TYPE = #{type,jdbcType=INTEGER},
@@ -300,7 +316,8 @@
       CREATED_TIME = #{createdTime,jdbcType=TIMESTAMP},
       LAST_EDIT_TIME = #{lastEditTime,jdbcType=TIMESTAMP},
       LAST_EDIT_USER = #{lastEditUser,jdbcType=VARCHAR},
-      REGION = #{region,jdbcType=INTEGER}
+      REGION = #{region,jdbcType=INTEGER},
+      FREQ = #{freq,jdbcType=VARCHAR}
     where ID = #{id,jdbcType=BIGINT}
   </update>
 </mapper>

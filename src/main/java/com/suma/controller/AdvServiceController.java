@@ -1,5 +1,6 @@
 package com.suma.controller;
 
+import com.alibaba.fastjson.JSON;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import com.suma.constants.ExceptionConstants;
@@ -10,6 +11,7 @@ import com.suma.service.ServiceInfoService;
 import com.suma.service.TsService;
 import com.suma.utils.Insert;
 import com.suma.utils.Result;
+import com.suma.utils.Update;
 import com.suma.vo.ServiceQueryVO;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -42,38 +44,11 @@ public class AdvServiceController extends BaseController {
         if (pageNum == null || pageSize == null) {
             throw new BaseException(ExceptionConstants.BASE_EXCEPTION_MISSING_PARAMETERS);
         }
-        List<Long> tIds = new ArrayList<>();
-
-        TsInfoExample tsExample = new TsInfoExample();
-        TsInfoExample.Criteria tsCriteria = tsExample.createCriteria();
-        if (serviceVO.getNetworkId() != null) {
-            Long nId = networkService.findPKByNetworkId(serviceVO.getNetworkId());
-            if (nId != null)
-                tsCriteria = tsCriteria.andNidEqualTo(nId);
-            else
-                return Result.success(new PageInfo<ServiceInfo>(null));
-        }
-        if (serviceVO.getTsId() != null) {
-            tsCriteria.andTsIdEqualTo(serviceVO.getTsId());
-        }
-
-        List<TsInfo> tsInfos = tsService.selectByExample(tsExample);
-        for (TsInfo tsInfo : tsInfos) {
-            tIds.add(tsInfo.getId());
-        }
-
-        if (tIds.size() == 0 && (serviceVO.getNetworkId() != null || serviceVO.getTsId() != null)) {
-            return Result.success(new PageInfo<ServiceInfo>(null));
-        }
-
         ServiceInfoExample serviceExample = new ServiceInfoExample();
-        ServiceInfoExample.Criteria criteria = serviceExample.createCriteria();
-        if (tIds.size() > 0) {
-            criteria = criteria.andTidIn(tIds);
-        }
-        if (serviceVO.getServiceId() != null) {
-            criteria.andServiceIdEqualTo(serviceVO.getServiceId());
-        }
+        ServiceInfoExample.Criteria criteria = serviceInfoService.queryServiceByThreeId(serviceVO.getNetworkId(), serviceVO.getTsId(), serviceVO.getServiceId(), serviceExample);
+
+        if (criteria == null)
+            return Result.success(new PageInfo<ServiceInfo>(null));
         if (serviceVO.getServiceName() != null) {
             criteria.andServiceNameEqualTo(serviceVO.getServiceName());
         }
@@ -114,12 +89,12 @@ public class AdvServiceController extends BaseController {
 
 
     @RequestMapping("update")
-    public Result updateService(@Validated ServiceInfo serviceInfo) {
+    public Result updateService(@Validated({Update.class}) ServiceInfo serviceInfo) {
+        serviceInfoService.checkDuplicate(serviceInfo);
         ServiceInfo oldInfo = serviceInfoService.findByPK(serviceInfo.getId());
         oldInfo.setServiceId(serviceInfo.getServiceId());
         oldInfo.setServiceName(serviceInfo.getServiceName());
         oldInfo.setType(serviceInfo.getType());
-
         return toResult(serviceInfoService.update(oldInfo));
     }
 
@@ -137,6 +112,9 @@ public class AdvServiceController extends BaseController {
 
     @RequestMapping("add")
     public Result addService(@Validated({Insert.class}) ServiceInfo serviceInfo) {
+        serviceInfoService.checkDuplicate(serviceInfo);
         return toResult(serviceInfoService.save(serviceInfo));
     }
+
+
 }

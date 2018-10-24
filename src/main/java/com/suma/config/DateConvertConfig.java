@@ -13,13 +13,14 @@ import java.util.List;
 /**
  * @auther: luxinzong
  * @date: 2018/10/16 0016
- * @description
+ * @description 日期转换全局他那个一处理配置，暂时没有应用，若使用只需加上注解@Component
  */
 public class DateConvertConfig implements Converter<String, Date> {
-    private static final List<String> formats = new ArrayList<>(2);
+    private static final List<String> formats = new ArrayList<>(3);
     static {
         formats.add("yyyy-MM-dd");
         formats.add("HH:mm:ss");
+        formats.add("HH:mm");
     }
     @Override
     public Date convert(String source) {
@@ -31,6 +32,8 @@ public class DateConvertConfig implements Converter<String, Date> {
         if (source.matches("^\\d{4}-\\d{1,2}-\\d{1,2}$")) {
             return parseDate(source, formats.get(0));
         } else if (source.matches("^\\d{1,2}:\\d{1,2}:\\d{1,2}$")) {
+            return parseDate(source, formats.get(1));
+        } else if (source.matches("^\\d{1,2}:\\d{1,2}$")) {
             return parseDate(source, formats.get(2));
         } else {
             throw new IllegalArgumentException("日期格式不对");

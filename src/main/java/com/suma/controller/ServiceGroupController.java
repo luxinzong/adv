@@ -85,9 +85,12 @@ public class ServiceGroupController extends BaseController {
 
     @RequestMapping("update")
     public Result updateServiceGroup(@Validated({Update.class}) ServiceGroupVO serviceGroupVO) {
-        List<ServiceGroup> serviceGroups = serviceGroupService.findByName(serviceGroupVO.getGroupName());
-        if (serviceGroups != null && serviceGroups.size() > 0) {
-            return Result.error("该分组名称已被占用");
+        ServiceGroup oldGroup = serviceGroupService.findByPK(serviceGroupVO.getSgid());
+        if (!oldGroup.getGroupName().equals(serviceGroupVO.getGroupName())){
+            List<ServiceGroup> serviceGroups = serviceGroupService.findByName(serviceGroupVO.getGroupName());
+            if (serviceGroups != null && serviceGroups.size() > 0) {
+                return Result.error("该分组名称已被占用");
+            }
         }
 
         ServiceGroup serviceGroup = new ServiceGroup();
