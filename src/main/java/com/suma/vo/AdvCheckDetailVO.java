@@ -1,8 +1,11 @@
 package com.suma.vo;
 
+import com.suma.pojo.AdvFlyWord;
+import com.suma.pojo.AdvLocation;
 import lombok.Data;
 
 import java.util.Date;
+import java.util.List;
 
 /**
  * @auther: luxinzong
@@ -11,6 +14,10 @@ import java.util.Date;
  */
 @Data
 public class AdvCheckDetailVO {
+
+    private String advType;//广告类型
+
+    private String advTypeName;//广告类型名称
 
     private Long advLocationId;//广告位ID
 
@@ -50,28 +57,8 @@ public class AdvCheckDetailVO {
 
     private String mark;//备注
 
-    private Long xPosition;//横坐标
+    private AdvLocation advLocation;//广告位置信息
 
-    private Long yPosition;//纵坐标
-
-    private Long mWidth;//宽度
-
-    private Long mHeight;//高度
-
-    private String content;//文字内容
-
-    private Long displayTimes;//显示次数
-
-    private Long interval;//时间间隔
-
-    private String fontColour;//字体颜色
-
-    private String backgroundColour;//字幕背景色
-
-    private Long speed;//跑马灯速度
-
-    private Long direct;//方向
-
-    private Long duration;//持续时间
+    private List<AdvFlyWord> advFlyWords;//字幕广告信息
 
 }

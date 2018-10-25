@@ -164,66 +164,6 @@ public class AdvFlyWordExample {
             return (Criteria) this;
         }
 
-        public Criteria andAdvInfoIdIsNull() {
-            addCriterion("ADV_INFO_ID is null");
-            return (Criteria) this;
-        }
-
-        public Criteria andAdvInfoIdIsNotNull() {
-            addCriterion("ADV_INFO_ID is not null");
-            return (Criteria) this;
-        }
-
-        public Criteria andAdvInfoIdEqualTo(Long value) {
-            addCriterion("ADV_INFO_ID =", value, "advInfoId");
-            return (Criteria) this;
-        }
-
-        public Criteria andAdvInfoIdNotEqualTo(Long value) {
-            addCriterion("ADV_INFO_ID <>", value, "advInfoId");
-            return (Criteria) this;
-        }
-
-        public Criteria andAdvInfoIdGreaterThan(Long value) {
-            addCriterion("ADV_INFO_ID >", value, "advInfoId");
-            return (Criteria) this;
-        }
-
-        public Criteria andAdvInfoIdGreaterThanOrEqualTo(Long value) {
-            addCriterion("ADV_INFO_ID >=", value, "advInfoId");
-            return (Criteria) this;
-        }
-
-        public Criteria andAdvInfoIdLessThan(Long value) {
-            addCriterion("ADV_INFO_ID <", value, "advInfoId");
-            return (Criteria) this;
-        }
-
-        public Criteria andAdvInfoIdLessThanOrEqualTo(Long value) {
-            addCriterion("ADV_INFO_ID <=", value, "advInfoId");
-            return (Criteria) this;
-        }
-
-        public Criteria andAdvInfoIdIn(List<Long> values) {
-            addCriterion("ADV_INFO_ID in", values, "advInfoId");
-            return (Criteria) this;
-        }
-
-        public Criteria andAdvInfoIdNotIn(List<Long> values) {
-            addCriterion("ADV_INFO_ID not in", values, "advInfoId");
-            return (Criteria) this;
-        }
-
-        public Criteria andAdvInfoIdBetween(Long value1, Long value2) {
-            addCriterion("ADV_INFO_ID between", value1, value2, "advInfoId");
-            return (Criteria) this;
-        }
-
-        public Criteria andAdvInfoIdNotBetween(Long value1, Long value2) {
-            addCriterion("ADV_INFO_ID not between", value1, value2, "advInfoId");
-            return (Criteria) this;
-        }
-
         public Criteria andContentIsNull() {
             addCriterion("CONTENT is null");
             return (Criteria) this;
@@ -731,6 +671,76 @@ public class AdvFlyWordExample {
 
         public Criteria andDurationNotBetween(Long value1, Long value2) {
             addCriterion("DURATION not between", value1, value2, "duration");
+            return (Criteria) this;
+        }
+
+        public Criteria andFontSizeIsNull() {
+            addCriterion("FONT_SIZE is null");
+            return (Criteria) this;
+        }
+
+        public Criteria andFontSizeIsNotNull() {
+            addCriterion("FONT_SIZE is not null");
+            return (Criteria) this;
+        }
+
+        public Criteria andFontSizeEqualTo(String value) {
+            addCriterion("FONT_SIZE =", value, "fontSize");
+            return (Criteria) this;
+        }
+
+        public Criteria andFontSizeNotEqualTo(String value) {
+            addCriterion("FONT_SIZE <>", value, "fontSize");
+            return (Criteria) this;
+        }
+
+        public Criteria andFontSizeGreaterThan(String value) {
+            addCriterion("FONT_SIZE >", value, "fontSize");
+            return (Criteria) this;
+        }
+
+        public Criteria andFontSizeGreaterThanOrEqualTo(String value) {
+            addCriterion("FONT_SIZE >=", value, "fontSize");
+            return (Criteria) this;
+        }
+
+        public Criteria andFontSizeLessThan(String value) {
+            addCriterion("FONT_SIZE <", value, "fontSize");
+            return (Criteria) this;
+        }
+
+        public Criteria andFontSizeLessThanOrEqualTo(String value) {
+            addCriterion("FONT_SIZE <=", value, "fontSize");
+            return (Criteria) this;
+        }
+
+        public Criteria andFontSizeLike(String value) {
+            addCriterion("FONT_SIZE like", value, "fontSize");
+            return (Criteria) this;
+        }
+
+        public Criteria andFontSizeNotLike(String value) {
+            addCriterion("FONT_SIZE not like", value, "fontSize");
+            return (Criteria) this;
+        }
+
+        public Criteria andFontSizeIn(List<String> values) {
+            addCriterion("FONT_SIZE in", values, "fontSize");
+            return (Criteria) this;
+        }
+
+        public Criteria andFontSizeNotIn(List<String> values) {
+            addCriterion("FONT_SIZE not in", values, "fontSize");
+            return (Criteria) this;
+        }
+
+        public Criteria andFontSizeBetween(String value1, String value2) {
+            addCriterion("FONT_SIZE between", value1, value2, "fontSize");
+            return (Criteria) this;
+        }
+
+        public Criteria andFontSizeNotBetween(String value1, String value2) {
+            addCriterion("FONT_SIZE not between", value1, value2, "fontSize");
             return (Criteria) this;
         }
     }

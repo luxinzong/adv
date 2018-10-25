@@ -7,15 +7,14 @@ import com.suma.constants.ExceptionConstants;
 import com.suma.exception.AdvInfoException;
 import com.suma.exception.AdvMaterialException;
 import com.suma.pojo.*;
-import com.suma.service.AdvInfoService;
-import com.suma.service.AdvMaterialService;
-import com.suma.service.AdvTypeService;
-import com.suma.service.InfoMaterialService;
+import com.suma.service.*;
+import com.suma.utils.IDUtil;
 import com.suma.utils.Result;
 import com.suma.utils.StringUtil;
 import com.suma.vo.*;
 import org.apache.commons.beanutils.ConvertUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.checkerframework.checker.units.qual.A;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeanUtils;
@@ -51,6 +50,12 @@ public class AdvInfoContoller extends BaseController {
     @Autowired
     private AdvMaterialService advMaterialService;
 
+    @Autowired
+    private AdvFlywordService advFlywordService;
+
+    @Autowired
+    private InfoFlywordService infoFlywordService;
+
 
     /**
      * 按照ID查找广告信息
@@ -82,6 +87,16 @@ public class AdvInfoContoller extends BaseController {
             //将前端资源信息VO对象存储到信息列表中
             infoMaterialVOS.add(infoMaterialVO);
         }
+        //创建字幕广告对象
+        //根据广告ID查询出对应的字幕广告ID
+        List<Long> flywordIds = infoFlywordService.selectFlywordIds(id);
+        AdvFlyWordExample example1 = new AdvFlyWordExample();
+        List<AdvFlyWord> advFlyWords = new ArrayList<>();
+        if (!CollectionUtils.isEmpty(flywordIds)) {
+            example1.createCriteria().andIdIn(flywordIds);
+            System.out.println(flywordIds+"阿古斯八卦");
+            advFlyWords = advFlywordService.selectByExample(example1);
+        }
         //查询出对应ID的广告信息
         AdvInfo advInfo = advInfoService.findById(id);
         //判断广告信息是否存在
@@ -98,6 +113,8 @@ public class AdvInfoContoller extends BaseController {
         advInfoQueryVO.setEnd(advInfo.getEndDate());
         //将广告资源列表存储到前对显示的广告信息VO对象中
         advInfoQueryVO.setInfoMaterialsVO(infoMaterialVOS);
+        //将字幕广告信息存储到广告信息VO对象中
+        advInfoQueryVO.setAdvFlyWords(advFlyWords);
         return Result.success(advInfoQueryVO);
     }
 
@@ -170,6 +187,8 @@ public class AdvInfoContoller extends BaseController {
         if ( infoMaterialService.selectByExample(example).size() != 0) {
             infoMaterialService.deleteByExample(example);
         }
+        //更具广告ID删除对应字幕广告列表
+        infoFlywordService.deleteByPK(id);
         return Result.success();
     }
 
@@ -198,6 +217,10 @@ public class AdvInfoContoller extends BaseController {
         if ( infoMaterialService.selectByExample(example1).size() != 0) {
             infoMaterialService.deleteByExample(example1);
         }
+        //删除字幕广告对应列表
+        InfoFlyWordExample example2 = new InfoFlyWordExample();
+        example2.createCriteria().andAdvInfoIdIn(advInfoIds);
+        infoFlywordService.deleteByExample(example2);
         return Result.success();
     }
 
@@ -251,7 +274,7 @@ public class AdvInfoContoller extends BaseController {
             //根据文件名查找对应资源
             example1.createCriteria().andFileNameEqualTo(infoMaterialVO.getFileName());
             List<AdvMaterial> advMaterials = advMaterialService.selectByExample(example1);
-            //如果资源存在则更新广告资源关系列表
+            //如果资源存在则添加到广告资源关系列表
             if (advMaterials != null) {
                 //获取广告资源ID
                 Long advMaterialId = advMaterials.get(0).getId();
@@ -261,6 +284,18 @@ public class AdvInfoContoller extends BaseController {
                 infoMaterial.setAdvInfoId(advInfoId);
                 BeanUtils.copyProperties(infoMaterialVO, infoMaterial);
                 infoMaterialService.save(infoMaterial);
+            }
+        }
+        //获取字幕广告信息,保存字幕广告信息
+        List<AdvFlyWord> advFlyWords = advInfoInsertVO.getAdvFlyWords();
+        System.out.println(advFlyWords);
+        if (!CollectionUtils.isEmpty(advFlyWords)) {
+            advFlywordService.saveAll(advFlyWords);
+            for (AdvFlyWord advFlyWord : advFlyWords) {
+                InfoFlyWord infoFlyWord = new InfoFlyWord();
+                infoFlyWord.setFlywordId(advFlyWord.getId());
+                infoFlyWord.setAdvInfoId(advInfoId);
+                infoFlywordService.save(infoFlyWord);
             }
         }
         return Result.success();
@@ -318,6 +353,23 @@ public class AdvInfoContoller extends BaseController {
                 BeanUtils.copyProperties(infoMaterialVO, infoMaterial);
                 infoMaterialService.updateByDoubleId(infoMaterial);
             }
+        }
+        //更新字幕广告信息
+        //从updateVO中获得字幕广告信息
+        List<AdvFlyWord> advFlyWords = advInfoUpdateVO.getAdvFlyWords();
+        //把ID存起来
+        List<Long> ids = new  ArrayList<>();
+        for (AdvFlyWord advFlyWord : advFlyWords) {
+            if (advFlyWord.getId() == null) {
+                advFlywordService.save(advFlyWord);
+            }
+            ids.add(advFlyWord.getId());
+        }
+        for (Long id : ids) {
+            InfoFlyWord infoFlyWord = new InfoFlyWord();
+            infoFlyWord.setAdvInfoId(advInfo.getId());
+            infoFlyWord.setFlywordId(id);
+            infoFlywordService.save(infoFlyWord);
         }
         return Result.success();
     }

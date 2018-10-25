@@ -1,6 +1,7 @@
 package com.suma.pojo;
 
 import lombok.Data;
+import org.springframework.format.annotation.DateTimeFormat;
 
 import java.util.Date;
 
@@ -19,6 +20,6 @@ public class AdvCheckDetail {
 
     private String mark;//备注
 
-    private Date checkTime;//审核时间
+    private String checkTime;//审核时间
 
 }

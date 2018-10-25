@@ -68,15 +68,18 @@
     insert into adv_check_detail(
       <include refid="Base_Column_List"/>
     )
-    <trim prefix="values(" suffix=")" suffixOverrides="," >
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="id != null">
+        #{id,jdbcType=BIGINT},
+      </if>
       <if test="advInfoId != null">
-        #{advInfoId,jdbcType=BIGINT}
+        #{advInfoId,jdbcType=BIGINT},
       </if>
       <if test="region != null" >
         #{region,jdbcType=INTEGER},
       </if>
       <if test="checkUser != null" >
-        #{CHECKUSER,jdbcType=VARCHAR},
+        #{checkUser,jdbcType=VARCHAR},
       </if>
       <if test="status != null" >
         #{status,jdbcType=INTEGER},

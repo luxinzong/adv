@@ -1,6 +1,6 @@
 package com.suma.vo;
 
-import com.suma.pojo.InfoMaterial;
+import com.suma.pojo.AdvFlyWord;
 import lombok.Data;
 
 import java.util.List;
@@ -32,5 +32,7 @@ public class AdvInfoUpdateVO {
     private Integer status;//广告状态
 
     private List<InfoMaterialVO> infoMaterialVOS;//广告资源列表
+
+    private List<AdvFlyWord> advFlyWords;//字幕信息
 
 }

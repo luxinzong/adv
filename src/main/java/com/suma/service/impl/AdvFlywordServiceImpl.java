@@ -4,9 +4,11 @@ import com.suma.dao.AdvFlyWordMapper;
 import com.suma.pojo.AdvFlyWord;
 import com.suma.pojo.AdvFlyWordExample;
 import com.suma.service.AdvFlywordService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
+import java.util.List;
 
 /**
  * @auther: luxinzong
@@ -19,5 +21,13 @@ public class AdvFlywordServiceImpl extends BaseServiceImpl<AdvFlyWord,AdvFlyWord
  @Resource
  public void setBaseDao(AdvFlyWordMapper advFlyWordMapper) {
   super.setBaseDao(advFlyWordMapper);
+ }
+
+ @Autowired
+ private AdvFlyWordMapper advFlyWordMapper;
+
+ @Override
+ public int saveAll(List<AdvFlyWord> advFlyWords) {
+  return advFlyWordMapper.saveAll(advFlyWords);
  }
 }

@@ -3,7 +3,6 @@
 <mapper namespace="com.suma.dao.AdvFlyWordMapper">
   <resultMap id="BaseResultMap" type="com.suma.pojo.AdvFlyWord">
     <id column="ID" jdbcType="BIGINT" property="id" />
-    <result column="ADV_INFO_ID" jdbcType="BIGINT" property="advInfoId" />
     <result column="CONTENT" jdbcType="VARCHAR" property="content" />
     <result column="DISPLAY_TIMES" jdbcType="BIGINT" property="displayTimes" />
     <result column="INTERVAL_TIME" jdbcType="BIGINT" property="intervalTime" />
@@ -12,6 +11,7 @@
     <result column="SPEED" jdbcType="BIGINT" property="speed" />
     <result column="DIRECT" jdbcType="BIGINT" property="direct" />
     <result column="DURATION" jdbcType="BIGINT" property="duration" />
+    <result column="FONT_SIZE" jdbcType="VARCHAR" property="fontSize" />
   </resultMap>
   <sql id="Example_Where_Clause">
     <where>
@@ -72,8 +72,8 @@
     </where>
   </sql>
   <sql id="Base_Column_List">
-    ID, ADV_INFO_ID, CONTENT, DISPLAY_TIMES, INTERVAL_TIME, FONT_COLOUR, BACKGROUND_COLOUR, 
-    SPEED, DIRECT, DURATION
+    ID, CONTENT, DISPLAY_TIMES, INTERVAL_TIME, FONT_COLOUR, BACKGROUND_COLOUR, SPEED, 
+    DIRECT, DURATION, FONT_SIZE
   </sql>
   <select id="selectByExample" parameterType="com.suma.pojo.AdvFlyWordExample" resultMap="BaseResultMap">
     select
@@ -90,6 +90,7 @@
       order by ${orderByClause}
     </if>
   </select>
+
   <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
     select 
     <include refid="Base_Column_List" />
@@ -107,23 +108,20 @@
     </if>
   </delete>
   <insert id="insert" parameterType="com.suma.pojo.AdvFlyWord">
-    insert into adv_flyword (ID, ADV_INFO_ID, CONTENT, 
-      DISPLAY_TIMES, INTERVAL_TIME, FONT_COLOUR, 
-      BACKGROUND_COLOUR, SPEED, DIRECT, 
-      DURATION)
-    values (#{id,jdbcType=BIGINT}, #{advInfoId,jdbcType=BIGINT}, #{content,jdbcType=VARCHAR}, 
-      #{displayTimes,jdbcType=BIGINT}, #{intervalTime,jdbcType=BIGINT}, #{fontColour,jdbcType=VARCHAR}, 
-      #{backgroundColour,jdbcType=VARCHAR}, #{speed,jdbcType=BIGINT}, #{direct,jdbcType=BIGINT}, 
-      #{duration,jdbcType=BIGINT})
+    insert into adv_flyword (ID, CONTENT, DISPLAY_TIMES, 
+      INTERVAL_TIME, FONT_COLOUR, BACKGROUND_COLOUR, 
+      SPEED, DIRECT, DURATION, 
+      FONT_SIZE)
+    values (#{id,jdbcType=BIGINT}, #{content,jdbcType=VARCHAR}, #{displayTimes,jdbcType=BIGINT}, 
+      #{intervalTime,jdbcType=BIGINT}, #{fontColour,jdbcType=VARCHAR}, #{backgroundColour,jdbcType=VARCHAR}, 
+      #{speed,jdbcType=BIGINT}, #{direct,jdbcType=BIGINT}, #{duration,jdbcType=BIGINT}, 
+      #{fontSize,jdbcType=VARCHAR})
   </insert>
   <insert id="insertSelective" parameterType="com.suma.pojo.AdvFlyWord">
     insert into adv_flyword
     <trim prefix="(" suffix=")" suffixOverrides=",">
       <if test="id != null">
         ID,
-      </if>
-      <if test="advInfoId != null">
-        ADV_INFO_ID,
       </if>
       <if test="content != null">
         CONTENT,
@@ -149,13 +147,13 @@
       <if test="duration != null">
         DURATION,
       </if>
+      <if test="fontSize != null">
+        FONT_SIZE,
+      </if>
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides=",">
       <if test="id != null">
         #{id,jdbcType=BIGINT},
-      </if>
-      <if test="advInfoId != null">
-        #{advInfoId,jdbcType=BIGINT},
       </if>
       <if test="content != null">
         #{content,jdbcType=VARCHAR},
@@ -181,6 +179,9 @@
       <if test="duration != null">
         #{duration,jdbcType=BIGINT},
       </if>
+      <if test="fontSize != null">
+        #{fontSize,jdbcType=VARCHAR},
+      </if>
     </trim>
   </insert>
   <select id="countByExample" parameterType="com.suma.pojo.AdvFlyWordExample" resultType="java.lang.Long">
@@ -194,9 +195,6 @@
     <set>
       <if test="record.id != null">
         ID = #{record.id,jdbcType=BIGINT},
-      </if>
-      <if test="record.advInfoId != null">
-        ADV_INFO_ID = #{record.advInfoId,jdbcType=BIGINT},
       </if>
       <if test="record.content != null">
         CONTENT = #{record.content,jdbcType=VARCHAR},
@@ -222,6 +220,9 @@
       <if test="record.duration != null">
         DURATION = #{record.duration,jdbcType=BIGINT},
       </if>
+      <if test="record.fontSize != null">
+        FONT_SIZE = #{record.fontSize,jdbcType=VARCHAR},
+      </if>
     </set>
     <if test="_parameter != null">
       <include refid="Update_By_Example_Where_Clause" />
@@ -230,7 +231,6 @@
   <update id="updateByExample" parameterType="map">
     update adv_flyword
     set ID = #{record.id,jdbcType=BIGINT},
-      ADV_INFO_ID = #{record.advInfoId,jdbcType=BIGINT},
       CONTENT = #{record.content,jdbcType=VARCHAR},
       DISPLAY_TIMES = #{record.displayTimes,jdbcType=BIGINT},
       INTERVAL_TIME = #{record.intervalTime,jdbcType=BIGINT},
@@ -238,7 +238,8 @@
       BACKGROUND_COLOUR = #{record.backgroundColour,jdbcType=VARCHAR},
       SPEED = #{record.speed,jdbcType=BIGINT},
       DIRECT = #{record.direct,jdbcType=BIGINT},
-      DURATION = #{record.duration,jdbcType=BIGINT}
+      DURATION = #{record.duration,jdbcType=BIGINT},
+      FONT_SIZE = #{record.fontSize,jdbcType=VARCHAR}
     <if test="_parameter != null">
       <include refid="Update_By_Example_Where_Clause" />
     </if>
@@ -246,9 +247,6 @@
   <update id="updateByPrimaryKeySelective" parameterType="com.suma.pojo.AdvFlyWord">
     update adv_flyword
     <set>
-      <if test="advInfoId != null">
-        ADV_INFO_ID = #{advInfoId,jdbcType=BIGINT},
-      </if>
       <if test="content != null">
         CONTENT = #{content,jdbcType=VARCHAR},
       </if>
@@ -273,20 +271,42 @@
       <if test="duration != null">
         DURATION = #{duration,jdbcType=BIGINT},
       </if>
+      <if test="fontSize != null">
+        FONT_SIZE = #{fontSize,jdbcType=VARCHAR},
+      </if>
     </set>
     where ID = #{id,jdbcType=BIGINT}
   </update>
   <update id="updateByPrimaryKey" parameterType="com.suma.pojo.AdvFlyWord">
     update adv_flyword
-    set ADV_INFO_ID = #{advInfoId,jdbcType=BIGINT},
-      CONTENT = #{content,jdbcType=VARCHAR},
+    set CONTENT = #{content,jdbcType=VARCHAR},
       DISPLAY_TIMES = #{displayTimes,jdbcType=BIGINT},
       INTERVAL_TIME = #{intervalTime,jdbcType=BIGINT},
       FONT_COLOUR = #{fontColour,jdbcType=VARCHAR},
       BACKGROUND_COLOUR = #{backgroundColour,jdbcType=VARCHAR},
       SPEED = #{speed,jdbcType=BIGINT},
       DIRECT = #{direct,jdbcType=BIGINT},
-      DURATION = #{duration,jdbcType=BIGINT}
+      DURATION = #{duration,jdbcType=BIGINT},
+      FONT_SIZE = #{fontSize,jdbcType=VARCHAR}
     where ID = #{id,jdbcType=BIGINT}
   </update>
+  <insert id="saveAll">
+    insert into info_flyword (
+    <include refid="Base_Column_List"/>
+    )
+    <foreach collection="list" item="item" index="index" open="(" close=")" separator=",">
+      <trim prefix=" values (" suffix=")" suffixOverrides=",">
+        <if test="item.id != null"> #{item.id,jdbcType=BIGINT},</if>
+        <if test="item.content != null">#{item.content,jdbcType=VARCHAR},</if>
+        <if test="item.displayTimes != null"> #{item.displayTimes,jdbcType=BIGINT},</if>
+        <if test="item.intervalTime != null">#{item.intervalTime,jdbcType=BIGINT},</if>
+        <if test="item.fontColour != null">#{item.fontColour,jdbcType=VARCHAR},</if>
+        <if test="item.backgroundColour != null">#{item.backgroundColour,jdbcType=VARCHAR},</if>
+        <if test="item.speed != null"> #{item.speed,jdbcType=BIGINT},</if>
+        <if test="item.direct != null">#{item.direct,jdbcType=BIGINT},</if>
+        <if test="item.duration != null"> #{item.duration,jdbcType=BIGINT},</if>
+      </trim>
+    </foreach>
+
+  </insert>
 </mapper>

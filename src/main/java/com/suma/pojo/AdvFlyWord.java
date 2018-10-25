@@ -3,8 +3,6 @@ package com.suma.pojo;
 public class AdvFlyWord {
     private Long id;
 
-    private Long advInfoId;
-
     private String content;
 
     private Long displayTimes;
@@ -21,20 +19,14 @@ public class AdvFlyWord {
 
     private Long duration;
 
+    private String fontSize;
+
     public Long getId() {
         return id;
     }
 
     public void setId(Long id) {
         this.id = id;
-    }
-
-    public Long getAdvInfoId() {
-        return advInfoId;
-    }
-
-    public void setAdvInfoId(Long advInfoId) {
-        this.advInfoId = advInfoId;
     }
 
     public String getContent() {
@@ -99,5 +91,13 @@ public class AdvFlyWord {
 
     public void setDuration(Long duration) {
         this.duration = duration;
+    }
+
+    public String getFontSize() {
+        return fontSize;
+    }
+
+    public void setFontSize(String fontSize) {
+        this.fontSize = fontSize == null ? null : fontSize.trim();
     }
 }

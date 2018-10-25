@@ -7,6 +7,9 @@ import com.suma.pojo.AdvFlyWord;
 import com.suma.pojo.AdvFlyWordExample;
 import com.suma.service.AdvFlywordService;
 import com.suma.utils.Result;
+import com.suma.utils.StringUtil;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -22,6 +25,8 @@ import java.util.List;
 @RequestMapping(value = "flyword")
 public class AdvFlywordController extends BaseController{
 
+    private static Logger logger = LoggerFactory.getLogger(AdvFlywordController.class);
+
     @Autowired
     AdvFlywordService advFlywordService;
 
@@ -32,6 +37,7 @@ public class AdvFlywordController extends BaseController{
      */
     @RequestMapping(value = "insert", method = RequestMethod.POST)
     public Result insert(AdvFlyWord advFlyWord) {
+        logger.debug(advFlyWord.toString());
         if (advFlyWord == null) {
             throw new AdvFlyWordException(ExceptionConstants.ADV_FLYWOR_REQUESTPARAM_IS_NULL);
         }
@@ -61,23 +67,10 @@ public class AdvFlywordController extends BaseController{
      */
     @RequestMapping(value = "deleteAll", method = RequestMethod.POST)
     public Result delete(String str) {
-        Result result = new Result();
-        String[] ids = str.substring(0,str.lastIndexOf(",")).split(",");
-        StringBuilder stringBuilder = new StringBuilder();
-        int count = 0;
-        for (String id : ids) {
-            if (advFlywordService.findByPK(Long.valueOf(id)) == null) {
-                stringBuilder.append(id+",");
-                count++;
-                continue;
-            }
-            advFlywordService.deleteByPK(Long.valueOf(id));
-        }
-        if (count == ids.length) {
-            return Result.success();
-        } else {
-            return  Result.error("ID为"+stringBuilder.toString()+"删除失败");
-        }
+        List<Long> ids = StringUtil.convertstr(str);
+        AdvFlyWordExample example = new AdvFlyWordExample();
+        example.createCriteria().andIdIn(ids);
+        return toResult(advFlywordService.deleteByExample(example));
     }
 
     /**
@@ -87,7 +80,8 @@ public class AdvFlywordController extends BaseController{
      */
     @RequestMapping(value = "update")
     public Result update(AdvFlyWord advFlyWord) {
-        if (advFlyWord == null) {
+        logger.debug(advFlyWord.toString());
+        if (advFlyWord.getId() == null) {
             throw new AdvFlyWordException(ExceptionConstants.ADV_FLYWOR_REQUESTPARAM_IS_NULL);
         }
        return toResult(advFlywordService.update(advFlyWord));
@@ -104,6 +98,9 @@ public class AdvFlywordController extends BaseController{
             throw new AdvFlyWordException(ExceptionConstants.ADV_FLYWOR_REQUESTPARAM_IS_NULL);
         }
         for (AdvFlyWord advFlyWord : advFlyWords) {
+            if (advFlyWord.getId() == null) {
+                logger.error("缺少必要参数");
+            }
             if (advFlywordService.findByPK(advFlyWord.getId()) == null) {
                 throw new AdvFlyWordException("广告ID:" + advFlyWord.getId() + "不存在");
             }
@@ -114,18 +111,18 @@ public class AdvFlywordController extends BaseController{
 
     /**
      * 查询字幕广告对应的所有字幕信息
-     * @param advInfoId
+     * @param advFlywordId
      * @return
      */
     @RequestMapping(value = "query")
-    public Result query(Long advInfoId) {
-        if (advInfoId == null) {
+    public Result query(Long advFlywordId) {
+        if (advFlywordId == null) {
             throw new AdvFlyWordException(ExceptionConstants.ADV_FLYWOR_REQUESTPARAM_IS_NULL);
         }
         AdvFlyWordExample example = new AdvFlyWordExample();
-        example.createCriteria().andAdvInfoIdEqualTo(advInfoId);
+        example.createCriteria().andIdEqualTo(advFlywordId);
         List<AdvFlyWord> advFlyWords = advFlywordService.selectByExample(example);
-        if (advFlyWords == null) {
+        if (advFlyWords.size() == 0) {
             throw new AdvFlyWordException(ExceptionConstants.ADV_FLYWORD_IS_NOT_EXIST);
         }
         PageInfo<AdvFlyWord> pageInfo = new PageInfo<>();

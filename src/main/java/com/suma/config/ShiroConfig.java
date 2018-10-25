@@ -114,7 +114,6 @@ public class ShiroConfig {
     public DefaultWebSessionManager defaultWebSessionManager(){
         DefaultWebSessionManager defaultWebSessionManager = new DefaultWebSessionManager();
         defaultWebSessionManager.setSessionIdUrlRewritingEnabled(false);
-
         return defaultWebSessionManager;
     }
 

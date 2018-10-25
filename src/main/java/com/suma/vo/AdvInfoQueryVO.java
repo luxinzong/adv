@@ -1,7 +1,7 @@
 package com.suma.vo;
 
 
-import com.suma.pojo.InfoMaterial;
+import com.suma.pojo.AdvFlyWord;
 import lombok.Data;
 
 import java.util.Date;
@@ -36,7 +36,8 @@ public class AdvInfoQueryVO {
 
     private Integer pageNum;//页码数
 
-    private List<InfoMaterialVO> infoMaterialsVO;
+    private List<InfoMaterialVO> infoMaterialsVO;//广告资源信息
 
+    private List<AdvFlyWord> advFlyWords;//字幕广告信息
 
 }

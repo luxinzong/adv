@@ -1,10 +1,8 @@
 package com.suma.vo;
 
-import com.suma.pojo.AdvMaterial;
+import com.suma.pojo.AdvFlyWord;
 import lombok.Data;
 
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
 import java.util.List;
 
 /**
@@ -32,4 +30,6 @@ public class AdvInfoInsertVO {
     private Integer materialType;//素材类型
 
     private List<InfoMaterialVO> infoMaterialVOS;//对应关系列表
+
+    private List<AdvFlyWord> advFlyWords;//字幕广告列表
 }
