@@ -15,6 +15,8 @@ import java.util.List;
 @Data
 public class AdvCheckDetailVO {
 
+    private Long id;//广告ID
+
     private String advType;//广告类型
 
     private String advTypeName;//广告类型名称

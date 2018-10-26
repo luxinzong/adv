@@ -96,7 +96,9 @@ public class AdvCheckDetailController extends BaseController{
         if (!CollectionUtils.isEmpty(advInfoList)) {
             for (AdvInfo advInfo : advInfoList) {
                 AdvCheckDetailVO advCheckDetailVO = new AdvCheckDetailVO();
+                System.out.println(advInfo+"哈哈");
                 BeanUtils.copyProperties(advInfo,advCheckDetailVO);
+                System.out.println(advCheckDetailVO);
                 if (advInfo.getAdvTypeId() != null) {
                     advCheckDetailVO.setAdvTypeName( advTypeService.findByPK(advInfo.getAdvTypeId()).getAdvtypename());
                     advCheckDetailVO.setAdvType(advTypeService.findByPK(advInfo.getAdvTypeId()).getAdvtype());
@@ -115,7 +117,7 @@ public class AdvCheckDetailController extends BaseController{
      * @param advInfoId 广告ID
      * @return 返回查询结果 -> List<AdvCheckDetail>
      */
-    @RequestMapping(value = "query", method = RequestMethod.GET)
+    @RequestMapping(value = "query")
     public Result select(Long advInfoId) {
         if (advInfoId == null) {
             throw new AdvCheckException(ExceptionConstants.ADV_CHECK_REQUESTPARAM_IS_NULL);
