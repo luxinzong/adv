@@ -108,7 +108,7 @@
     </if>
   </delete>
   <insert id="insert" parameterType="com.suma.pojo.AdvFlyWord">
-    <selectKey resultType="java.lang.Long" keyProperty="id" order="AFTER">
+    <selectKey order="AFTER" keyProperty="id" resultType="java.lang.Long">
       select LAST_INSERT_ID()
     </selectKey>
     insert into adv_flyword (ID, CONTENT, DISPLAY_TIMES, 
@@ -310,5 +310,6 @@
         <if test="item.duration != null"> #{item.duration,jdbcType=BIGINT},</if>
       </trim>
     </foreach>
+
   </insert>
 </mapper>

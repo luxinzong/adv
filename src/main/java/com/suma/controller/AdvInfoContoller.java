@@ -198,7 +198,7 @@ public class AdvInfoContoller extends BaseController {
      */
     @Transactional(rollbackFor = Exception.class)
     @RequestMapping(value = "insert")
-    public Result insertAdvInfo(String data) throws ParseException {
+    public Result insertAdvInfo(String data){
         //将传过来的字符串转换成json对象
         AdvInfoVO advInfoVO = JSON.parseObject(data, AdvInfoVO.class);
         //将广告信息存入到advInfo中
@@ -271,7 +271,7 @@ public class AdvInfoContoller extends BaseController {
      */
     @Transactional(rollbackFor = Exception.class)
     @RequestMapping(value = "update", method = RequestMethod.POST)
-    public Result updateAdvInfo(String data) throws ParseException {
+    public Result updateAdvInfo(String data){
         //将json字符串转换成json对象
         AdvInfoVO advInfoUpdateVO = JSON.parseObject(data, AdvInfoVO.class);
         System.out.println(advInfoUpdateVO);
@@ -329,7 +329,6 @@ public class AdvInfoContoller extends BaseController {
                 infoFlywordService.save(infoFlyWord);
             }
         }
-
         return Result.success();
     }
 }

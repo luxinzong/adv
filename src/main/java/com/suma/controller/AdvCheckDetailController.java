@@ -11,11 +11,13 @@ import com.suma.service.*;
 import com.suma.utils.Result;
 import com.suma.utils.StringUtil;
 import com.suma.vo.AdvCheckDetailVO;
+import com.sun.org.apache.bcel.internal.generic.IF_ACMPEQ;
 import com.sun.scenario.effect.impl.sw.sse.SSEBlend_SRC_OUTPeer;
 import org.apache.commons.beanutils.ConvertUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.util.CollectionUtils;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -24,6 +26,7 @@ import org.springframework.web.bind.annotation.RestController;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
 
 /**
  * @author luxinzong
@@ -31,7 +34,7 @@ import java.util.List;
  * @description 广告审核接口
  */
 @RestController
-@RequestMapping(value = "check",produces = "application/json;charset=utf-8")
+@RequestMapping(value = "check")
 public class AdvCheckDetailController extends BaseController{
 
     @Autowired
@@ -60,7 +63,8 @@ public class AdvCheckDetailController extends BaseController{
     @RequestMapping(value = "insert", method = RequestMethod.POST)
     public Result save(AdvCheckDetail advCheckDetail) {
         //判断参数是否为空，审核信息是否存在
-        if (advCheckDetail == null) {
+        if (advCheckDetail == null || advCheckDetail.getAdvInfoId() == null ||
+                advCheckDetail.getStatus() == null || advCheckDetail.getMark() == null) {
             throw new AdvCheckException(ExceptionConstants.ADV_CHECK_REQUESTPARAM_IS_NULL);
         }
         //判断该审核信息是否已存在，若存在，提示用户审核信息已存在
@@ -76,24 +80,34 @@ public class AdvCheckDetailController extends BaseController{
      * @param pageSize 显示条数
      * @return 返回查询结果 -> List<AdvCheckDetail>
      */
-    @RequestMapping(value = "queryAll", method = RequestMethod.GET)
+    @RequestMapping(value = "queryAll")
     public Result selectAll(Integer pageNum,Integer pageSize) {
+        System.out.println(pageNum+","+pageSize+"哈哈哈哈哈");
         if (pageNum == null || pageSize == null) {
-            System.out.println("缺少请求参数");
+            throw new AdvCheckException(ExceptionConstants.ADV_CHECK_REQUESTPARAM_IS_NULL);
         }
         AdvInfoExample example = new AdvInfoExample();
+        //把审核状态的广告信息查出来
         example.createCriteria().andStatusEqualTo(3);//待审核状态
         PageHelper.startPage(pageNum, pageSize);
         List<AdvInfo> advInfoList = advInfoService.selectByExample(example);
+        //前端显示对象
         List<AdvCheckDetailVO> advCheckDetails = new ArrayList<>();
-        for (AdvInfo advInfo : advInfoList) {
-            AdvCheckDetailVO advCheckDetailVO = new AdvCheckDetailVO();
-            BeanUtils.copyProperties(advInfo,advCheckDetailVO);
-            advCheckDetailVO.setAdvTypeName( advTypeService.findByPK(advInfo.getAdvTypeId()).getAdvtypename());
-            advCheckDetailVO.setAdvType(advTypeService.findByPK(advInfo.getAdvTypeId()).getAdvtype());
-            advCheckDetails.add(advCheckDetailVO);
+        if (!CollectionUtils.isEmpty(advInfoList)) {
+            for (AdvInfo advInfo : advInfoList) {
+                AdvCheckDetailVO advCheckDetailVO = new AdvCheckDetailVO();
+                BeanUtils.copyProperties(advInfo,advCheckDetailVO);
+                if (advInfo.getAdvTypeId() != null) {
+                    advCheckDetailVO.setAdvTypeName( advTypeService.findByPK(advInfo.getAdvTypeId()).getAdvtypename());
+                    advCheckDetailVO.setAdvType(advTypeService.findByPK(advInfo.getAdvTypeId()).getAdvtype());
+                }
+                advCheckDetails.add(advCheckDetailVO);
+            }
         }
-        return Result.success(advCheckDetails);
+        PageInfo<AdvCheckDetailVO> pageInfo = new PageInfo<>();
+        pageInfo.setList(advCheckDetails);
+        pageInfo.setTotal(advCheckDetails.size());
+        return Result.success(pageInfo);
     }
 
     /**
@@ -115,17 +129,16 @@ public class AdvCheckDetailController extends BaseController{
         if (advInfo != null) {
             System.out.println(advInfo);
             //判断类型ID是否存在
-            if (advInfo.getAdvTypeId() == null) {
-                throw new AdvInfoException(ExceptionConstants.INFO_EXCEPTION_ADV_TYPE_ID__NULL);
-            }
-            //获取广告位置信息
-            AdvLocationExample example = new AdvLocationExample();
-            example.createCriteria().andAdvTypeIdEqualTo(advInfo.getAdvTypeId());
             AdvLocation advLocation = new AdvLocation();
-            if (advLocationService.selectByExample(example).size() != 0) {
-                advLocation = advLocationService.selectByExample(example).get(0);
-            } else {
-                System.out.println("位置信息不存在");
+            if (advInfo.getAdvTypeId() != null) {
+                //获取广告位置信息
+                AdvLocationExample example = new AdvLocationExample();
+                example.createCriteria().andAdvTypeIdEqualTo(advInfo.getAdvTypeId());
+                if (advLocationService.selectByExample(example).size() != 0) {
+                    advLocation = advLocationService.selectByExample(example).get(0);
+                } else {
+                    System.out.println("位置信息不存在");
+                }
             }
             //获取审核信息
             AdvCheckDetail advCheckDetail = advCheckService.select(advInfoId);
@@ -137,7 +150,7 @@ public class AdvCheckDetailController extends BaseController{
             example1.createCriteria().andAdvInfoIdEqualTo(advInfoId);
             List<InfoFlyWord> infoFlyWords = infoFlywordService.selectByExample(example1);
             List<AdvFlyWord> advFlyWords = new ArrayList<>();
-            if (infoFlyWords.size() == 0) {
+            if (CollectionUtils.isEmpty(infoFlyWords)) {
                 System.out.println("字幕对应信息不存在");
             } else {
                 for (InfoFlyWord infoFlyWord : infoFlyWords) {
@@ -151,7 +164,6 @@ public class AdvCheckDetailController extends BaseController{
             advCheckDetailVO.setAdvFlyWords(advFlyWords);
             return Result.success(advCheckDetailVO);
         } else {
-            System.out.println("广告不存在");
             return Result.error("广告不存在");
         }
     }

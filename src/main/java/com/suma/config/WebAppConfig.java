@@ -23,5 +23,7 @@ public class WebAppConfig implements WebMvcConfigurer {
         registry.addInterceptor(new HttpInterceptor()).addPathPatterns("/system/role/**");
         registry.addInterceptor(new HttpInterceptor()).addPathPatterns("/login");
         registry.addInterceptor(new HttpInterceptor()).addPathPatterns("/location/**");
+        registry.addInterceptor(new HttpInterceptor()).addPathPatterns("/check/**");
+
     }
 }
