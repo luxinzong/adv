@@ -5,7 +5,6 @@ import com.suma.pojo.AdvInfoExample;
 import java.util.List;
 import java.util.Map;
 
-import com.suma.vo.AdvInfoQueryVO;
 import org.apache.ibatis.annotations.Param;
 
 public interface AdvInfoMapper extends BaseDAO<AdvInfo,AdvInfoExample,Long>{

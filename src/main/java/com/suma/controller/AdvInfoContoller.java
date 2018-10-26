@@ -8,13 +8,10 @@ import com.suma.exception.AdvInfoException;
 import com.suma.exception.AdvMaterialException;
 import com.suma.pojo.*;
 import com.suma.service.*;
-import com.suma.utils.IDUtil;
 import com.suma.utils.Result;
 import com.suma.utils.StringUtil;
 import com.suma.vo.*;
-import org.apache.commons.beanutils.ConvertUtils;
 import org.apache.commons.lang3.StringUtils;
-import org.checkerframework.checker.units.qual.A;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeanUtils;
@@ -65,7 +62,7 @@ public class AdvInfoContoller extends BaseController {
     @RequestMapping(value = "queryById")
     public Result query(Long id) {
         //创建一个给前端显示的VO对象
-        AdvInfoQueryVO advInfoQueryVO = new AdvInfoQueryVO();
+        AdvInfoVO advInfoVO = new AdvInfoVO();
         //根据广告ID查询出对应的广告资源列表
         InfoMaterialExample example = new InfoMaterialExample();
         example.createCriteria().andAdvInfoIdEqualTo(id);
@@ -105,17 +102,13 @@ public class AdvInfoContoller extends BaseController {
         }
         //将广告信息存储到前端显示VO对象中
         System.out.println(advInfo);
-        BeanUtils.copyProperties(advInfo, advInfoQueryVO);
-        advInfoQueryVO.setStart(advInfo.getStartDate());
-        advInfoQueryVO.setEnd(advInfo.getEndDate());
-        System.out.println(advInfoQueryVO);
-        advInfoQueryVO.setStart(advInfo.getStartDate());
-        advInfoQueryVO.setEnd(advInfo.getEndDate());
+        BeanUtils.copyProperties(advInfo, advInfoVO);
+        System.out.println(advInfoVO);
         //将广告资源列表存储到前对显示的广告信息VO对象中
-        advInfoQueryVO.setInfoMaterialsVO(infoMaterialVOS);
+        advInfoVO.setInfoMaterialVOS(infoMaterialVOS);
         //将字幕广告信息存储到广告信息VO对象中
-        advInfoQueryVO.setAdvFlyWords(advFlyWords);
-        return Result.success(advInfoQueryVO);
+        advInfoVO.setAdvFlyWords(advFlyWords);
+        return Result.success(advInfoVO);
     }
 
     /**
@@ -168,44 +161,18 @@ public class AdvInfoContoller extends BaseController {
 
     /**
      * 删除广告信息
-     * @param id 广告ID
+     * @param str 广告ID字符串
      * @return Result -> 删除成功或失败
      */
     @Transactional(rollbackFor = Exception.class)
     @RequestMapping(value = "delete", method = RequestMethod.POST)
-    public Result deleteAdvInfo(Long id) {
-        //判断参数是否为空
-        if (id == null) {
-            throw new AdvInfoException(ExceptionConstants.INFO_EXCEPTION_MISSING_REQUIRED_PARAMS);
-        }
-        //根据ID删除广告信息
-        advInfoService.deleteByPK(id);
-        //根据AdvInfoId删除对应资源列表信息
-        InfoMaterialExample example = new InfoMaterialExample();
-        example.createCriteria().andAdvInfoIdEqualTo(id);
-        //判断资源资源是否存在，存在则删除
-        if ( infoMaterialService.selectByExample(example).size() != 0) {
-            infoMaterialService.deleteByExample(example);
-        }
-        //更具广告ID删除对应字幕广告列表
-        infoFlywordService.deleteByPK(id);
-        return Result.success();
-    }
-
-    /**
-     * 批量删除广告信息
-     * @param idsStr 广告ID字符串
-     * @return Result -> 删除成功或失败
-     */
-    @Transactional(rollbackFor = Exception.class)
-    @RequestMapping(value = "deleteAll", method = RequestMethod.POST)
-    public Result deleteAdvInfos(String idsStr) {
+    public Result deleteAdvInfos(String str) {
         //判断字符串参数是否为空
-        if (StringUtils.isBlank(idsStr)) {
+        if (StringUtils.isBlank(str)) {
             throw new AdvInfoException(ExceptionConstants.INFO_EXCEPTION_MISSING_REQUIRED_PARAMS);
         }
         //将数组转换成list集合
-        List<Long> advInfoIds = StringUtil.convertstr(idsStr);
+        List<Long> advInfoIds = StringUtil.convertstr(str);
         //删除广告信息
         AdvInfoExample example = new AdvInfoExample();
         example.createCriteria().andIdIn(advInfoIds);
@@ -233,17 +200,11 @@ public class AdvInfoContoller extends BaseController {
     @RequestMapping(value = "insert")
     public Result insertAdvInfo(String data) throws ParseException {
         //将传过来的字符串转换成json对象
-        AdvInfoInsertVO advInfoInsertVO = JSON.parseObject(data, AdvInfoInsertVO.class);
-        //将日期字符串转换成对应日期格式
-        DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
-        DateFormat df = new SimpleDateFormat("HH:mm");
-        //将日期存入到advInfo中
+        AdvInfoVO advInfoVO = JSON.parseObject(data, AdvInfoVO.class);
+        //将广告信息存入到advInfo中
+        System.out.println(advInfoVO);
         AdvInfo advInfo = new AdvInfo();
-        advInfo.setStartDate(dateFormat.parse(advInfoInsertVO.getStart()));
-        advInfo.setEndDate(dateFormat.parse(advInfoInsertVO.getEnd()));
-        advInfo.setPeriodTimeEnd(df.parse(advInfoInsertVO.getPeriodTimeEnd()));
-        advInfo.setPeriodTimeStart(df.parse(advInfoInsertVO.getPeriodTimeStart()));
-        BeanUtils.copyProperties(advInfoInsertVO, advInfo);
+        BeanUtils.copyProperties(advInfoVO, advInfo);
         System.out.println(advInfo);
         //判断是否缺少参数
         if (advInfo.getName() == null || advInfo.getStartDate() == null ||
@@ -267,7 +228,7 @@ public class AdvInfoContoller extends BaseController {
         //获取广告信息ID
         Long advInfoId = advInfos.get(0).getId();
         //获取广告信息与资源关系表对象
-        List<InfoMaterialVO> infoMaterialVOS = advInfoInsertVO.getInfoMaterialVOS();
+        List<InfoMaterialVO> infoMaterialVOS = advInfoVO.getInfoMaterialVOS();
         //根据前端传递过来的文件名查找对应资源ID，根据资源ID和广告信息ID更新广告资源关系列表
         AdvMaterialExample example1 = new AdvMaterialExample();
         for (InfoMaterialVO infoMaterialVO : infoMaterialVOS) {
@@ -287,11 +248,13 @@ public class AdvInfoContoller extends BaseController {
             }
         }
         //获取字幕广告信息,保存字幕广告信息
-        List<AdvFlyWord> advFlyWords = advInfoInsertVO.getAdvFlyWords();
+        List<AdvFlyWord> advFlyWords = advInfoVO.getAdvFlyWords();
         System.out.println(advFlyWords);
         if (!CollectionUtils.isEmpty(advFlyWords)) {
-            advFlywordService.saveAll(advFlyWords);
             for (AdvFlyWord advFlyWord : advFlyWords) {
+                if (advFlyWord.getId() == null) {
+                    advFlywordService.save(advFlyWord);
+                }
                 InfoFlyWord infoFlyWord = new InfoFlyWord();
                 infoFlyWord.setFlywordId(advFlyWord.getId());
                 infoFlyWord.setAdvInfoId(advInfoId);
@@ -310,17 +273,10 @@ public class AdvInfoContoller extends BaseController {
     @RequestMapping(value = "update", method = RequestMethod.POST)
     public Result updateAdvInfo(String data) throws ParseException {
         //将json字符串转换成json对象
-        AdvInfoUpdateVO advInfoUpdateVO = JSON.parseObject(data, AdvInfoUpdateVO.class);
+        AdvInfoVO advInfoUpdateVO = JSON.parseObject(data, AdvInfoVO.class);
         System.out.println(advInfoUpdateVO);
-        //将日期字符串转换成对应日期格式，并存入advInfo中
-        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
-        SimpleDateFormat sdf1 = new SimpleDateFormat("HH:mm");
-        AdvInfo advInfo = new AdvInfo();
-        advInfo.setStartDate(sdf.parse(advInfoUpdateVO.getStart()));
-        advInfo.setEndDate(sdf.parse(advInfoUpdateVO.getEnd()));
-        advInfo.setPeriodTimeStart(sdf1.parse(advInfoUpdateVO.getPeriodTimeStart()));
-        advInfo.setPeriodTimeEnd(sdf1.parse(advInfoUpdateVO.getPeriodTimeEnd()));
         //将前端对象传递过来的信息存入advInfo对应的属性中
+        AdvInfo advInfo = new AdvInfo();
         BeanUtils.copyProperties(advInfoUpdateVO, advInfo);
         System.out.println(advInfo);
         //判断是否缺少参数
@@ -357,20 +313,23 @@ public class AdvInfoContoller extends BaseController {
         //更新字幕广告信息
         //从updateVO中获得字幕广告信息
         List<AdvFlyWord> advFlyWords = advInfoUpdateVO.getAdvFlyWords();
-        //把ID存起来
-        List<Long> ids = new  ArrayList<>();
-        for (AdvFlyWord advFlyWord : advFlyWords) {
-            if (advFlyWord.getId() == null) {
-                advFlywordService.save(advFlyWord);
+        if (!CollectionUtils.isEmpty(advFlyWords)) {
+            //把ID存起来
+            List<Long> ids = new  ArrayList<>();
+            for (AdvFlyWord advFlyWord : advFlyWords) {
+                if (advFlyWord.getId() == null) {
+                    advFlywordService.save(advFlyWord);
+                }
+                ids.add(advFlyWord.getId());
             }
-            ids.add(advFlyWord.getId());
+            for (Long id : ids) {
+                InfoFlyWord infoFlyWord = new InfoFlyWord();
+                infoFlyWord.setAdvInfoId(advInfo.getId());
+                infoFlyWord.setFlywordId(id);
+                infoFlywordService.save(infoFlyWord);
+            }
         }
-        for (Long id : ids) {
-            InfoFlyWord infoFlyWord = new InfoFlyWord();
-            infoFlyWord.setAdvInfoId(advInfo.getId());
-            infoFlyWord.setFlywordId(id);
-            infoFlywordService.save(infoFlyWord);
-        }
+
         return Result.success();
     }
 }

@@ -95,41 +95,6 @@ public class AdvCheckDetailController extends BaseController{
         }
         return Result.success(advCheckDetails);
     }
-    /**
-     * 更新审核信息
-     * @param advCheckDetail 审核信息
-     * @return 返回更新结果 Result 更新成功或失败
-     */
-    @RequestMapping(value = "update", method = RequestMethod.POST)
-    public Result update(AdvCheckDetail advCheckDetail) {
-        System.out.println(advCheckDetail);
-        if (advCheckDetail.getId() == null || advCheckDetail.getAdvInfoId() == null) {
-            throw new AdvCheckException(ExceptionConstants.ADV_CHECK_REQUESTPARAM_IS_NULL);
-        }
-        if (advCheckService.select(advCheckDetail.getAdvInfoId()) == null) {
-            throw new AdvCheckException(ExceptionConstants.ADV_CHECK_DETAIL_IS_NOT_EXIST);
-        }
-        return toResult(advCheckService.updateById(advCheckDetail));
-    }
-
-    /**
-     * 批量删除审核信息
-     * @param str 审核信息ID字符串
-     * @return 返回更新结果 Result 删除成功或失败
-     */
-    @RequestMapping(value = "delete", method = RequestMethod.POST)
-    public Result delete(String str) {
-        //判断id字符串是否为空
-        if (StringUtils.isBlank(str)) {
-            throw new AdvCheckException(ExceptionConstants.ADV_CHECK_REQUESTPARAM_IS_NULL);
-        }
-        //将id字符串转解析成字符串数组
-        List<Long> idsList = StringUtil.convertstr(str);
-        advCheckService.deleteAll((Long[]) idsList.toArray());
-        return Result.success();
-    }
-
-
 
     /**
      * 查询单个广告审核信息详情
@@ -189,6 +154,39 @@ public class AdvCheckDetailController extends BaseController{
             System.out.println("广告不存在");
             return Result.error("广告不存在");
         }
+    }
 
+    /**
+     * 更新审核信息
+     * @param advCheckDetail 审核信息
+     * @return 返回更新结果 Result 更新成功或失败
+     */
+    @RequestMapping(value = "update", method = RequestMethod.POST)
+    public Result update(AdvCheckDetail advCheckDetail) {
+        System.out.println(advCheckDetail);
+        if (advCheckDetail.getId() == null || advCheckDetail.getAdvInfoId() == null) {
+            throw new AdvCheckException(ExceptionConstants.ADV_CHECK_REQUESTPARAM_IS_NULL);
+        }
+        if (advCheckService.select(advCheckDetail.getAdvInfoId()) == null) {
+            throw new AdvCheckException(ExceptionConstants.ADV_CHECK_DETAIL_IS_NOT_EXIST);
+        }
+        return toResult(advCheckService.updateById(advCheckDetail));
+    }
+
+    /**
+     * 批量删除审核信息
+     * @param str 审核信息ID字符串
+     * @return 返回更新结果 Result 删除成功或失败
+     */
+    @RequestMapping(value = "delete", method = RequestMethod.POST)
+    public Result delete(String str) {
+        //判断id字符串是否为空
+        if (StringUtils.isBlank(str)) {
+            throw new AdvCheckException(ExceptionConstants.ADV_CHECK_REQUESTPARAM_IS_NULL);
+        }
+        //将id字符串转解析成字符串数组
+        List<Long> idsList = StringUtil.convertstr(str);
+        advCheckService.deleteAll((Long[]) idsList.toArray());
+        return Result.success();
     }
 }

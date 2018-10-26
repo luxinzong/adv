@@ -2,7 +2,9 @@ package com.suma.pojo;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Data;
+import org.springframework.format.annotation.DateTimeFormat;
 
+import java.sql.Time;
 import java.util.Date;
 
 
@@ -20,13 +22,13 @@ public class AdvInfo {
 
     private Integer status;//广告状态
 
-    private Date startDate;//起始日期
+    private String startDate;//起始日期
 
-    private Date endDate;//终止日期
+    private String endDate;//终止日期
 
-    private Date periodTimeStart;//有效期生效日期
+    private String periodTimeStart;//有效期生效日期
 
-    private Date periodTimeEnd;//有效期结束日期
+    private String periodTimeEnd;//有效期结束日期
 
     private String checkUser;//审核人
 

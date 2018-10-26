@@ -4,7 +4,6 @@ import com.suma.dao.AdvInfoMapper;
 import com.suma.pojo.AdvInfo;
 import com.suma.pojo.AdvInfoExample;
 import com.suma.service.AdvInfoService;
-import com.suma.vo.AdvInfoQueryVO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
