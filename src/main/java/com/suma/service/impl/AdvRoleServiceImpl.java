@@ -111,7 +111,7 @@ public class AdvRoleServiceImpl implements iAdvRoleService {
         if(checkAdvRole != null){
             throw new RoleException(ExceptionConstants.ROLE_EXCEPTION_EXIST_NAME);
         }
-//        advRole.setCreateBy(ShiroUtils.getUser().getUserName());
+        advRole.setCreateBy(ShiroUtils.getUser().getUserName());
         //新增角色信息
         Integer roleSort = advRole.getRoleSort();
         if(roleSort == null){
@@ -125,7 +125,7 @@ public class AdvRoleServiceImpl implements iAdvRoleService {
         AdvRole tempAdvRole = advRoleMapper.selectByAdvRoleName(roleName);
         advRole.setRoleId(tempAdvRole.getRoleId());
         int insertAdcRoleMenuRows = insertAdvRoleMenu(advRole);
-//        advRole.setCreateBy(ShiroUtils.getUser().getUserName());
+        advRole.setCreateBy(ShiroUtils.getUser().getUserName());
         return insertRows + insertAdcRoleMenuRows;
     }
 
@@ -175,7 +175,7 @@ public class AdvRoleServiceImpl implements iAdvRoleService {
             insertRows = insertAdvRoleMenu(advRole);
         }
 
-//        advRole.setUpdateBy(advRole.getUpdateBy());
+        advRole.setUpdateBy(advRole.getUpdateBy());
         //返回影响表的行数
         return updateRows + insertRows + deleteRows;
     }

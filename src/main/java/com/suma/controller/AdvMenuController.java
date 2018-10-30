@@ -2,7 +2,9 @@ package com.suma.controller;
 
 import com.suma.constants.ExceptionConstants;
 import com.suma.dto.AdvMenuDto;
+import com.suma.dto.AdvPermsDto;
 import com.suma.exception.MenuException;
+import com.suma.exception.UserException;
 import com.suma.pojo.AdvMenu;
 import com.suma.service.iAdvMenuService;
 import com.suma.utils.Result;
@@ -28,6 +30,7 @@ public class AdvMenuController extends BaseController{
 
     @Autowired
     private iAdvMenuService advMenuService;
+
 
     /**
      * 新增菜单
@@ -133,4 +136,19 @@ public class AdvMenuController extends BaseController{
         return Result.success(advMenuDtoList);
     }
 
+    /**
+     * 给前端返回用户对应的权限树
+     * 支持post&get请求
+     * @return
+     */
+    @RequestMapping("/selectMenuTreeByUserId")
+    public Result selectMenuTreeByUserId(Integer userId){
+       if(userId == null){
+           throw new UserException(ExceptionConstants.ROLE_EXCEPTION_ROLE_ID_IS_NULL);
+       }
+
+       List<AdvPermsDto> advPermsDtoList = advMenuService.selectMenuTreeByUserId(userId);
+       return Result.success(advPermsDtoList);
+
+    }
 }

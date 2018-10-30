@@ -42,7 +42,6 @@ public class UserRealm extends AuthorizingRealm {
         //角色加入AuthorizationInfo认证对象
         Set<String> roleKeys = roleService.selectRoleKeys(userId);
         info.setRoles(roleKeys);
-        System.out.println(roleKeys);
         //权限加入AuthorizationInfo认证对象
         Set<String> perms = menuService.selectMenuPermsByUserId(userId);
         info.setStringPermissions(perms);

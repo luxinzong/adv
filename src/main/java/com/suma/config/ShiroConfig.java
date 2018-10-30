@@ -27,8 +27,6 @@ import java.util.Map;
  **/
 @Configuration
 public class ShiroConfig {
-
-
     // 设置Cookie的域名
     @Value("${shiro.cookie.domain}")
     private String domain;
@@ -101,6 +99,7 @@ public class ShiroConfig {
         securityManager.setRealm(userRealm);
         //记住我
         securityManager.setRememberMeManager(rememberMeManager());
+        securityManager.setSessionManager(defaultWebSessionManager());
 
         return securityManager;
     }
@@ -113,7 +112,6 @@ public class ShiroConfig {
     @Bean
     public DefaultWebSessionManager defaultWebSessionManager(){
         DefaultWebSessionManager defaultWebSessionManager = new DefaultWebSessionManager();
-        defaultWebSessionManager.setSessionIdUrlRewritingEnabled(false);
         return defaultWebSessionManager;
     }
 
@@ -123,28 +121,28 @@ public class ShiroConfig {
      * @return
      */
 
-//    @Bean
-//    public ShiroFilterFactoryBean shiroFilterFactoryBean(SecurityManager securityManager){
-//        ShiroFilterFactoryBean shiroFilterFactoryBean = new ShiroFilterFactoryBean();
-//        //Shiro的核心安全接口，这个属性是必须的
-//        shiroFilterFactoryBean.setSecurityManager(securityManager);
-//        //shiro连接约束配置，即过滤链的定义
-//        Map<String, Filter> filtersMap = new LinkedHashMap<String, Filter>();
-//        filtersMap.put("myAccessControlFilter", new AuthenticationFilter());
-//        shiroFilterFactoryBean.setFilters(filtersMap);
-//        //必须通过认证才能访问
-////        filterChainDefinitionMap.put("/**","authc");
-//        Map<String,String> filterChainDefinitionMap = new LinkedHashMap<String,String>();
-//        filterChainDefinitionMap.put("/**","myAccessControlFilter");
-//        //身份认证失败，跳转到登陆界面
-//        shiroFilterFactoryBean.setLoginUrl(loginUrl);
-//        //权限认证失败，则跳转到指定页面
-////        shiroFilterFactoryBean.setUnauthorizedUrl(unauthorizedUrl);
-//        shiroFilterFactoryBean.setSuccessUrl("/index");
-//
-//        shiroFilterFactoryBean.setFilterChainDefinitionMap(filterChainDefinitionMap);
-//        return shiroFilterFactoryBean;
-//    }
+    @Bean
+    public ShiroFilterFactoryBean shiroFilterFactoryBean(SecurityManager securityManager){
+        ShiroFilterFactoryBean shiroFilterFactoryBean = new ShiroFilterFactoryBean();
+        //Shiro的核心安全接口，这个属性是必须的
+        shiroFilterFactoryBean.setSecurityManager(securityManager);
+        //shiro连接约束配置，即过滤链的定义
+        Map<String, Filter> filtersMap = new LinkedHashMap<String, Filter>();
+        filtersMap.put("myAccessControlFilter", new AuthenticationFilter());
+        shiroFilterFactoryBean.setFilters(filtersMap);
+        //必须通过认证才能访问
+//        filterChainDefinitionMap.put("/**","authc");
+        Map<String,String> filterChainDefinitionMap = new LinkedHashMap<String,String>();
+        filterChainDefinitionMap.put("/index","anon");
+        filterChainDefinitionMap.put("/logout","anon");
+        filterChainDefinitionMap.put("/**","myAccessControlFilter");
+        shiroFilterFactoryBean.setUnauthorizedUrl(unauthorizedUrl);
+        shiroFilterFactoryBean.setSuccessUrl("/index");
+        shiroFilterFactoryBean.setLoginUrl(loginUrl);
+
+        shiroFilterFactoryBean.setFilterChainDefinitionMap(filterChainDefinitionMap);
+        return shiroFilterFactoryBean;
+    }
 
     /**
      * 开启shiro注解通知器

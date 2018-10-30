@@ -13,14 +13,17 @@ import com.suma.utils.Insert;
 import com.suma.utils.Result;
 import com.suma.utils.Update;
 import com.suma.vo.ServiceQueryVO;
+import com.suma.vo.ServiceTreeVO;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.util.CollectionUtils;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 /**
  * @auther: zhangzhaoyuan
@@ -114,6 +117,59 @@ public class AdvServiceController extends BaseController {
     public Result addService(@Validated({Insert.class}) ServiceInfo serviceInfo) {
         serviceInfoService.checkDuplicate(serviceInfo);
         return toResult(serviceInfoService.save(serviceInfo));
+    }
+
+    @RequestMapping("queryByTs")
+    public Result queryByTs(Long tid, Integer pageNum, Integer pageSize) {
+        if (tid == null || pageNum == null || pageSize == null)
+            throw new BaseException(ExceptionConstants.BASE_EXCEPTION_MISSING_PARAMETERS);
+        ServiceInfoExample serviceInfoExample = new ServiceInfoExample();
+        serviceInfoExample.createCriteria().andTidEqualTo(tid);
+
+        PageHelper.startPage(pageNum, pageSize);
+        List<ServiceInfo> serviceInfos = serviceInfoService.selectByExample(serviceInfoExample);
+        return Result.success(new PageInfo<ServiceInfo>(serviceInfos));
+    }
+
+    @RequestMapping("getTree")
+    public Result getTree() {
+        List<NetworkInfo> networkInfos = networkService.findALL();
+        NetworkInfo networkInfo = networkInfos.get(0);
+        ServiceTreeVO netTreeVO = new ServiceTreeVO();
+        netTreeVO.setId(networkInfo.getId());
+        netTreeVO.setType("net");
+        netTreeVO.setLabel(networkInfo.getNetworkName());
+        netTreeVO.setValue(String.valueOf(UUID.randomUUID()));
+
+        TsInfoExample tsInfoExample = new TsInfoExample();
+        tsInfoExample.createCriteria().andNidEqualTo(networkInfo.getId());
+        List<TsInfo> tsInfos = tsService.selectByExample(tsInfoExample);
+        List<ServiceTreeVO> tsTreeVOs = new ArrayList<>();
+        for (TsInfo tsInfo : tsInfos) {
+            ServiceTreeVO tsTreeVO = new ServiceTreeVO();
+            tsTreeVO.setId(tsInfo.getId());
+            tsTreeVO.setValue(String.valueOf(UUID.randomUUID()));
+            tsTreeVO.setType("ts");
+            tsTreeVO.setLabel(tsInfo.getTsName());
+
+
+            List<ServiceTreeVO> serviceTreeVOs = new ArrayList<>();
+            ServiceInfoExample serviceInfoExample = new ServiceInfoExample();
+            serviceInfoExample.createCriteria().andTidEqualTo(tsInfo.getId());
+            List<ServiceInfo> serviceInfos = serviceInfoService.selectByExample(serviceInfoExample);
+            for (ServiceInfo serviceInfo : serviceInfos) {
+                ServiceTreeVO serviceTreeVO = new ServiceTreeVO();
+                serviceTreeVO.setId(serviceInfo.getId());
+                serviceTreeVO.setValue(String.valueOf(UUID.randomUUID()));
+                serviceTreeVO.setLabel(serviceInfo.getServiceName());
+                serviceTreeVO.setType("service");
+                serviceTreeVOs.add(serviceTreeVO);
+            }
+            tsTreeVO.setChildren(serviceTreeVOs);
+            tsTreeVOs.add(tsTreeVO);
+        }
+        netTreeVO.setChildren(tsTreeVOs);
+        return Result.success(netTreeVO);
     }
 
 

@@ -4,6 +4,7 @@ import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Multimap;
 import com.suma.AdvApplicationTests;
+import com.suma.dto.AdvPermsDto;
 import com.suma.pojo.AdvDept;
 import com.suma.service.iAdvMenuService;
 import com.suma.service.iAdvRoleService;
@@ -32,7 +33,8 @@ public class AdvDeptMapperTest extends AdvApplicationTests {
 
     @Test
     public void testMenu(){
-
+       List<AdvPermsDto> advPermsDtoList =  menuService.selectMenuTreeByUserId(86);
+        System.out.println(advPermsDtoList);
     }
 
 

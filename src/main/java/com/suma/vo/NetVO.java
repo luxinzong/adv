@@ -16,7 +16,7 @@ public class NetVO {
     private Long id;
 
     @NotNull(groups = {Insert.class, Update.class})
-    private Long networkId;
+    private String networkId;
 
     @NotNull(groups = {Insert.class, Update.class})
     private String networkName;

@@ -126,12 +126,10 @@ public class AdvDeptController extends BaseController{
     public Result query(@RequestBody Map<String,Object> requestMap){
         String deptName = (String) requestMap.get("deptName");
         String status = (String) requestMap.get("status");
-        System.out.println(deptName+status);
         //无有效参数，返回treeData
         if(StringUtils.isBlank(deptName) && StringUtils.isBlank(status)){
             return treeData();
         }
-        System.out.println("x");
         //使用advDept作为参数的目的是为了，方便未来扩展
         AdvDept advDept = new AdvDept();
         advDept.setDeptName(StringUtils.trim(deptName));

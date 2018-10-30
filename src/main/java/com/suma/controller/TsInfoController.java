@@ -3,6 +3,7 @@ package com.suma.controller;
 import com.alibaba.fastjson.JSON;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
+import com.suma.constants.ExceptionConstants;
 import com.suma.exception.BaseException;
 import com.suma.pojo.TsInfo;
 import com.suma.pojo.TsInfoExample;
@@ -35,9 +36,17 @@ public class TsInfoController extends BaseController {
     private TsService tsService;
 
     @RequestMapping("query")
-    public Result queryTs(Integer pageNum, Integer pageSize) {
+    public Result queryTs(Integer pageNum, Integer pageSize, Long nid) {
+
+        if (pageNum == null || pageSize == null || nid == null)
+            throw new BaseException(ExceptionConstants.BASE_EXCEPTION_MISSING_PARAMETERS);
+
+        TsInfoExample example = new TsInfoExample();
+        example.createCriteria().andNidEqualTo(nid);
+
         PageHelper.startPage(pageNum, pageSize);
-        List<TsInfo> tsInfoList = tsService.findALL();
+        List<TsInfo> tsInfoList = tsService.selectByExample(example);
+
         return Result.success(new PageInfo<TsInfo>(tsInfoList));
     }
 
@@ -55,7 +64,12 @@ public class TsInfoController extends BaseController {
     }
 
     @RequestMapping("delete")
-    public Result deleteTs(Long id) {
-        return Result.success(tsService.deleteByPK(id));
+    public Result deleteTs(Long[] ids) {
+        if (ids == null)
+            throw new BaseException(ExceptionConstants.BASE_EXCEPTION_MISSING_PARAMETERS);
+
+        tsService.deleteTsInfos(ids);
+
+        return Result.success();
     }
 }

@@ -31,13 +31,13 @@ public class AdvCheckDetailVO {
 
     private Integer status;//广告状态
 
-    private Date startDate;//起始日期
+    private String startDate;//起始日期
 
-    private Date endDate;//终止日期
+    private String endDate;//终止日期
 
-    private Date periodTimeStart;//有效期生效日期
+    private String periodTimeStart;//有效期生效日期
 
-    private Date periodTimeEnd;//有效期结束日期
+    private String periodTimeEnd;//有效期结束日期
 
     private String checkUser;//审核人
 
@@ -58,6 +58,12 @@ public class AdvCheckDetailVO {
     private Integer region;//区域码
 
     private String mark;//备注
+
+    private Long serviceGroupId;//频道分组信息
+
+    private String regionName;//区域信息
+
+    private String serviceGroupName;//频道名称
 
     private AdvLocation advLocation;//广告位置信息
 

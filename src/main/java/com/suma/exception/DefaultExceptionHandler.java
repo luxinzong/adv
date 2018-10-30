@@ -96,6 +96,13 @@ public class DefaultExceptionHandler {
         return Result.error(e.getMessage());
     }
 
+    @ExceptionHandler(RegionException.class)
+    public Result regionException(RegionException e){
+        log.error(e.getMessage(),e);
+        return Result.error(e.getMessage());
+    }
+
+
     @ExceptionHandler(AdvRequestException.class)
     public AdvResponseVO advRequestException(AdvRequestException e) {
         if (e.getOriginException() != null)

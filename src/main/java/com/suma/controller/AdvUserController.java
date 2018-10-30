@@ -1,5 +1,6 @@
 package com.suma.controller;
 
+import com.github.pagehelper.Page;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import com.google.common.collect.Lists;
@@ -112,9 +113,12 @@ public class AdvUserController extends BaseController{
                         , @RequestParam(value = "pageNum",defaultValue = "1")Integer pageNum,
                           @RequestParam(value = "pageSize",defaultValue = "10")Integer pageSize){
 
-        PageHelper.startPage(pageNum,pageSize);
+        Page page = PageHelper.startPage(pageNum,pageSize);
         PageInfo<AdvUserDto> advUserDtoPageInfo = advUserService.selectUserList(userName,phoneNumber,status,
                                                                                         startTime,endTime);
+
+        advUserDtoPageInfo.setTotal(page.getTotal());
+
 
         if(CollectionUtils.isEmpty(advUserDtoPageInfo.getList())){
             return Result.selectIsNullError();

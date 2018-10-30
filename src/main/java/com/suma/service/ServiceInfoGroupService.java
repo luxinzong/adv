@@ -1,6 +1,7 @@
 
 package com.suma.service;
 
+import com.suma.pojo.ServiceGroup;
 import com.suma.pojo.ServiceInfoGroup;
 import com.suma.pojo.ServiceInfoGroupExample;
 
@@ -16,4 +17,6 @@ public interface ServiceInfoGroupService extends BaseService<ServiceInfoGroup, S
     List<String> findServicesByGroupId(Long sgId);
 
     void deleteByGroupId(Long sgid);
+
+    List<ServiceGroup> findGroupBySId(Long id, Integer type);
 }

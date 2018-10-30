@@ -21,6 +21,8 @@ public interface AdvUserMapper {
 
     AdvUser selectByPrimaryKey(Integer userId);
 
+    int selectUserCount();
+
     int updateByPrimaryKeySelective(AdvUser record);
 
     int updateByPrimaryKey(AdvUser record);

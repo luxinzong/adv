@@ -1,0 +1,178 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.suma.dao.AdvRegionMapper" >
+  <resultMap id="BaseResultMap" type="com.suma.pojo.AdvRegion" >
+    <id column="region_id" property="regionId" jdbcType="INTEGER" />
+    <result column="parent_id" property="parentId" jdbcType="INTEGER" />
+    <result column="ancestors" property="ancestors" jdbcType="VARCHAR" />
+    <result column="region_name" property="regionName" jdbcType="VARCHAR" />
+    <result column="order_num" property="orderNum" jdbcType="INTEGER" />
+    <result column="status" property="status" jdbcType="CHAR" />
+    <result column="create_by" property="createBy" jdbcType="VARCHAR" />
+    <result column="create_time" property="createTime" jdbcType="TIMESTAMP" />
+    <result column="update_by" property="updateBy" jdbcType="VARCHAR" />
+    <result column="update_time" property="updateTime" jdbcType="TIMESTAMP" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    region_id, parent_id, ancestors, region_name, order_num, status, create_by, create_time, 
+    update_by, update_time
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+    select 
+    <include refid="Base_Column_List" />
+    from adv_region
+    where region_id = #{regionId,jdbcType=INTEGER}
+  </select>
+  <select id="checkAdvRegionNameUnique" parameterType="java.lang.String" resultType="java.lang.Integer">
+    select count(*) FROM adv_region
+      where region_name = #{regionName};
+  </select>
+  <select id="getMaxAdvRegionOrderNum" resultType="java.lang.Integer">
+    select IFNULL(MAX(order_num),0) from adv_region
+    where parent_id = #{parentId};
+  </select>
+  <select id="getAdvRegionCount" resultType="java.lang.Integer">
+    select COUNT(*) from adv_region;
+  </select>
+  <select id="selectAdvCountByParentId" resultType="java.lang.Integer">
+    select count(*) from adv_region
+    where parent_id = #{regionId};
+  </select>
+  <select id="selectAdvRegionList" parameterType="AdvRegion" resultMap="BaseResultMap">
+    select <include refid="Base_Column_List"/> from adv_region
+    <where>
+      <if test="regionName != null and regionName != ''">
+       and region_name like concat ('%',#{regionName},'%')
+      </if>
+      <if test="status != null and status != ''">
+        and status = #{status}
+      </if>
+    </where>
+  </select>
+  <select id="selectAdvRegionAll" resultMap="BaseResultMap">
+    select <include refid="Base_Column_List"/>
+    from adv_region;
+  </select>
+
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
+    delete from adv_region
+    where region_id = #{regionId,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="com.suma.pojo.AdvRegion" >
+    insert into adv_region (region_id, parent_id, ancestors, 
+      region_name, order_num, status, 
+      create_by, create_time, update_by, 
+      update_time)
+    values (#{regionId,jdbcType=INTEGER}, #{parentId,jdbcType=INTEGER}, #{ancestors,jdbcType=VARCHAR}, 
+      #{regionName,jdbcType=VARCHAR}, #{orderNum,jdbcType=INTEGER}, #{status,jdbcType=CHAR}, 
+      #{createBy,jdbcType=VARCHAR}, #{createTime,jdbcType=TIMESTAMP}, #{updateBy,jdbcType=VARCHAR}, 
+      #{updateTime,jdbcType=TIMESTAMP})
+  </insert>
+  <insert id="insertSelective" parameterType="com.suma.pojo.AdvRegion" >
+    insert into adv_region
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="regionId != null" >
+        region_id,
+      </if>
+      <if test="parentId != null" >
+        parent_id,
+      </if>
+      <if test="ancestors != null" >
+        ancestors,
+      </if>
+      <if test="regionName != null" >
+        region_name,
+      </if>
+      <if test="orderNum != null" >
+        order_num,
+      </if>
+      <if test="status != null" >
+        status,
+      </if>
+      <if test="createBy != null" >
+        create_by,
+      </if>
+        create_time,
+      <if test="updateBy != null" >
+        update_by,
+      </if>
+      <if test="updateTime != null" >
+        update_time,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="regionId != null" >
+        #{regionId,jdbcType=INTEGER},
+      </if>
+      <if test="parentId != null" >
+        #{parentId,jdbcType=INTEGER},
+      </if>
+      <if test="ancestors != null" >
+        #{ancestors,jdbcType=VARCHAR},
+      </if>
+      <if test="regionName != null" >
+        #{regionName,jdbcType=VARCHAR},
+      </if>
+      <if test="orderNum != null" >
+        #{orderNum,jdbcType=INTEGER},
+      </if>
+      <if test="status != null" >
+        #{status,jdbcType=CHAR},
+      </if>
+      <if test="createBy != null" >
+        #{createBy,jdbcType=VARCHAR},
+      </if>
+        sysdate(),
+      <if test="updateBy != null" >
+        #{updateBy,jdbcType=VARCHAR},
+      </if>
+      <if test="updateTime != null" >
+        #{updateTime,jdbcType=TIMESTAMP},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.suma.pojo.AdvRegion" >
+    update adv_region
+    <set >
+      <if test="parentId != null" >
+        parent_id = #{parentId,jdbcType=INTEGER},
+      </if>
+      <if test="ancestors != null" >
+        ancestors = #{ancestors,jdbcType=VARCHAR},
+      </if>
+      <if test="regionName != null" >
+        region_name = #{regionName,jdbcType=VARCHAR},
+      </if>
+      <if test="orderNum != null" >
+        order_num = #{orderNum,jdbcType=INTEGER},
+      </if>
+      <if test="status != null" >
+        status = #{status,jdbcType=CHAR},
+      </if>
+      <if test="createBy != null" >
+        create_by = #{createBy,jdbcType=VARCHAR},
+      </if>
+      <if test="createTime != null" >
+        create_time = #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateBy != null" >
+        update_by = #{updateBy,jdbcType=VARCHAR},
+      </if>
+        update_time = sysdate(),
+    </set>
+    where region_id = #{regionId,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.suma.pojo.AdvRegion" >
+    update adv_region
+    set parent_id = #{parentId,jdbcType=INTEGER},
+      ancestors = #{ancestors,jdbcType=VARCHAR},
+      region_name = #{regionName,jdbcType=VARCHAR},
+      order_num = #{orderNum,jdbcType=INTEGER},
+      status = #{status,jdbcType=CHAR},
+      create_by = #{createBy,jdbcType=VARCHAR},
+      create_time = #{createTime,jdbcType=TIMESTAMP},
+      update_by = #{updateBy,jdbcType=VARCHAR},
+      update_time = #{updateTime,jdbcType=TIMESTAMP}
+    where region_id = #{regionId,jdbcType=INTEGER}
+  </update>
+</mapper>

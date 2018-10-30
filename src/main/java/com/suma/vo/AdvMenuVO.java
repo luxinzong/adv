@@ -22,7 +22,6 @@ public class AdvMenuVO {
     //菜单url
     private String url;
     @NotBlank
-    @Length(min = 1,max = 1)
     //菜单类型：0目录,1菜单，2按钮
     private String menuType;
     //权限字符串

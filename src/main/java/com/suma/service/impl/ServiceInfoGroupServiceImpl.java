@@ -1,16 +1,14 @@
 
 package com.suma.service.impl;
 
+import com.suma.dao.ServiceGroupMapper;
 import com.suma.dao.ServiceInfoGroupMapper;
 import com.suma.dao.ServiceInfoMapper;
-import com.suma.pojo.ServiceGroupExample;
-import com.suma.pojo.ServiceInfo;
-import com.suma.pojo.ServiceInfoGroup;
-import com.suma.pojo.ServiceInfoGroupExample;
-import com.suma.service.BaseService;
+import com.suma.pojo.*;
 import com.suma.service.ServiceInfoGroupService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.util.CollectionUtils;
 
 import javax.annotation.Resource;
 import java.util.ArrayList;
@@ -33,6 +31,8 @@ public class ServiceInfoGroupServiceImpl extends BaseServiceImpl<ServiceInfoGrou
     private ServiceInfoGroupMapper serviceInfoGroupMapper;
     @Autowired
     private ServiceInfoMapper serviceInfoMapper;
+    @Autowired
+    private ServiceGroupMapper serviceGroupMapper;
 
     @Override
     public List<String> findServicesByGroupId(Long sgId) {
@@ -55,4 +55,25 @@ public class ServiceInfoGroupServiceImpl extends BaseServiceImpl<ServiceInfoGrou
         example.createCriteria().andSgidEqualTo(sgid);
         serviceInfoGroupMapper.deleteByExample(example);
     }
+
+    @Override
+    public List<ServiceGroup> findGroupBySId(Long id, Integer type) {
+        ServiceInfoGroupExample example = new ServiceInfoGroupExample();
+        example.createCriteria().andSidEqualTo(id);
+        List<ServiceInfoGroup> serviceInfoGroups = serviceInfoGroupMapper.selectByExample(example);
+
+        List<ServiceGroup> serviceGroups = new ArrayList<>();
+        for (ServiceInfoGroup serviceInfoGroup : serviceInfoGroups) {
+            ServiceGroupExample serviceGroupExample = new ServiceGroupExample();
+            serviceGroupExample.createCriteria().andSgidEqualTo(serviceInfoGroup.getSgid()).andTypeEqualTo(type);
+            List<ServiceGroup> groups = serviceGroupMapper.selectByExample(serviceGroupExample);
+            if (!CollectionUtils.isEmpty(groups)) {
+                serviceGroups.add(groups.get(0));
+            }
+
+        }
+        return serviceGroups;
+    }
+
+
 }

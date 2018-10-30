@@ -1,6 +1,7 @@
 package com.suma.service;
 
 import com.suma.dto.AdvMenuDto;
+import com.suma.dto.AdvPermsDto;
 import com.suma.pojo.AdvMenu;
 
 import java.util.List;
@@ -33,6 +34,8 @@ public interface iAdvMenuService {
     public boolean checkRoleInMenuByMenuId(Integer menuId);
 
     public int selectAdvMenuCountByParentId(Integer parentId);
+
+    public List<AdvPermsDto>  selectMenuTreeByUserId(Integer userId);
 
 
 

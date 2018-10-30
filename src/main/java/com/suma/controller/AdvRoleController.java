@@ -1,5 +1,6 @@
 package com.suma.controller;
 
+import com.github.pagehelper.Page;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import com.google.common.collect.Lists;
@@ -77,12 +78,12 @@ public class AdvRoleController extends BaseController{
                        @RequestParam(value = "pageNum",defaultValue = "1") Integer pageNum,
                        @RequestParam(value = "pageSize",defaultValue = "10") Integer pageSize){
 
-        PageHelper.startPage(pageNum,pageSize);
-        System.out.println(roleName);
+        Page page = PageHelper.startPage(pageNum,pageSize);
         PageInfo<AdvRole> advRolePageInfo = advRoleService.selectRoleList(roleName,roleKey,status,startTime,endTime);
+        advRolePageInfo.setTotal(page.getTotal());
         //如果查询数据为空,返回数据不存在
         if(CollectionUtils.isEmpty(advRolePageInfo.getList())){
-            return Result.error("查询数据不存在");
+            return Result.selectIsNullError();
         }
         return Result.success(advRolePageInfo);
     }

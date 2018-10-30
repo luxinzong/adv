@@ -82,4 +82,14 @@ public class ExceptionConstants {
     public static final String ADV_REQUEST_TYPE_NOT_EXIST = "广告类型不存在";
     public static final String ADV_REQUEST_MISSING_PARAMETERS = "缺少参数";
     public static final String ADV_REQUEST_SERVICE_NOT_EXIST ="该节目不存在" ;
+    public static final String ADV_REQUEST_CHANNEL_NOT_EXIST ="该频道不存在" ;
+
+    //区域请求异常
+    public static final String REGION_EXCEPTION_REGION_NAME_EXIST = "区域名称已经存在";
+    public static final String REGION_EXCEPTION_REGION_ID_NOT_EXIST = "区域ID不存在";
+    public static final String REGION_EXCEPTION_EXIST_NEXT_AREA = "存在下级区域，不允许删除";
+    public static final String REGION_EXCEPTION_REGION_ID_IS_NULL = "区域ID为空";
+
+
+
 }

@@ -2,10 +2,12 @@ package com.suma.dao;
 
 import com.suma.pojo.AdvInfoServiceGroup;
 import com.suma.pojo.AdvInfoServiceGroupExample;
+
 import java.util.List;
+
 import org.apache.ibatis.annotations.Param;
 
-public interface AdvInfoServiceGroupMapper {
+public interface AdvInfoServiceGroupMapper extends BaseDAO<AdvInfoServiceGroup, AdvInfoServiceGroupExample, Long> {
     long countByExample(AdvInfoServiceGroupExample example);
 
     int deleteByExample(AdvInfoServiceGroupExample example);

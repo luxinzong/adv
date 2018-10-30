@@ -3,12 +3,15 @@ package com.suma.utils;
 
 import org.apache.commons.lang3.StringUtils;
 
+import java.util.List;
+
+
 /**
  * @Autor gaozhongbao
  * @Date 2018/10/15 0015
  * @Description 部门树结构工具类
  **/
-public class AncestorUtil {
+public class AncestorUtil<T> {
 
     public static final String SEPARTOR = ",";
 
@@ -22,5 +25,7 @@ public class AncestorUtil {
             return StringUtils.join(parentAncestor,SEPARTOR,parentId);
         }
     }
+
+
 
 }

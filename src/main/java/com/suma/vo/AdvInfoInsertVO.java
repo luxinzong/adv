@@ -1,12 +1,8 @@
 package com.suma.vo;
 
 import com.suma.pojo.AdvFlyWord;
-import com.suma.pojo.ServiceGroup;
 import lombok.Data;
-import org.springframework.format.annotation.DateTimeFormat;
-import org.springframework.scheduling.support.SimpleTriggerContext;
 
-import java.util.Date;
 import java.util.List;
 
 /**
@@ -15,21 +11,15 @@ import java.util.List;
  * @description
  */
 @Data
-public class AdvInfoVO {
-
-    private Long id;//广告ID
+public class AdvInfoInsertVO {
 
     private Long advTypeId;//广告类型
 
-    private String advType;//广告类型
-
-    private String advTypeName;//广告类型名称
-
     private String name;//广告名称
 
-    private String startDate;//起始日期
+    private String start;//起始日期
 
-    private String endDate;//终止日期
+    private String end;//终止日期
 
     private String periodTimeStart;//有效期生效日期
 
@@ -37,15 +27,7 @@ public class AdvInfoVO {
 
     private Integer status;//广告状态
 
-    private Integer pageSize;//页面条数
-
-    private Integer pageNum;//页码数
-
     private Integer materialType;//素材类型
-
-    private Integer region;//区域ID
-
-    private ServiceGroup serviceGroup;//频道分组
 
     private List<InfoMaterialVO> infoMaterialVOS;//对应关系列表
 

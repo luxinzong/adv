@@ -7,6 +7,7 @@ import com.suma.pojo.*;
 import com.suma.service.NetworkService;
 import com.suma.service.ServiceInfoService;
 import com.suma.service.TsService;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -93,14 +94,14 @@ public class ServiceInfoServiceImpl extends BaseServiceImpl<ServiceInfo, Service
 
         TsInfoExample tsExample = new TsInfoExample();
         TsInfoExample.Criteria tsCriteria = tsExample.createCriteria();
-        if (networkId != null) {
+        if (StringUtils.isNotBlank(networkId)) {
             Long nId = networkService.findPKByNetworkId(networkId);
             if (nId != null)
                 tsCriteria = tsCriteria.andNidEqualTo(nId);
             else
                 return null;
         }
-        if (tsId != null) {
+        if (StringUtils.isNotBlank(tsId)) {
             tsCriteria.andTsIdEqualTo(tsId);
         }
 
@@ -117,7 +118,7 @@ public class ServiceInfoServiceImpl extends BaseServiceImpl<ServiceInfo, Service
         if (tIds.size() > 0) {
             criteria = criteria.andTidIn(tIds);
         }
-        if (serviceId != null) {
+        if (StringUtils.isNotBlank(serviceId)) {
             criteria.andServiceIdEqualTo(serviceId);
         }
         return criteria;

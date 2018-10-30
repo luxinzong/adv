@@ -2,6 +2,7 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.suma.dao.AdvInfoServiceGroupMapper">
   <resultMap id="BaseResultMap" type="com.suma.pojo.AdvInfoServiceGroup">
+    <result column="TYPE" jdbcType="INTEGER" property="type" />
     <result column="ADV_INFO_ID" jdbcType="BIGINT" property="advInfoId" />
     <result column="SERVICE_GROUP_ID" jdbcType="BIGINT" property="serviceGroupId" />
   </resultMap>
@@ -64,7 +65,7 @@
     </where>
   </sql>
   <sql id="Base_Column_List">
-    ADV_INFO_ID, SERVICE_GROUP_ID
+    TYPE, ADV_INFO_ID, SERVICE_GROUP_ID
   </sql>
   <select id="selectByExample" parameterType="com.suma.pojo.AdvInfoServiceGroupExample" resultMap="BaseResultMap">
     select
@@ -87,12 +88,17 @@
     </if>
   </delete>
   <insert id="insert" parameterType="com.suma.pojo.AdvInfoServiceGroup">
-    insert into adv_info_service_group (ADV_INFO_ID, SERVICE_GROUP_ID)
-    values (#{advInfoId,jdbcType=BIGINT}, #{serviceGroupId,jdbcType=BIGINT})
+    insert into adv_info_service_group (TYPE, ADV_INFO_ID, SERVICE_GROUP_ID
+      )
+    values (#{type,jdbcType=INTEGER}, #{advInfoId,jdbcType=BIGINT}, #{serviceGroupId,jdbcType=BIGINT}
+      )
   </insert>
   <insert id="insertSelective" parameterType="com.suma.pojo.AdvInfoServiceGroup">
     insert into adv_info_service_group
     <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="type != null">
+        TYPE,
+      </if>
       <if test="advInfoId != null">
         ADV_INFO_ID,
       </if>
@@ -101,6 +107,9 @@
       </if>
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="type != null">
+        #{type,jdbcType=INTEGER},
+      </if>
       <if test="advInfoId != null">
         #{advInfoId,jdbcType=BIGINT},
       </if>
@@ -118,6 +127,9 @@
   <update id="updateByExampleSelective" parameterType="map">
     update adv_info_service_group
     <set>
+      <if test="record.type != null">
+        TYPE = #{record.type,jdbcType=INTEGER},
+      </if>
       <if test="record.advInfoId != null">
         ADV_INFO_ID = #{record.advInfoId,jdbcType=BIGINT},
       </if>
@@ -131,10 +143,17 @@
   </update>
   <update id="updateByExample" parameterType="map">
     update adv_info_service_group
-    set ADV_INFO_ID = #{record.advInfoId,jdbcType=BIGINT},
+    set TYPE = #{record.type,jdbcType=INTEGER},
+      ADV_INFO_ID = #{record.advInfoId,jdbcType=BIGINT},
       SERVICE_GROUP_ID = #{record.serviceGroupId,jdbcType=BIGINT}
     <if test="_parameter != null">
       <include refid="Update_By_Example_Where_Clause" />
     </if>
+  </update>
+  
+  <update id="updateByAdvInfoId" parameterType="map">
+    update adv_info_service_group
+    set SERVICE_GROUP_ID = #{map.serviceGroupId},TYPE = #{map.type}
+    where ADV_INFO_ID = #{map.advInfoId}
   </update>
 </mapper>

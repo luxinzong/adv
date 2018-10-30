@@ -14,7 +14,7 @@ import java.util.List;
  **/
 @Data
 public class AdvDeptDto extends AdvDept {
-    //属性结构
+    //子集
     private List<AdvDeptDto> children = Lists.newArrayList();
 
     private String parentName;

@@ -1,13 +1,16 @@
 package com.suma.controller;
 
+import com.github.pagehelper.Page;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
+import com.suma.constants.AdvContants;
 import com.suma.constants.ExceptionConstants;
 import com.suma.exception.AdvCheckException;
 import com.suma.exception.AdvFlyWordException;
 import com.suma.exception.AdvInfoException;
 import com.suma.pojo.*;
 import com.suma.service.*;
+import com.suma.service.impl.AdvRegionService;
 import com.suma.utils.Result;
 import com.suma.utils.StringUtil;
 import com.suma.vo.AdvCheckDetailVO;
@@ -39,21 +42,22 @@ public class AdvCheckDetailController extends BaseController{
 
     @Autowired
     private AdvCheckService advCheckService;
-
     @Autowired
     private AdvInfoService advInfoService;
-
     @Autowired
     private AdvFlywordService advFlywordService;
-
     @Autowired
     private AdvLocationService advLocationService;
-
     @Autowired
     private InfoFlywordService infoFlywordService;
-
     @Autowired
     private AdvTypeService advTypeService;
+    @Autowired
+    private AdvInfoServiceGroupService advInfoServiceGroupService;
+    @Autowired
+    private ServiceGroupService serviceGroupService;
+    @Autowired
+    private AdvRegionService advRegionService;
 
     /**
      * 保存审核信息
@@ -67,11 +71,16 @@ public class AdvCheckDetailController extends BaseController{
                 advCheckDetail.getStatus() == null || advCheckDetail.getMark() == null) {
             throw new AdvCheckException(ExceptionConstants.ADV_CHECK_REQUESTPARAM_IS_NULL);
         }
-        //判断该审核信息是否已存在，若存在，提示用户审核信息已存在
+        AdvInfo advInfo = advInfoService.findByPK(advCheckDetail.getAdvInfoId());
+        advInfo.setStatus(advCheckDetail.getStatus());
+        advInfo.setCheckNote(AdvContants.getCheckMap().get(advCheckDetail.getStatus())+advCheckDetail.getMark());
+        advInfoService.update(advInfo);
+        //判断该审核信息是否已存在，若存在更新，若不存在则插入审核信息
         if (advCheckService.select(advCheckDetail.getAdvInfoId()) != null) {
-            throw new AdvCheckException(ExceptionConstants.ADV_CHECK_DETAIL_IS_EXIST);
+            return toResult(advCheckService.updateById(advCheckDetail));
+        } else {
+            return toResult(advCheckService.insert(advCheckDetail));
         }
-        return toResult(advCheckService.insert(advCheckDetail));
     }
 
     /**
@@ -89,26 +98,34 @@ public class AdvCheckDetailController extends BaseController{
         AdvInfoExample example = new AdvInfoExample();
         //把审核状态的广告信息查出来
         example.createCriteria().andStatusEqualTo(3);//待审核状态
-        PageHelper.startPage(pageNum, pageSize);
+        Page page = PageHelper.startPage(pageNum, pageSize);
         List<AdvInfo> advInfoList = advInfoService.selectByExample(example);
-        //前端显示对象
+        //前端显示对象集合，将对应广告信息存储到该集合中，返回给前端
         List<AdvCheckDetailVO> advCheckDetails = new ArrayList<>();
+        //判断查出的广告信息集合是否为空
         if (!CollectionUtils.isEmpty(advInfoList)) {
+            //遍历查到的所有广告信息，并将对应属性赋值给审核对象
             for (AdvInfo advInfo : advInfoList) {
                 AdvCheckDetailVO advCheckDetailVO = new AdvCheckDetailVO();
                 System.out.println(advInfo+"哈哈");
                 BeanUtils.copyProperties(advInfo,advCheckDetailVO);
                 System.out.println(advCheckDetailVO);
+                //将审核意见传给前端页面
+                if (advCheckService.select(advInfo.getId()) != null) {//避免数据库脏数据
+                    advCheckDetailVO.setMark(advCheckService.select(advInfo.getId()).getMark());
+                }
+                //若广告类型ID存在则将广告类型和广告类型名称赋值给审核对象
                 if (advInfo.getAdvTypeId() != null) {
                     advCheckDetailVO.setAdvTypeName( advTypeService.findByPK(advInfo.getAdvTypeId()).getAdvtypename());
                     advCheckDetailVO.setAdvType(advTypeService.findByPK(advInfo.getAdvTypeId()).getAdvtype());
                 }
+                //设置区域名称
+                advCheckDetailVO.setRegionName(advRegionService.selectAdvRegionById(advInfo.getRegion()).getRegionName());
                 advCheckDetails.add(advCheckDetailVO);
             }
         }
-        PageInfo<AdvCheckDetailVO> pageInfo = new PageInfo<>();
-        pageInfo.setList(advCheckDetails);
-        pageInfo.setTotal(advCheckDetails.size());
+        PageInfo<AdvCheckDetailVO> pageInfo = new PageInfo<>(advCheckDetails);
+        pageInfo.setTotal(page.getTotal());
         return Result.success(pageInfo);
     }
 
@@ -130,8 +147,9 @@ public class AdvCheckDetailController extends BaseController{
         //判断广告信息是否存在
         if (advInfo != null) {
             System.out.println(advInfo);
+            //初始化广告位置信息
+            AdvLocation advLocation = null;
             //判断类型ID是否存在
-            AdvLocation advLocation = new AdvLocation();
             if (advInfo.getAdvTypeId() != null) {
                 //获取广告位置信息
                 AdvLocationExample example = new AdvLocationExample();
@@ -141,11 +159,6 @@ public class AdvCheckDetailController extends BaseController{
                 } else {
                     System.out.println("位置信息不存在");
                 }
-            }
-            //获取审核信息
-            AdvCheckDetail advCheckDetail = advCheckService.select(advInfoId);
-            if (advCheckDetail == null) {
-                System.out.println("审核信息不存在");
             }
             //获取字幕广告信息
             InfoFlyWordExample example1 = new InfoFlyWordExample();
@@ -159,11 +172,28 @@ public class AdvCheckDetailController extends BaseController{
                     advFlyWords.add(advFlywordService.findByPK(infoFlyWord.getFlywordId()));
                 }
             }
+            //获取频道信息
+            if (advInfo.getReservedInt() == 0) {
+                //所有频道
+                advCheckDetailVO.setServiceGroupId(0l);
+            } else{
+                //按频道进行分组
+                AdvInfoServiceGroupExample example = new AdvInfoServiceGroupExample();
+                example.createCriteria()
+                        .andAdvInfoIdEqualTo(advInfoId);
+                List<AdvInfoServiceGroup> list = advInfoServiceGroupService.selectByExample(example);
+                if (!CollectionUtils.isEmpty(list)) {
+                    //设置分组名称
+                    advCheckDetailVO.setServiceGroupName(serviceGroupService.findByPK(list.get(0).getServiceGroupId()).getGroupName());
+                }
+            }
+            //区域划分
+            advCheckDetailVO.setRegionName(advRegionService.selectAdvRegionById(advInfo.getRegion()).getRegionName());
             //给AdvCheckDetailVO页面对象属性赋值
             BeanUtils.copyProperties(advInfo, advCheckDetailVO);
-            BeanUtils.copyProperties(advCheckDetail, advCheckDetailVO);
             advCheckDetailVO.setAdvLocation(advLocation);
             advCheckDetailVO.setAdvFlyWords(advFlyWords);
+            BeanUtils.copyProperties(advCheckService.select(advInfoId), advCheckDetailVO);
             return Result.success(advCheckDetailVO);
         } else {
             return Result.error("广告不存在");
@@ -171,36 +201,29 @@ public class AdvCheckDetailController extends BaseController{
     }
 
     /**
-     * 更新审核信息
-     * @param advCheckDetail 审核信息
-     * @return 返回更新结果 Result 更新成功或失败
-     */
-    @RequestMapping(value = "update", method = RequestMethod.POST)
-    public Result update(AdvCheckDetail advCheckDetail) {
-        System.out.println(advCheckDetail);
-        if (advCheckDetail.getId() == null || advCheckDetail.getAdvInfoId() == null) {
-            throw new AdvCheckException(ExceptionConstants.ADV_CHECK_REQUESTPARAM_IS_NULL);
-        }
-        if (advCheckService.select(advCheckDetail.getAdvInfoId()) == null) {
-            throw new AdvCheckException(ExceptionConstants.ADV_CHECK_DETAIL_IS_NOT_EXIST);
-        }
-        return toResult(advCheckService.updateById(advCheckDetail));
-    }
-
-    /**
-     * 批量删除审核信息
+     * 批量删除或免审 审核信息
      * @param str 审核信息ID字符串
      * @return 返回更新结果 Result 删除成功或失败
      */
-    @RequestMapping(value = "delete", method = RequestMethod.POST)
-    public Result delete(String str) {
+    @RequestMapping(value = "delete")
+    public Result delete(String str,Integer status) {
         //判断id字符串是否为空
-        if (StringUtils.isBlank(str)) {
+        if (StringUtils.isBlank(str) || status == null) {
             throw new AdvCheckException(ExceptionConstants.ADV_CHECK_REQUESTPARAM_IS_NULL);
         }
-        //将id字符串转解析成字符串数组
+        //将id字符串转解析成字符串数组，广告id
         List<Long> idsList = StringUtil.convertstr(str);
-        advCheckService.deleteAll((Long[]) idsList.toArray());
+        for (Long id : idsList) {
+           AdvInfo advInfo =  advInfoService.findByPK(id);
+           advInfo.setStatus(status);
+           AdvCheckDetail advCheckDetail = advCheckService.select(advInfo.getId());
+           if (status == AdvContants.STATUS_EDIT) {
+               advCheckService.deleteAll((Long[]) idsList.toArray());
+           } else if (status == AdvContants.STATUS_PASS) {
+               advCheckDetail.setMark("审核通过");
+           }
+           advInfoService.update(advInfo);
+        }
         return Result.success();
     }
 }

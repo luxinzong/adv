@@ -43,22 +43,17 @@ public class AdvItem {
 
     private Long speed;//跑马灯速度，每秒多少像素
 
+    private String fontSize;//字体大小
+
+    private String fontColor;//字体颜色
+
     private String backgroudColor;//字幕背景颜色
 
     private Long direct;//方向1 右到左2 左到右3 上到下4 下到上
 
     private String channelIds;//多个以逗号隔开，请求EPG 广告时， 如果没有带请求参数channelId，返回时要把广告关联的频道带上
 
-    private Map<String,String> extInfos;
-
-
-
-
-
-
-
-
-
+    private Map<String, String> extInfos;
 
 
 }

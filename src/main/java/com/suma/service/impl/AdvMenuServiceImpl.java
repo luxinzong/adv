@@ -4,12 +4,14 @@ import com.google.common.base.Strings;
 import com.google.common.collect.*;
 import com.suma.constants.CommonConstants;
 import com.suma.constants.ExceptionConstants;
-import com.suma.dao.AdvMenuMapper;
-import com.suma.dao.AdvRoleMenuMapper;
-import com.suma.dao.AdvUseRoleMapper;
+import com.suma.dao.*;
 import com.suma.dto.AdvMenuDto;
+import com.suma.dto.AdvPermsDto;
 import com.suma.exception.MenuException;
+import com.suma.exception.UserException;
 import com.suma.pojo.AdvMenu;
+import com.suma.pojo.AdvRole;
+import com.suma.pojo.AdvUser;
 import com.suma.service.iAdvMenuService;
 import com.suma.utils.AncestorUtil;
 import com.suma.utils.ShiroUtils;
@@ -33,6 +35,8 @@ public class AdvMenuServiceImpl implements iAdvMenuService {
     private AdvUseRoleMapper advUseRoleMapper;
     @Autowired
     private AdvRoleMenuMapper advRoleMenuMapper;
+    @Autowired
+    private AdvUserMapper advUserMapper;
 
     /**
      * 添加部门
@@ -71,7 +75,7 @@ public class AdvMenuServiceImpl implements iAdvMenuService {
         }
         //默认状态为显示
         advMenu.setStatus(CommonConstants.NORMAL_STATUS);
-//        advMenu.setCreateBy(ShiroUtils.getUser().getUserName());
+        advMenu.setCreateBy(ShiroUtils.getUser().getUserName());
         return advMenuMapper.insertSelective(advMenu);
     }
 
@@ -96,7 +100,7 @@ public class AdvMenuServiceImpl implements iAdvMenuService {
         }else{
             advMenu.setAncestors(parentAdvMenu.getAncestors() + "," +advMenu.getParentId());
         }
-//        advMenu.setUpdateBy(ShiroUtils.getUser().getUserName());
+        advMenu.setUpdateBy(ShiroUtils.getUser().getUserName());
         return advMenuMapper.updateByPrimaryKeySelective(advMenu);
     }
 
@@ -319,4 +323,111 @@ public class AdvMenuServiceImpl implements iAdvMenuService {
         return rows>0?true:false;
 
     }
+
+    /**
+     * 通过用户id查询对应权限列表
+     *
+     * @param userId
+     * @return
+     */
+    @Override
+    public List<AdvPermsDto> selectMenuTreeByUserId(Integer userId) {
+        //判断是否存在用户id
+        AdvUser advUser = advUserMapper.selectByPrimaryKey(userId);
+        if(advUser == null){
+            throw new UserException(ExceptionConstants.USER_EXCEPTION_ID_NOT_EXIST);
+        }
+        //通过用户id查询对应角色id
+        List<Integer> advRoleList = advUseRoleMapper.selectRoleIdsByUserId(userId);
+        if(CollectionUtils.isEmpty(advRoleList)){//说明用户没有角色
+            return null;
+        }
+        //通过角色id查询对应权限树
+        List<List<AdvMenuDto>> advMenuDtoList = Lists.newArrayList();
+        advRoleList.forEach(advRoleId ->{
+            //查询角色对应的菜单ids
+            List<Integer> menuIds = advRoleMenuMapper.selectMenuIdsByAdvRoleId(advRoleId);
+            //对菜单依次遍历
+            List<AdvMenu> advMenuList = Lists.newArrayList();
+            menuIds.forEach(menuId -> {
+                AdvMenu advMenu = advMenuMapper.selectByPrimaryKey(menuId);
+                advMenuList.add(advMenu);
+            });
+            //生成对应menuDto
+            List<AdvMenuDto> menuDto = produceAdvMenuTree(advMenuList,CommonConstants.NORMAL_STATUS);
+            advMenuDtoList.add(menuDto);
+        });
+
+
+        return produceAdvPermsList(advMenuDtoList);
+    }
+
+    /**
+     * 生成权限列表
+     *
+     * @return
+     */
+    private List<AdvPermsDto> produceAdvPermsList(List<List<AdvMenuDto>> advMenuDtos){
+        if(CollectionUtils.isEmpty(advMenuDtos)){
+            return null;
+        }
+        //设计思路是menudto分为四层,permsDto只分为两层，这两层第一层是目录，第二层按钮中view的部分
+        //所以用一个map进行存储，key为第一层的名称，value对应的view名称
+        //迭代全部menudto，然后维护一个map进行检测当前是否保存具体view
+        Map<String,AdvPermsDto> saveMap = Maps.newConcurrentMap();
+        Multimap<String,String> multimap = ArrayListMultimap.create();
+        List<AdvPermsDto> resultAdvPermsDto = Lists.newArrayList();
+        //对menudto List进行迭代
+        advMenuDtos.forEach(advMenuDto ->{
+            //第一层是一个角色对应所有菜单树
+            advMenuDto.forEach(roleMenuTree ->{
+                //现在的循环的是菜单树组对应的一个个的菜单树,先判断菜单数组是否有子菜单(第一层)
+                if(!CollectionUtils.isEmpty(roleMenuTree.getChildren())){
+                    //当前循环对应的是第一层的部分
+                    List<AdvMenuDto> firstMenuDto = roleMenuTree.getChildren();
+                    //判断firstMenuDto是否为空，为空未进行存储.
+                    firstMenuDto.forEach(viewMenuDto ->{
+                        boolean flag = saveMap.containsKey(viewMenuDto.getMenuName());//判断map中是否包含menuName
+                        AdvPermsDto saveAdvPermsDto = null;
+                        if(flag){//如果包含了，不在继续创建
+                            saveAdvPermsDto = saveMap.get(viewMenuDto.getMenuName());
+
+                        }else{
+                            saveAdvPermsDto = new AdvPermsDto();
+                            //当前存储的是管理层菜单
+                            saveAdvPermsDto.setTitle(viewMenuDto.getMenuName());
+                            saveAdvPermsDto.setPath(viewMenuDto.getUrl());
+                            saveAdvPermsDto.setChildren(Lists.newArrayList());
+                            saveMap.put(saveAdvPermsDto.getTitle(),saveAdvPermsDto);
+                        }
+                        List<AdvMenuDto> functionMenu = viewMenuDto.getChildren();
+                        List<AdvPermsDto> advPermsDtoList = saveAdvPermsDto.getChildren();
+
+                        if(!CollectionUtils.isEmpty(functionMenu)){
+                            functionMenu.forEach(menu ->{//当前是功能菜单
+                                //判断当前menu是否存在map中
+                                if(!multimap.containsKey(menu.getMenuName())){//如果不包含menuName，进行数据添加
+                                    AdvPermsDto childAdvPermDto = new AdvPermsDto();
+                                    childAdvPermDto.setTitle(menu.getMenuName());
+                                    childAdvPermDto.setPath(menu.getUrl());
+                                    advPermsDtoList.add(childAdvPermDto);
+                                    //添加到mutimap中
+                                    multimap.put(viewMenuDto.getMenuName(),childAdvPermDto.getTitle());
+                                }
+                            });
+                        }
+                        saveAdvPermsDto.setChildren(advPermsDtoList);
+                        if(resultAdvPermsDto.contains(saveAdvPermsDto)){
+                            int index = resultAdvPermsDto.indexOf(saveAdvPermsDto);
+                            resultAdvPermsDto.set(index,saveAdvPermsDto);
+                        }else{
+                            resultAdvPermsDto.add(saveAdvPermsDto);
+                        }
+                    });
+                }
+            });
+        });
+        return resultAdvPermsDto;
+    }
+
 }

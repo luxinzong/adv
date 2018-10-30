@@ -32,6 +32,8 @@ public class AdvDeptServiceImpl implements iAdvDeptService {
 
     @Autowired
     private AdvDeptMapper advDeptMapper;
+    @Autowired
+    private TreeService<AdvDeptDto> treeService;
 
     @Override
     public List<AdvDept> selectAdvDeptList(AdvDept advDept) {
@@ -84,7 +86,6 @@ public class AdvDeptServiceImpl implements iAdvDeptService {
         }
         List<AdvDeptDto> advDeptDtoList = Lists.newArrayList();
         Map<Integer,String> parentNameMap = Maps.newConcurrentMap();
-        System.out.println(advDeptList);
         advDeptList.forEach(dept ->{
             parentNameMap.put(dept.getDeptId(),dept.getDeptName());
         });
@@ -121,23 +122,23 @@ public class AdvDeptServiceImpl implements iAdvDeptService {
         //生成rootList
         List<AdvDeptDto> rootList = Lists.newArrayList();
         //遍历deptDtoList
-        deptDtoList.forEach(deptDto -> {
-            //根据ancestor,存储对应dept对象
-            if(Strings.isNullOrEmpty(status)){
-                ancestorMutimap.put(deptDto.getAncestors(),deptDto);
-                if(deptDto.getAncestors().equals(ancestor)){
-                    rootList.add(deptDto);
-                }
-            }else{
-                if(deptDto.getStatus().equals(status)){
-                    ancestorMutimap.put(deptDto.getAncestors(),deptDto);
-                    int x;//todo 优化
-                }
-                if(deptDto.getAncestors().equals(ancestor) && deptDto.getStatus().equals(status)){
-                    rootList.add(deptDto);
-                }
-            }
-        });
+//        deptDtoList.forEach(deptDto -> {
+//            //根据ancestor,存储对应dept对象
+//            if(Strings.isNullOrEmpty(status)){
+//                ancestorMutimap.put(deptDto.getAncestors(),deptDto);
+//                if(deptDto.getAncestors().equals(ancestor)){
+//                    rootList.add(deptDto);
+//                }
+//            }else{
+//                if(deptDto.getStatus().equals(status)){
+//                    ancestorMutimap.put(deptDto.getAncestors(),deptDto);
+//                }
+//                if(deptDto.getAncestors().equals(ancestor) && deptDto.getStatus().equals(status)){
+//                    rootList.add(deptDto);
+//                }
+//            }
+//        });
+        treeService.addRootToRootList(deptDtoList,rootList,ancestor,status,ancestorMutimap);
         //对root按照从大到小排序
         Collections.sort(rootList,advDeptDtoComparator);
         //拼装部门树
@@ -216,7 +217,7 @@ public class AdvDeptServiceImpl implements iAdvDeptService {
         }else{//当前部门没有父部门
             advDept.setAncestors(AncestorUtil.ROOT);
         }
-//        advDept.setCreateBy(ShiroUtils.getUser().getUserName());
+        advDept.setCreateBy(ShiroUtils.getUser().getUserName());
         return advDeptMapper.insertSelective(advDept);
     }
 
@@ -277,7 +278,7 @@ public class AdvDeptServiceImpl implements iAdvDeptService {
         }else{
             advDept.setAncestors(parentAdvDept.getAncestors() + "," + advDept.getParentId());
         }
-//        advDept.setUpdateBy(ShiroUtils.getUser().getUserName());
+        advDept.setUpdateBy(ShiroUtils.getUser().getUserName());
         return advDeptMapper.updateByPrimaryKeySelective(advDept);
     }
 

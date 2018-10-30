@@ -11,4 +11,6 @@ import com.suma.pojo.TsInfoExample;
  */
 public interface TsService extends BaseService<TsInfo, TsInfoExample, Long> {
     void checkExist(TsInfo tsInfo);
+
+    void deleteTsInfos(Long[] ids);
 }

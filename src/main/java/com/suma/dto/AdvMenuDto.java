@@ -3,6 +3,7 @@ package com.suma.dto;
 import com.google.common.collect.Lists;
 import com.suma.pojo.AdvMenu;
 import lombok.Data;
+import lombok.ToString;
 import org.springframework.beans.BeanUtils;
 
 import java.util.List;

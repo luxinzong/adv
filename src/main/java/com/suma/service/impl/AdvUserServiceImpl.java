@@ -46,7 +46,7 @@ public class AdvUserServiceImpl implements iAdvUserService {
         if(checkAdvUser != null){
             throw new UserException("已存在相同用户名");
         }
-//        advUser.setCreateBy(ShiroUtils.getUser().getUserName());
+        advUser.setCreateBy(ShiroUtils.getUser().getUserName());
         //对密码进行加密
         String salt = ShiroUtils.generateRandomSalt();
         advUser.setSalt(salt);
@@ -58,7 +58,7 @@ public class AdvUserServiceImpl implements iAdvUserService {
         advUser.setUserId(tempAdvUser.getUserId());
         int insertAdvUserRole = insertAdvUserRole(advUser);
 
-//        advUser.setCreateBy(ShiroUtils.getUser().getUserName());
+        advUser.setCreateBy(ShiroUtils.getUser().getUserName());
         return insertRows + insertAdvUserRole;
     }
 
@@ -217,7 +217,7 @@ public class AdvUserServiceImpl implements iAdvUserService {
             insertRows = insertAdvUserRole(advUser);
         }
 
-//        advUser.setUpdateBy(ShiroUtils.getUser().getCreateBy());
+        advUser.setUpdateBy(ShiroUtils.getUser().getCreateBy());
         return deleteRows + insertRows + updateRows;
     }
 

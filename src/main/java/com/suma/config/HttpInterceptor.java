@@ -62,13 +62,15 @@ public class HttpInterceptor extends HandlerInterceptorAdapter {
             System.out.println(string);
         }
 
+
         //获得请求url
         String url = httpServletRequest.getRequestURI();
         //获取json传输参数
         Map<String,String[]> map = httpServletRequest.getParameterMap();
         String requestMap = JSON.toJSONString(map);
-
         log.info("请求开始，url:{},params:{}",url,requestMap);
         return true;
     }
+
+
 }

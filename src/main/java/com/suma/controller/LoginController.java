@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.*;
  * @Date 2018/10/22 0022
  * @Description 登录controller
  **/
+@CrossOrigin
 @RestController
 public class LoginController extends BaseController{
 

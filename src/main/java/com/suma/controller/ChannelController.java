@@ -62,6 +62,7 @@ public class ChannelController extends BaseController {
         oldInfo.setChannelId(channelInfo.getChannelId());
         oldInfo.setChannelName(channelInfo.getChannelName());
         oldInfo.setType(channelInfo.getType());
+        oldInfo.setMark(channelInfo.getMark());
         return toResult(channelService.update(oldInfo));
     }
 
