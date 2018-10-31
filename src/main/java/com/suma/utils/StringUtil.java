@@ -3,6 +3,7 @@ package com.suma.utils;
 import com.google.common.collect.Lists;
 import org.apache.commons.beanutils.ConvertUtils;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -23,5 +24,23 @@ public class StringUtil {
         Long[] ids = (Long[]) ConvertUtils.convert(strs, Long.class);
         return Arrays.asList(ids);
     }
+
+    /**
+     * 将特定字符串转换成Integer集合，
+     * @param string “1，2，3” “1”
+     * @return List<Integers></>
+     */
+    public static List<Integer> getRegionId(String string) {
+        List<Integer> ids = new ArrayList<>();
+        if (string.indexOf(",") == -1) {
+            ids.add(Integer.valueOf(string));
+            return ids;
+        } else {
+            String[] strs = string.split(",");
+            Integer[] a = (Integer[]) ConvertUtils.convert(strs, Integer.class);
+            return Arrays.asList(a);
+        }
+    }
+    //集合转字符串
 
 }

@@ -1,6 +1,7 @@
 package com.suma.vo;
 
 import com.suma.pojo.AdvFlyWord;
+import com.suma.pojo.AdvRegion;
 import com.suma.pojo.ServiceGroup;
 import lombok.Data;
 import org.springframework.format.annotation.DateTimeFormat;
@@ -43,7 +44,11 @@ public class AdvInfoVO {
 
     private Integer materialType;//素材类型
 
-    private Integer region;//区域ID
+    private String region;//区域ID
+
+    private List<AdvRegion> advRegions;//所有区域
+
+    private List<String> regionNames;//区域名称
 
     private ServiceGroup serviceGroup;//频道分组
 

@@ -15,15 +15,15 @@ public class WebAppConfig implements WebMvcConfigurer {
 
     @Override
     public void addInterceptors(InterceptorRegistry registry) {
-
-        registry.addInterceptor(new HttpInterceptor()).addPathPatterns("/info/**");
-
-
         //需要统一日志处理，在这里加路径
+        registry.addInterceptor(new HttpInterceptor()).addPathPatterns("/info/**");
         registry.addInterceptor(new HttpInterceptor()).addPathPatterns("/system/role/**");
         registry.addInterceptor(new HttpInterceptor()).addPathPatterns("/login");
         registry.addInterceptor(new HttpInterceptor()).addPathPatterns("/location/**");
         registry.addInterceptor(new HttpInterceptor()).addPathPatterns("/system/menu/**");
+
+        registry.addInterceptor(new HttpInterceptor()).addPathPatterns("/getAdvShow");
+
         registry.addInterceptor(new HttpInterceptor()).addPathPatterns("/system/user/**");
 
     }

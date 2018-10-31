@@ -19,4 +19,6 @@ public interface ServiceInfoGroupService extends BaseService<ServiceInfoGroup, S
     void deleteByGroupId(Long sgid);
 
     List<ServiceGroup> findGroupBySId(Long id, Integer type);
+
+    List<String> findChannelIdsByGroupId(Long sgId);
 }

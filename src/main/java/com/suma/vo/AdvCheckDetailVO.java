@@ -61,7 +61,7 @@ public class AdvCheckDetailVO {
 
     private Long serviceGroupId;//频道分组信息
 
-    private String regionName;//区域信息
+    private List<String> regionNames;//区域信息
 
     private String serviceGroupName;//频道名称
 

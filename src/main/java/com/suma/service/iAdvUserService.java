@@ -32,6 +32,9 @@ public interface iAdvUserService {
 
     public int updateUser(AdvUser advUser);
 
+    public int updateUserPassword(String oldPassword,String newPassword);
+
+
     public AdvUser selectByUsername(String userName);
 
 }

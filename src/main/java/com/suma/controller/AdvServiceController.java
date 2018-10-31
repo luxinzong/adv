@@ -48,7 +48,8 @@ public class AdvServiceController extends BaseController {
             throw new BaseException(ExceptionConstants.BASE_EXCEPTION_MISSING_PARAMETERS);
         }
         ServiceInfoExample serviceExample = new ServiceInfoExample();
-        ServiceInfoExample.Criteria criteria = serviceInfoService.queryServiceByThreeId(serviceVO.getNetworkId(), serviceVO.getTsId(), serviceVO.getServiceId(), serviceExample);
+        ServiceInfoExample.Criteria criteria = serviceExample.createCriteria();
+        criteria = serviceInfoService.queryServiceByThreeId(serviceVO.getNetworkId(), serviceVO.getTsId(), serviceVO.getServiceId(), criteria);
 
         if (criteria == null)
             return Result.success(new PageInfo<ServiceInfo>(null));

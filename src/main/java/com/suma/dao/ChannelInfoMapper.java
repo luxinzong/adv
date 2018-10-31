@@ -29,4 +29,6 @@ public interface ChannelInfoMapper extends BaseDAO<ChannelInfo, ChannelInfoExamp
     int updateByPrimaryKeySelective(ChannelInfo record);
 
     int updateByPrimaryKey(ChannelInfo record);
+
+    List<String> selectChannelIds();
 }

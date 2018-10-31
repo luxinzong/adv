@@ -3,6 +3,7 @@ package com.suma.controller;
 import com.github.pagehelper.Page;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
+import com.google.common.base.Strings;
 import com.google.common.collect.Lists;
 import com.suma.constants.ExceptionConstants;
 import com.suma.dto.AdvUserDto;
@@ -10,6 +11,7 @@ import com.suma.exception.UserException;
 import com.suma.pojo.AdvUser;
 import com.suma.service.iAdvUserService;
 import com.suma.utils.Result;
+import com.suma.utils.StringUtil;
 import com.suma.vo.AdvUserVO;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -146,6 +148,28 @@ public class AdvUserController extends BaseController{
         advUser.setUserId(userId);
 
         return toResult(advUserService.updateUser(advUser));
+    }
+
+    /**
+     * 修改用户密码
+     * 你们做的是将数据全查出来，交给前台。这样肯定卡
+     * @param oldPassword
+     * @param confirmPassword
+     * @param newPassword
+     * @return
+     */
+    @Transactional(rollbackFor = Exception.class)
+    @RequestMapping("/updatePassword")
+    public Result updatePassword(String oldPassword,String confirmPassword,String newPassword){
+        if(Strings.isNullOrEmpty(oldPassword) || Strings.isNullOrEmpty(confirmPassword) ||
+                    Strings.isNullOrEmpty(newPassword)){
+            throw new UserException(ExceptionConstants.LOGIN_EXCEPTION_INPUT_PASSWORD_IS_VALID);
+        }
+        if(!confirmPassword.equals(newPassword)){
+            throw new UserException(ExceptionConstants.LOGIN_EXCEPTION_PASSWORD_INPUT_NOT_RIGHT);
+        }
+
+        return toResult(advUserService.updateUserPassword(oldPassword,newPassword));
     }
 
 }

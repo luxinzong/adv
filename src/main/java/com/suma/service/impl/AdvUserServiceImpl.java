@@ -7,6 +7,7 @@ import com.suma.dao.AdvDeptMapper;
 import com.suma.dao.AdvUseRoleMapper;
 import com.suma.dao.AdvUserMapper;
 import com.suma.dto.AdvUserDto;
+import com.suma.exception.LoginException;
 import com.suma.exception.UserException;
 import com.suma.pojo.AdvDept;
 import com.suma.pojo.AdvUser;
@@ -232,5 +233,22 @@ public class AdvUserServiceImpl implements iAdvUserService {
     @Override
     public AdvUser selectByUsername(@Param("username") String username) {
         return advUserMapper.selectAdvUserByUserName(username);
+    }
+
+    @Override
+    public int updateUserPassword(String oldPassword, String newPassword) {
+        //判断原密码与是否一致
+        AdvUser advUser = ShiroUtils.getUser();
+        String selectOldPassword = passWordService.encryptPassword(advUser.getUserName(),oldPassword,advUser.getSalt());
+        if(!selectOldPassword.equals(advUser.getPassword())){
+            throw new UserException(ExceptionConstants.LOGIN_EXCEPTION_PASSWORD_NOT_RIGHT);
+        }
+        //一致进行更新密码
+        String insertNewPassword = passWordService.encryptPassword(advUser.getUserName(),newPassword,advUser.getSalt());
+        advUser.setPassword(insertNewPassword);
+
+        //将session无效
+        ShiroUtils.getSession().stop();
+        return advUserMapper.updateByPrimaryKeySelective(advUser);
     }
 }

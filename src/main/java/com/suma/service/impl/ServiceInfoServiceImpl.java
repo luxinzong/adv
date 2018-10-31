@@ -89,7 +89,7 @@ public class ServiceInfoServiceImpl extends BaseServiceImpl<ServiceInfo, Service
     }
 
     @Override
-    public ServiceInfoExample.Criteria queryServiceByThreeId(String networkId, String tsId, String serviceId, ServiceInfoExample serviceExample) {
+    public ServiceInfoExample.Criteria queryServiceByThreeId(String networkId, String tsId, String serviceId, ServiceInfoExample.Criteria criteria) {
         List<Long> tIds = new ArrayList<>();
 
         TsInfoExample tsExample = new TsInfoExample();
@@ -114,7 +114,6 @@ public class ServiceInfoServiceImpl extends BaseServiceImpl<ServiceInfo, Service
             return null;
         }
 
-        ServiceInfoExample.Criteria criteria = serviceExample.createCriteria();
         if (tIds.size() > 0) {
             criteria = criteria.andTidIn(tIds);
         }

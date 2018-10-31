@@ -12,6 +12,7 @@ import com.suma.utils.Result;
 import com.suma.utils.StringUtil;
 import com.suma.vo.*;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeanUtils;
@@ -34,30 +35,24 @@ import java.util.*;
 public class AdvInfoContoller extends BaseController {
 
     private static Logger logger = LoggerFactory.getLogger(AdvInfoContoller.class);
-
     @Autowired
     private AdvInfoService advInfoService;
-
     @Autowired
     private InfoMaterialService infoMaterialService;
-
     @Autowired
     private AdvTypeService advTypeService;
-
     @Autowired
     private AdvMaterialService advMaterialService;
-
     @Autowired
     private AdvFlywordService advFlywordService;
-
     @Autowired
     private InfoFlywordService infoFlywordService;
-
     @Autowired
     private AdvInfoServiceGroupService advInfoServiceGroupService;
-
     @Autowired
     private ServiceGroupService serviceGroupService;
+    @Autowired
+    private iAdvRegionService advRegionService;
 
     /**
      * 按照ID查找广告信息
@@ -122,7 +117,17 @@ public class AdvInfoContoller extends BaseController {
             advInfoVO.setServiceGroup(serviceGroupService.findByPK(list.get(0).getServiceGroupId()));
         }
         //将区域名称和子名称查询出来
-
+        //所有区域
+        advInfoVO.setAdvRegions(advRegionService.selectAdvRegionAll());
+        //有效区域名称
+        List<Integer> ids = StringUtil.getRegionId(advInfo.getRegion());
+        if (!CollectionUtils.isEmpty(ids)) {
+            List<String> regionNames = new ArrayList<>();
+            for (Integer regionId : ids) {
+                regionNames.add(advRegionService.selectAdvRegionById(regionId).getRegionName());
+            }
+            advInfoVO.setRegionNames(regionNames);
+        }
         return Result.success(advInfoVO);
     }
 
@@ -208,8 +213,6 @@ public class AdvInfoContoller extends BaseController {
         example3.createCriteria().andAdvInfoIdIn(advInfoIds);
         advInfoServiceGroupService.deleteByExample(example3);
         //删除广告对应区域信息
-
-
         return Result.success();
     }
 
@@ -230,8 +233,7 @@ public class AdvInfoContoller extends BaseController {
         System.out.println(advInfo);
         //判断是否缺少参数
         if (advInfo.getName() == null || advInfo.getStartDate() == null ||
-                advInfo.getEndDate() == null || advInfo.getPeriodTimeEnd() == null
-                || advInfo.getPeriodTimeStart() == null || advInfo.getStatus() == null
+                advInfo.getEndDate() == null || advInfo.getStatus() == null
                 || advInfo.getMaterialType() == null || advInfo.getAdvTypeId() == null) {
             throw new AdvInfoException(ExceptionConstants.INFO_EXCEPTION_MISSING_REQUIRED_PARAMS);
         }
@@ -251,21 +253,23 @@ public class AdvInfoContoller extends BaseController {
         //获取广告信息与资源关系集合
         List<InfoMaterialVO> infoMaterialVOS = advInfoVO.getInfoMaterialVOS();
         //根据前端传递过来的文件名查找对应资源ID，根据资源ID和广告信息ID更新广告资源关系列表
-        AdvMaterialExample example1 = new AdvMaterialExample();
-        for (InfoMaterialVO infoMaterialVO : infoMaterialVOS) {
-            //根据文件名查找对应资源
-            example1.createCriteria().andFileNameEqualTo(infoMaterialVO.getFileName());
-            List<AdvMaterial> advMaterials = advMaterialService.selectByExample(example1);
-            //如果资源存在则添加到广告资源关系列表
-            if (advMaterials != null) {
-                //获取广告资源ID
-                Long advMaterialId = advMaterials.get(0).getId();
-                //将广告信息资源对应关系信息存储到关系对象中
-                InfoMaterial infoMaterial = new InfoMaterial();
-                infoMaterial.setMaterialId(advMaterialId);
-                infoMaterial.setAdvInfoId(advInfoId);
-                BeanUtils.copyProperties(infoMaterialVO, infoMaterial);
-                infoMaterialService.save(infoMaterial);
+        if (!CollectionUtils.isEmpty(infoMaterialVOS)) {
+            AdvMaterialExample example1 = new AdvMaterialExample();
+            for (InfoMaterialVO infoMaterialVO : infoMaterialVOS) {
+                //根据文件名查找对应资源
+                example1.createCriteria().andFileNameEqualTo(infoMaterialVO.getFileName());
+                List<AdvMaterial> advMaterials = advMaterialService.selectByExample(example1);
+                //如果资源存在则添加到广告资源关系列表
+                if (advMaterials != null) {
+                    //获取广告资源ID
+                    Long advMaterialId = advMaterials.get(0).getId();
+                    //将广告信息资源对应关系信息存储到关系对象中
+                    InfoMaterial infoMaterial = new InfoMaterial();
+                    infoMaterial.setMaterialId(advMaterialId);
+                    infoMaterial.setAdvInfoId(advInfoId);
+                    BeanUtils.copyProperties(infoMaterialVO, infoMaterial);
+                    infoMaterialService.save(infoMaterial);
+                }
             }
         }
         //获取字幕广告信息,保存字幕广告信息
@@ -285,9 +289,12 @@ public class AdvInfoContoller extends BaseController {
         //获取频道信息
         AdvInfoServiceGroup advInfoServiceGroup = new AdvInfoServiceGroup();
         advInfoServiceGroup.setAdvInfoId(advInfoId);
-        advInfoServiceGroup.setType(advInfoVO.getServiceGroup().getType());
-        advInfoServiceGroup.setServiceGroupId(advInfoVO.getServiceGroup().getSgid());
-        advInfoServiceGroupService.save(advInfoServiceGroup);
+        if (advInfoVO.getServiceGroup() != null) {
+            advInfoServiceGroup.setType(advInfoVO.getServiceGroup().getType());
+            advInfoServiceGroup.setServiceGroupId(advInfoVO.getServiceGroup().getSgid());
+            advInfoServiceGroupService.save(advInfoServiceGroup);
+        }
+        //从广告信息中获取region信息
         return Result.success();
     }
 
@@ -366,6 +373,7 @@ public class AdvInfoContoller extends BaseController {
             advInfoServiceGroup.setServiceGroupId(serviceGroup.getSgid());
             advInfoServiceGroup.setType(serviceGroup.getType());
         }
+        //更新区域信息
         return Result.success();
     }
 }

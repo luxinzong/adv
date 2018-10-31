@@ -70,16 +70,23 @@ public class AdvController {
 
         Integer serviceParamType = null;
 
+        //判断频道参数
         if (StringUtils.isNotBlank(requestVO.getNetworkID())
                 || StringUtils.isNotBlank(requestVO.getTsId())
                 || StringUtils.isNotBlank(requestVO.getServiceID())) {
             //根据networkId,tsId,serviceId查询service
             ServiceInfoExample serviceInfoExample = new ServiceInfoExample();
-            ServiceInfoExample.Criteria criteria = serviceInfoService
-                    .queryServiceByThreeId(requestVO.getNetworkID(), requestVO.getTsId(), requestVO.getServiceID(), serviceInfoExample);
-            if (requestVO.getFreq() != null)
-                criteria.andFreqEqualTo(requestVO.getFreq());
-            List<ServiceInfo> serviceInfos = serviceInfoService.selectByExample(serviceInfoExample);
+            ServiceInfoExample.Criteria criteria = serviceInfoExample.createCriteria();
+
+            if (requestVO.getFreq() != null) {
+                criteria = criteria.andFreqEqualTo(requestVO.getFreq());
+            }
+            criteria = serviceInfoService
+                    .queryServiceByThreeId(requestVO.getNetworkID(), requestVO.getTsId(), requestVO.getServiceID(), criteria);
+            List<ServiceInfo> serviceInfos = new ArrayList<>();
+
+            if (criteria != null)
+                serviceInfos = serviceInfoService.selectByExample(serviceInfoExample);
             if (CollectionUtils.isEmpty(serviceInfos)) {
                 throw new AdvRequestException(ExceptionConstants.ADV_REQUEST_SERVICE_NOT_EXIST, requestVO.getSessionId());
             }
@@ -102,7 +109,8 @@ public class AdvController {
             groups = serviceGroupService.selectByExample(serviceGroupExample);
             serviceParamType = AdvContants.SERVICE_TYPE_ON_DEMAND_ALL;
         }
-        List<AdvInfo> advInfos = advServiceGroupService.findAdvByGroups(groups, advType);
+
+        List<AdvInfo> advInfos = advServiceGroupService.findAdvByGroups(groups, advType, serviceParamType);
         List<AdvItem> advItems = transform(advInfos, serviceParamType);
 
         responseVO.setResultCount((long) advItems.size());
@@ -128,6 +136,17 @@ public class AdvController {
             //素材类型
             Integer materialType = advInfo.getMaterialType();
             advItem.setAssetType(Long.valueOf(materialType));
+
+            //如果没有带请求参数channelId，返回时要把广告关联的频道带上
+            if (serviceParamType.equals(AdvContants.SERVICE_TYPE_ON_DEMAND_ALL)) {
+                String channelIds = null;
+                if (advInfo.getReservedInt() == 1) {
+                    channelIds = channelService.findALLChannelIds();
+                } else {
+                    channelIds = advServiceGroupService.findChannelIdsByAdvId(advInfo.getId());
+                }
+                advItem.setChannelIds(channelIds);
+            }
 
             //图片或视频
             if (materialType.equals(AdvContants.IMAGE_MATERIAL) || materialType.equals(AdvContants.VEDIO_MATERIAL)) {
@@ -158,14 +177,6 @@ public class AdvController {
                 advItem.setInterval(flyWord.getIntervalTime());
                 advItems.add(advItem);
             }
-
-
-            //如果没有带请求参数channelId，返回时要把广告关联的频道带上
-            if (serviceParamType.equals(AdvContants.SERVICE_TYPE_ON_DEMAND_ALL)) {
-                String channelIds = advServiceGroupService.findChannelIdsByAdvId(advInfo.getId());
-                advItem.setChannelIds(channelIds);
-            }
-
 
         }
 

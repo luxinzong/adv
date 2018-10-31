@@ -20,7 +20,6 @@ public class HttpInterceptor extends HandlerInterceptorAdapter {
     //请求之前
     @Override
     public boolean preHandle(HttpServletRequest httpServletRequest, HttpServletResponse response, Object handler) throws Exception {
-
         //获取请求方式
         System.out.println(httpServletRequest.getMethod());
         //获取项目名称

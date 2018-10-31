@@ -46,7 +46,7 @@ public class AdvInfo {
 
     private String lastEditModule;//编辑模块
 
-    private Integer region;//区域码
+    private String region;//区域码
 
     private String reservedString;
 

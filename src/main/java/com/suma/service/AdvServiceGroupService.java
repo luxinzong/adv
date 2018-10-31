@@ -10,7 +10,7 @@ import java.util.List;
  * @description:
  */
 public interface AdvServiceGroupService extends BaseService<AdvInfoServiceGroup, AdvInfoServiceGroupExample, Long> {
-    List<AdvInfo> findAdvByGroups(List<ServiceGroup> groups, AdvType advType);
+    List<AdvInfo> findAdvByGroups(List<ServiceGroup> groups, AdvType advType, Integer serviceParamType);
 
     String findChannelIdsByAdvId(Long id);
 }

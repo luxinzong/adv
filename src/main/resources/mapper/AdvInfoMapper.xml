@@ -20,7 +20,7 @@
     <result column="LAST_EDIT_TIME" property="lastEditTime" jdbcType="TIMESTAMP" />
     <result column="LAST_EDIT_USER" property="lastEditUser" jdbcType="VARCHAR" />
     <result column="LAST_EDIT_MODULE" property="lastEditModule" jdbcType="VARCHAR" />
-    <result column="REGION" property="region" jdbcType="INTEGER" />
+    <result column="REGION" property="region" jdbcType="VARCHAR" />
     <result column="RESERVED_STRING" property="reservedString" jdbcType="VARCHAR" />
     <result column="RESERVED_INT" property="reservedInt" jdbcType="BIGINT" />
   </resultMap>
@@ -135,7 +135,7 @@
       #{periodTimeEnd,jdbcType=TIME}, #{checkUser,jdbcType=VARCHAR}, #{checkNote,jdbcType=VARCHAR}, 
       #{checkTime,jdbcType=TIMESTAMP}, #{createdUser,jdbcType=VARCHAR}, #{createdTime,jdbcType=TIMESTAMP},
      sysdate(), #{lastEditUser,jdbcType=VARCHAR}, #{lastEditModule,jdbcType=VARCHAR},
-      #{region,jdbcType=INTEGER}, #{reservedString,jdbcType=VARCHAR}, #{reservedInt,jdbcType=BIGINT}
+      #{region,jdbcType=VARCHAR}, #{reservedString,jdbcType=VARCHAR}, #{reservedInt,jdbcType=BIGINT}
       )
   </insert>
   <insert id="insertSelective" parameterType="com.suma.pojo.AdvInfo" >
@@ -261,7 +261,7 @@
         #{lastEditModule,jdbcType=VARCHAR},
       </if>
       <if test="region != null" >
-        #{region,jdbcType=INTEGER},
+        #{region,jdbcType=VARCHAR},
       </if>
       <if test="reservedString != null" >
         #{reservedString,jdbcType=VARCHAR},
@@ -335,7 +335,7 @@
         LAST_EDIT_MODULE = #{record.lastEditModule,jdbcType=VARCHAR},
       </if>
       <if test="record.region != null" >
-        REGION = #{record.region,jdbcType=INTEGER},
+        REGION = #{record.region,jdbcType=VARCHAR},
       </if>
       <if test="record.reservedString != null" >
         RESERVED_STRING = #{record.reservedString,jdbcType=VARCHAR},
@@ -368,7 +368,7 @@
       LAST_EDIT_TIME = #{record.lastEditTime,jdbcType=TIMESTAMP},
       LAST_EDIT_USER = #{record.lastEditUser,jdbcType=VARCHAR},
       LAST_EDIT_MODULE = #{record.lastEditModule,jdbcType=VARCHAR},
-      REGION = #{record.region,jdbcType=INTEGER},
+      REGION = #{record.region,jdbcType=VARCHAR},
       RESERVED_STRING = #{record.reservedString,jdbcType=VARCHAR},
       RESERVED_INT = #{record.reservedInt,jdbcType=BIGINT}
     <if test="_parameter != null" >
@@ -430,7 +430,7 @@
         LAST_EDIT_MODULE = #{lastEditModule,jdbcType=VARCHAR},
       </if>
       <if test="region != null" >
-        REGION = #{region,jdbcType=INTEGER},
+        REGION = #{region,jdbcType=VARCHAR},
       </if>
       <if test="reservedString != null" >
         RESERVED_STRING = #{reservedString,jdbcType=VARCHAR},
@@ -460,7 +460,7 @@
       LAST_EDIT_TIME = #{lastEditTime,jdbcType=TIMESTAMP},
       LAST_EDIT_USER = #{lastEditUser,jdbcType=VARCHAR},
       LAST_EDIT_MODULE = #{lastEditModule,jdbcType=VARCHAR},
-      REGION = #{region,jdbcType=INTEGER},
+      REGION = #{region,jdbcType=VARCHAR},
       RESERVED_STRING = #{reservedString,jdbcType=VARCHAR},
       RESERVED_INT = #{reservedInt,jdbcType=BIGINT}
     where ID = #{id,jdbcType=BIGINT}

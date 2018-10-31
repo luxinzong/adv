@@ -38,7 +38,8 @@ import java.util.Map;
  */
 @RestController
 @RequestMapping(value = "check")
-public class AdvCheckDetailController extends BaseController{
+public class
+AdvCheckDetailController extends BaseController{
 
     @Autowired
     private AdvCheckService advCheckService;
@@ -120,7 +121,12 @@ public class AdvCheckDetailController extends BaseController{
                     advCheckDetailVO.setAdvType(advTypeService.findByPK(advInfo.getAdvTypeId()).getAdvtype());
                 }
                 //设置区域名称
-                advCheckDetailVO.setRegionName(advRegionService.selectAdvRegionById(advInfo.getRegion()).getRegionName());
+               /* List<Integer> regionIds = StringUtil.getRegionId(advInfo.getRegion());
+                List<String> regionNames = new ArrayList<>();
+                for (Integer regionId :regionIds){
+                    regionNames.add(advRegionService.selectAdvRegionById(regionId).getRegionName());
+                }
+                advCheckDetailVO.setRegionNames(regionNames);*/
                 advCheckDetails.add(advCheckDetailVO);
             }
         }
@@ -148,7 +154,7 @@ public class AdvCheckDetailController extends BaseController{
         if (advInfo != null) {
             System.out.println(advInfo);
             //初始化广告位置信息
-            AdvLocation advLocation = null;
+            AdvLocation advLocation = new AdvLocation();
             //判断类型ID是否存在
             if (advInfo.getAdvTypeId() != null) {
                 //获取广告位置信息
@@ -188,12 +194,22 @@ public class AdvCheckDetailController extends BaseController{
                 }
             }
             //区域划分
-            advCheckDetailVO.setRegionName(advRegionService.selectAdvRegionById(advInfo.getRegion()).getRegionName());
+            List<Integer> regionIds = StringUtil.getRegionId(advInfo.getRegion());
+            if (!CollectionUtils.isEmpty(regionIds)) {
+                List<String> regionNames = new ArrayList<>();
+                for (Integer regionId :regionIds){
+                    regionNames.add(advRegionService.selectAdvRegionById(regionId).getRegionName());
+                }
+                advCheckDetailVO.setRegionNames(regionNames);
+            }
             //给AdvCheckDetailVO页面对象属性赋值
             BeanUtils.copyProperties(advInfo, advCheckDetailVO);
             advCheckDetailVO.setAdvLocation(advLocation);
             advCheckDetailVO.setAdvFlyWords(advFlyWords);
-            BeanUtils.copyProperties(advCheckService.select(advInfoId), advCheckDetailVO);
+            //如果审核信息存在则将审核信息赋值给VO对象
+            if (advCheckService.select(advInfoId) != null) {
+                BeanUtils.copyProperties(advCheckService.select(advInfoId), advCheckDetailVO);
+            }
             return Result.success(advCheckDetailVO);
         } else {
             return Result.error("广告不存在");
@@ -220,7 +236,9 @@ public class AdvCheckDetailController extends BaseController{
            if (status == AdvContants.STATUS_EDIT) {
                advCheckService.deleteAll((Long[]) idsList.toArray());
            } else if (status == AdvContants.STATUS_PASS) {
-               advCheckDetail.setMark("审核通过");
+               if (advCheckDetail != null) {
+                   advCheckDetail.setMark("审核通过");
+               }
            }
            advInfoService.update(advInfo);
         }

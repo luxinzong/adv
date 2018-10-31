@@ -8,6 +8,7 @@ import com.suma.pojo.ChannelInfoExample;
 import com.suma.pojo.ServiceInfoGroupExample;
 import com.suma.service.BaseService;
 import com.suma.service.ChannelService;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -27,8 +28,11 @@ public class ChannelServiceImpl extends BaseServiceImpl<ChannelInfo, ChannelInfo
     public void setBaseDao(ChannelInfoMapper baseDao) {
         super.setBaseDao(baseDao);
     }
+
     @Autowired
     private ServiceInfoGroupMapper serviceInfoGroupMapper;
+    @Autowired
+    private ChannelInfoMapper channelInfoMapper;
 
     @Override
     public void checkDuplicate(ChannelInfo channelInfo) {
@@ -69,6 +73,12 @@ public class ChannelServiceImpl extends BaseServiceImpl<ChannelInfo, ChannelInfo
         if (channelInfos1 != null && channelInfos1.size() > 0) {
             throw new BaseException("该ChannelName已存在");
         }
+    }
+
+    @Override
+    public String findALLChannelIds() {
+        List<String> channelIds = channelInfoMapper.selectChannelIds();
+        return StringUtils.join(channelIds, ",");
     }
 
     @Transactional

@@ -1,6 +1,7 @@
 
 package com.suma.service.impl;
 
+import com.suma.dao.ChannelInfoMapper;
 import com.suma.dao.ServiceGroupMapper;
 import com.suma.dao.ServiceInfoGroupMapper;
 import com.suma.dao.ServiceInfoMapper;
@@ -33,6 +34,8 @@ public class ServiceInfoGroupServiceImpl extends BaseServiceImpl<ServiceInfoGrou
     private ServiceInfoMapper serviceInfoMapper;
     @Autowired
     private ServiceGroupMapper serviceGroupMapper;
+    @Autowired
+    private ChannelInfoMapper channelInfoMapper;
 
     @Override
     public List<String> findServicesByGroupId(Long sgId) {
@@ -73,6 +76,21 @@ public class ServiceInfoGroupServiceImpl extends BaseServiceImpl<ServiceInfoGrou
 
         }
         return serviceGroups;
+    }
+
+    @Override
+    public List<String> findChannelIdsByGroupId(Long sgId) {
+        ServiceInfoGroupExample example = new ServiceInfoGroupExample();
+        example.createCriteria().andSgidEqualTo(sgId);
+        List<ServiceInfoGroup> serviceInfoGroups = serviceInfoGroupMapper.selectByExample(example);
+        List<String> list = new ArrayList<>();
+        if (serviceInfoGroups != null) {
+            for (ServiceInfoGroup serviceInfoGroup : serviceInfoGroups) {
+                ChannelInfo channelInfo = channelInfoMapper.selectByPrimaryKey(serviceInfoGroup.getSid());
+                list.add(channelInfo.getChannelId());
+            }
+        }
+        return list;
     }
 
 

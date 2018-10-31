@@ -57,12 +57,12 @@ public class ShiroConfig {
      * @return
      */
     @Bean
-    public UserRealm userRealm(){
+    public UserRealm userRealm() {
         UserRealm userRealm = new UserRealm();
         return userRealm;
     }
 
-    public SimpleCookie remeberCookie(){
+    public SimpleCookie remeberCookie() {
         SimpleCookie cookie = new SimpleCookie("remeberMe");
         cookie.setDomain(domain);
         cookie.setPath(path);
@@ -77,8 +77,8 @@ public class ShiroConfig {
      *
      * @return
      */
-    public CookieRememberMeManager rememberMeManager(){
-        CookieRememberMeManager cookieRememberMeManager  = new CookieRememberMeManager();
+    public CookieRememberMeManager rememberMeManager() {
+        CookieRememberMeManager cookieRememberMeManager = new CookieRememberMeManager();
         cookieRememberMeManager.setCookie(remeberCookie());
         //对cookie进行加密
         cookieRememberMeManager.setCipherKey(Base64.decode("fCq+/xW488hMTCD+cmJ3aQ=="));
@@ -93,14 +93,13 @@ public class ShiroConfig {
      * @return
      */
     @Bean
-    public SecurityManager securityManager(UserRealm userRealm){
+    public SecurityManager securityManager(UserRealm userRealm) {
         DefaultWebSecurityManager securityManager = new DefaultWebSecurityManager();
         //设置realm
         securityManager.setRealm(userRealm);
         //记住我
         securityManager.setRememberMeManager(rememberMeManager());
         securityManager.setSessionManager(defaultWebSessionManager());
-
         return securityManager;
     }
 
@@ -110,7 +109,7 @@ public class ShiroConfig {
      * @return
      */
     @Bean
-    public DefaultWebSessionManager defaultWebSessionManager(){
+    public DefaultWebSessionManager defaultWebSessionManager() {
         DefaultWebSessionManager defaultWebSessionManager = new DefaultWebSessionManager();
         return defaultWebSessionManager;
     }
@@ -120,6 +119,7 @@ public class ShiroConfig {
      *
      * @return
      */
+
 
     @Bean
     public ShiroFilterFactoryBean shiroFilterFactoryBean(SecurityManager securityManager){
@@ -152,8 +152,7 @@ public class ShiroConfig {
      */
     @Bean
     public AuthorizationAttributeSourceAdvisor authorizationAttributeSourceAdvisor(
-            @Qualifier("securityManager") SecurityManager securityManager)
-    {
+            @Qualifier("securityManager") SecurityManager securityManager) {
         AuthorizationAttributeSourceAdvisor authorizationAttributeSourceAdvisor = new AuthorizationAttributeSourceAdvisor();
         authorizationAttributeSourceAdvisor.setSecurityManager(securityManager);
         return authorizationAttributeSourceAdvisor;
@@ -161,6 +160,7 @@ public class ShiroConfig {
 
     /**
      * 完成SpringBean的支持
+     *
      * @return
      */
     @Bean

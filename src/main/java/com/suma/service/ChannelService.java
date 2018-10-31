@@ -10,4 +10,6 @@ import com.suma.pojo.ChannelInfoExample;
  */
 public interface ChannelService extends BaseService<ChannelInfo, ChannelInfoExample, Long> {
     void checkDuplicate(ChannelInfo channelInfo);
+
+    String findALLChannelIds();
 }

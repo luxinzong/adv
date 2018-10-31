@@ -12,9 +12,9 @@ public class ExceptionConstants {
     //登录异常常量
     public static final String LOGIN_EXCEPTION_USERNAME_NOT_EXIST = "用户名不存在";
     public static final String LOGIN_EXCEPTION_USERNAME_PASSWORD_IS_NULL = "用户或密码为空";
-    public static final String LOGIN_EXCEPTION_USERNAME_RANGE_IS_INVALID = "用户名范围无效";
-    public static final String LOGIN_EXCEPTION_PASSWORD_RANGE_IS_INVALID = "密码范围无效";
     public static final String LOGIN_EXCEPTION_PASSWORD_NOT_RIGHT = "密码不正确";
+    public static final String LOGIN_EXCEPTION_PASSWORD_INPUT_NOT_RIGHT = "两次密码输入不一致";
+    public static final String LOGIN_EXCEPTION_INPUT_PASSWORD_IS_VALID = "输入密码无效";
     //权限异常常量
     public static final String NO_MENU_PERMISSION = "没有此功能权限";
 

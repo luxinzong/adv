@@ -111,7 +111,6 @@ public class AdvRegionService implements iAdvRegionService {
         if(CollectionUtils.isEmpty(regionList)){//如果查询数据为空，直接返回null
             return null;
         }
-
         List<AdvRegionDto> advRegionDtoList = produceAdvRegionDto(regionList);
         return advRegionDtoList;
     }
@@ -139,7 +138,6 @@ public class AdvRegionService implements iAdvRegionService {
         if(advRegion == null){
             throw new RegionException(ExceptionConstants.REGION_EXCEPTION_REGION_ID_NOT_EXIST);
         }
-
         return advRegion;
     }
 

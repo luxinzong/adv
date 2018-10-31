@@ -195,6 +195,9 @@
       <include refid="Example_Where_Clause" />
     </if>
   </select>
+  <select id="selectChannelIds" resultType="java.lang.String">
+    select CHANNEL_ID from channel_info
+  </select>
   <update id="updateByExampleSelective" parameterType="map">
     update channel_info
     <set>

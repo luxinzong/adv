@@ -82,5 +82,6 @@ public class AdvContants {
 
     //广告是否与频道广联
     public static final Long ADV_SERVICE_ASSOCIATE= 0L;//关联
-    public static final Long ADV_SERVICE_NOT_ASSOCIATE= 1L;//不关联
+    public static final Long ADV_SERVICE_NOT_ASSOCIATE= 1L;//直播不关联
+    public static final Long ADV_CHANNEL_NOT_ASSOCIATE=2L;//点播不关联
 }
