@@ -8,9 +8,11 @@ import com.suma.constants.ExceptionConstants;
 import com.suma.exception.AdvCheckException;
 import com.suma.exception.AdvFlyWordException;
 import com.suma.exception.AdvInfoException;
+import com.suma.exception.AdvLocationException;
 import com.suma.pojo.*;
 import com.suma.service.*;
 import com.suma.service.impl.AdvRegionService;
+import com.suma.utils.RegionUtils;
 import com.suma.utils.Result;
 import com.suma.utils.StringUtil;
 import com.suma.vo.AdvCheckDetailVO;
@@ -92,7 +94,6 @@ AdvCheckDetailController extends BaseController{
      */
     @RequestMapping(value = "queryAll")
     public Result selectAll(Integer pageNum,Integer pageSize) {
-        System.out.println(pageNum+","+pageSize+"哈哈哈哈哈");
         if (pageNum == null || pageSize == null) {
             throw new AdvCheckException(ExceptionConstants.ADV_CHECK_REQUESTPARAM_IS_NULL);
         }
@@ -154,17 +155,10 @@ AdvCheckDetailController extends BaseController{
         if (advInfo != null) {
             System.out.println(advInfo);
             //初始化广告位置信息
-            AdvLocation advLocation = new AdvLocation();
-            //判断类型ID是否存在
-            if (advInfo.getAdvTypeId() != null) {
-                //获取广告位置信息
-                AdvLocationExample example = new AdvLocationExample();
-                example.createCriteria().andAdvTypeIdEqualTo(advInfo.getAdvTypeId());
-                if (advLocationService.selectByExample(example).size() != 0) {
-                    advLocation = advLocationService.selectByExample(example).get(0);
-                } else {
-                    System.out.println("位置信息不存在");
-                }
+            AdvLocation advLocation;
+            advLocation = advLocationService.findByPK(advInfo.getAdvLocationId());
+            if (advLocation == null) {
+                throw new AdvLocationException(ExceptionConstants.ADV_LOCATION_IS_NOT_EXIST);
             }
             //获取字幕广告信息
             InfoFlyWordExample example1 = new InfoFlyWordExample();
@@ -172,11 +166,11 @@ AdvCheckDetailController extends BaseController{
             List<InfoFlyWord> infoFlyWords = infoFlywordService.selectByExample(example1);
             List<AdvFlyWord> advFlyWords = new ArrayList<>();
             if (CollectionUtils.isEmpty(infoFlyWords)) {
-                System.out.println("字幕对应信息不存在");
+                throw new AdvFlyWordException(ExceptionConstants.ADV_FLYWORD_IS_NOT_EXIST);
             } else {
-                for (InfoFlyWord infoFlyWord : infoFlyWords) {
-                    advFlyWords.add(advFlywordService.findByPK(infoFlyWord.getFlywordId()));
-                }
+               infoFlyWords.forEach(infoFlyWord -> {
+                   advFlyWords.add(advFlywordService.findByPK(infoFlyWord.getFlywordId()));
+               });
             }
             //获取频道信息
             if (advInfo.getReservedInt() == 0) {
@@ -195,13 +189,7 @@ AdvCheckDetailController extends BaseController{
             }
             //区域划分
             List<Integer> regionIds = StringUtil.getRegionId(advInfo.getRegion());
-            if (!CollectionUtils.isEmpty(regionIds)) {
-                List<String> regionNames = new ArrayList<>();
-                for (Integer regionId :regionIds){
-                    regionNames.add(advRegionService.selectAdvRegionById(regionId).getRegionName());
-                }
-                advCheckDetailVO.setRegionNames(regionNames);
-            }
+            advCheckDetailVO.setRegionNames(RegionUtils.addRegionName(regionIds));
             //给AdvCheckDetailVO页面对象属性赋值
             BeanUtils.copyProperties(advInfo, advCheckDetailVO);
             advCheckDetailVO.setAdvLocation(advLocation);
@@ -212,7 +200,7 @@ AdvCheckDetailController extends BaseController{
             }
             return Result.success(advCheckDetailVO);
         } else {
-            return Result.error("广告不存在");
+            return Result.error(ExceptionConstants.INFO_EXCEPTION_INFO_IS_NOT_EXIT);
         }
     }
 
@@ -237,7 +225,7 @@ AdvCheckDetailController extends BaseController{
                advCheckService.deleteAll((Long[]) idsList.toArray());
            } else if (status == AdvContants.STATUS_PASS) {
                if (advCheckDetail != null) {
-                   advCheckDetail.setMark("审核通过");
+                   advCheckDetail.setMark(AdvContants.STATUS_PASS_DSC);
                }
            }
            advInfoService.update(advInfo);

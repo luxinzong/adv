@@ -1,6 +1,7 @@
 package com.suma.vo;
 
 import com.suma.pojo.AdvFlyWord;
+import com.suma.pojo.AdvInfo;
 import com.suma.pojo.AdvRegion;
 import com.suma.pojo.ServiceGroup;
 import lombok.Data;
@@ -16,41 +17,17 @@ import java.util.List;
  * @description
  */
 @Data
-public class AdvInfoVO {
-
-    private Long id;//广告ID
-
-    private Long advTypeId;//广告类型
-
-    private String advType;//广告类型
-
-    private String advTypeName;//广告类型名称
-
-    private String name;//广告名称
-
-    private String startDate;//起始日期
-
-    private String endDate;//终止日期
-
-    private String periodTimeStart;//有效期生效日期
-
-    private String periodTimeEnd;//有效期结束日期
-
-    private Integer status;//广告状态
+public class AdvInfoVO extends AdvInfo {
 
     private Integer pageSize;//页面条数
 
     private Integer pageNum;//页码数
 
-    private Integer materialType;//素材类型
-
-    private String region;//区域ID
-
     private List<AdvRegion> advRegions;//所有区域
 
     private List<String> regionNames;//区域名称
 
-    private ServiceGroup serviceGroup;//频道分组
+    private List<ServiceGroup> serviceGroups;//频道分组
 
     private List<InfoMaterialVO> infoMaterialVOS;//对应关系列表
 

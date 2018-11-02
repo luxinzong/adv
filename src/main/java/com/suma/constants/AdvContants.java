@@ -14,7 +14,6 @@ public class AdvContants {
     public static Map<Integer, String> typeMap = new HashMap<>();//点播直播
 
     public static Map<Integer,String > getCheckMap() {
-        checkMap.put(STATUS_ALL, STATUS_ALL_DSC);
         checkMap.put(STATUS_EDIT, STATUS_EDIT_DSC);
         checkMap.put(STATUS_PASS, STATUS_PASS_DSC);
         checkMap.put(STATUS_WAIT_CHECK, STATUS_WAIT_CHECK_DSC);
@@ -50,8 +49,6 @@ public class AdvContants {
     /**
      * 广告状态常量
      */
-    public static final Integer STATUS_ALL = 0;//所有状态
-    public static final String STATUS_ALL_DSC = "所有状态";
     public static final Integer STATUS_EDIT = 1;//编辑状态
     public static final String STATUS_EDIT_DSC = "编辑状态";
     public static final Integer STATUS_WAIT_CHECK = 3;//待审核状态

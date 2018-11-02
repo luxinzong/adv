@@ -473,11 +473,8 @@
         <if test="map.status != null and map.status != ''">and STATUS=#{map.status}</if>
         <if test="map.startDate != null and map.startDate != ''">and START_DATE &lt;=#{map.startDate}</if>
         <if test="map.endDate != null and map.endDate != ''">and END_DATE &gt;= #{map.endDate}</if>
-        <if test="map.ids != null">
-          and ADV_TYPE_ID IN
-          <foreach collection="map.ids" item="item" open="(" separator="," close=")">
-            #{item}
-          </foreach>
+        <if test="map.advTypeId != null">
+          and ADV_TYPE_ID = #{map.advTypeId}
         </if>
       </where>
     </select>

@@ -90,6 +90,8 @@ public class ExceptionConstants {
     public static final String REGION_EXCEPTION_EXIST_NEXT_AREA = "存在下级区域，不允许删除";
     public static final String REGION_EXCEPTION_REGION_ID_IS_NULL = "区域ID为空";
 
+    //广告位置异常
+    public static final String ADV_LOCATION_IS_NOT_EXIST = "广告位置不存在";
 
 
 }

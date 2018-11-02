@@ -34,6 +34,11 @@ public class DefaultExceptionHandler {
         return Result.error(e.getMessage());
     }
 
+    @ExceptionHandler(AdvLocationException.class)
+    public Result advLocationException(AdvLocationException e) {
+        log.error(e.getMessage(), e);
+        return Result.error(e.getMessage());
+    }
 
     @ExceptionHandler(MenuException.class)
     public Result menuException(MenuException e) {

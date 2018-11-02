@@ -5,12 +5,17 @@ import com.suma.constants.ExceptionConstants;
 import com.suma.exception.AdvFlyWordException;
 import com.suma.pojo.AdvFlyWord;
 import com.suma.pojo.AdvFlyWordExample;
+import com.suma.pojo.InfoFlyWordExample;
 import com.suma.service.AdvFlywordService;
+import com.suma.service.InfoFlywordService;
 import com.suma.utils.Result;
 import com.suma.utils.StringUtil;
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.CollectionUtils;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
@@ -29,6 +34,9 @@ public class AdvFlywordController extends BaseController{
 
     @Autowired
     AdvFlywordService advFlywordService;
+
+    @Autowired
+    InfoFlywordService infoFlywordService;
 
     /**
      * 插入字幕广告数据
@@ -49,6 +57,7 @@ public class AdvFlywordController extends BaseController{
      * @param id
      * @return
      */
+    @Transactional(rollbackFor = Exception.class)
     @RequestMapping(value = "delete", method = RequestMethod.POST)
     public Result delete(Long id) {
         if (id == null) {
@@ -65,12 +74,19 @@ public class AdvFlywordController extends BaseController{
      * @param str
      * @return
      */
+    @Transactional(rollbackFor = Exception.class)
     @RequestMapping(value = "deleteAll", method = RequestMethod.POST)
     public Result delete(String str) {
+        if (StringUtils.isEmpty(str)) {
+            throw new AdvFlyWordException(ExceptionConstants.ADV_FLYWOR_REQUESTPARAM_IS_NULL);
+        }
         List<Long> ids = StringUtil.convertstr(str);
-        AdvFlyWordExample example = new AdvFlyWordExample();
-        example.createCriteria().andIdIn(ids);
-        return toResult(advFlywordService.deleteByExample(example));
+        InfoFlyWordExample example = new InfoFlyWordExample();
+        example.createCriteria().andFlywordIdIn(ids);
+        infoFlywordService.deleteByExample(example);
+        AdvFlyWordExample example1 = new AdvFlyWordExample();
+        example1.createCriteria().andIdIn(ids);
+        return toResult(advFlywordService.deleteByExample(example1));
     }
 
     /**
@@ -84,7 +100,7 @@ public class AdvFlywordController extends BaseController{
         if (advFlyWord.getId() == null) {
             throw new AdvFlyWordException(ExceptionConstants.ADV_FLYWOR_REQUESTPARAM_IS_NULL);
         }
-       return toResult(advFlywordService.update(advFlyWord));
+        return toResult(advFlywordService.update(advFlyWord));
     }
 
     /**
@@ -92,12 +108,13 @@ public class AdvFlywordController extends BaseController{
      * @param advFlyWords
      * @return List<AdvFlyWord> 字幕广告数据的集合
      */
+    @Transactional(rollbackFor = Exception.class)
     @RequestMapping(value = "updateAll")
     public Result update(List<AdvFlyWord> advFlyWords) {
         if (advFlyWords == null) {
             throw new AdvFlyWordException(ExceptionConstants.ADV_FLYWOR_REQUESTPARAM_IS_NULL);
         }
-        for (AdvFlyWord advFlyWord : advFlyWords) {
+        advFlyWords.forEach(advFlyWord -> {
             if (advFlyWord.getId() == null) {
                 logger.error("缺少必要参数");
             }
@@ -105,12 +122,12 @@ public class AdvFlywordController extends BaseController{
                 throw new AdvFlyWordException("广告ID:" + advFlyWord.getId() + "不存在");
             }
             advFlywordService.update(advFlyWord);
-        }
+        });
         return Result.success();
     }
 
     /**
-     * 查询字幕广告对应的所有字幕信息
+     * 查询字幕广告对应的字幕信息
      * @param advFlywordId
      * @return
      */
@@ -122,13 +139,10 @@ public class AdvFlywordController extends BaseController{
         AdvFlyWordExample example = new AdvFlyWordExample();
         example.createCriteria().andIdEqualTo(advFlywordId);
         List<AdvFlyWord> advFlyWords = advFlywordService.selectByExample(example);
-        if (advFlyWords.size() == 0) {
+        if (CollectionUtils.isEmpty(advFlyWords)) {
             throw new AdvFlyWordException(ExceptionConstants.ADV_FLYWORD_IS_NOT_EXIST);
         }
-        PageInfo<AdvFlyWord> pageInfo = new PageInfo<>();
-        pageInfo.setList(advFlyWords);
-        pageInfo.setTotal(advFlyWords.size());
-        return Result.success(pageInfo);
+        return Result.success(advFlyWords.get(0));
     }
 
 }

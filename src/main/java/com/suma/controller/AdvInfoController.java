@@ -8,6 +8,7 @@ import com.suma.exception.AdvInfoException;
 import com.suma.exception.AdvMaterialException;
 import com.suma.pojo.*;
 import com.suma.service.*;
+import com.suma.utils.RegionUtils;
 import com.suma.utils.Result;
 import com.suma.utils.StringUtil;
 import com.suma.vo.*;
@@ -31,16 +32,12 @@ import java.util.*;
  * @date: 2018/10/15
  */
 @RestController
-@RequestMapping(value = "info", produces = "application/json;charset=utf-8")
-public class AdvInfoContoller extends BaseController {
-
-    private static Logger logger = LoggerFactory.getLogger(AdvInfoContoller.class);
+@RequestMapping(value = "info")
+public class AdvInfoController extends BaseController {
     @Autowired
     private AdvInfoService advInfoService;
     @Autowired
     private InfoMaterialService infoMaterialService;
-    @Autowired
-    private AdvTypeService advTypeService;
     @Autowired
     private AdvMaterialService advMaterialService;
     @Autowired
@@ -70,21 +67,22 @@ public class AdvInfoContoller extends BaseController {
         //创建一个前端显示资源列表的VO对象
         List<InfoMaterialVO> infoMaterialVOS = new ArrayList<>();
         //将查询到的资源信息存储到前端资源信息VO对象中
-        for (InfoMaterial infoMaterial : infoMaterials) {
-            //判断资源是否存在，如果不存在提示用户资源不存在
-            if (advMaterialService.findByPK(infoMaterial.getMaterialId()) == null) {
-                throw new AdvMaterialException(ExceptionConstants.ADV_MATERIAL_IS_NULL);
+        if (!CollectionUtils.isEmpty(infoMaterials)) {
+            for (InfoMaterial infoMaterial : infoMaterials) {
+                //判断资源是否存在，如果不存在提示用户资源不存在
+                if (advMaterialService.findByPK(infoMaterial.getMaterialId()) == null) {
+                    throw new AdvMaterialException(ExceptionConstants.ADV_MATERIAL_IS_NULL);
+                }
+                //查找对应资源文件名称
+                String fileName = advMaterialService.findByPK(infoMaterial.getMaterialId()).getFileName();
+                //创建前对资源信息VO对象，将资源信息存储到VO对象中
+                InfoMaterialVO infoMaterialVO = new InfoMaterialVO();
+                BeanUtils.copyProperties(infoMaterial,infoMaterialVO);
+                infoMaterialVO.setFileName(fileName);
+                //将前端资源信息VO对象存储到信息列表中
+                infoMaterialVOS.add(infoMaterialVO);
             }
-            //查找对应资源文件名称
-            String fileName = advMaterialService.findByPK(infoMaterial.getMaterialId()).getFileName();
-            //创建前对资源信息VO对象，将资源信息存储到VO对象中
-            InfoMaterialVO infoMaterialVO = new InfoMaterialVO();
-            BeanUtils.copyProperties(infoMaterial,infoMaterialVO);
-            infoMaterialVO.setFileName(fileName);
-            //将前端资源信息VO对象存储到信息列表中
-            infoMaterialVOS.add(infoMaterialVO);
         }
-
         //根据广告ID查询字幕广告ID，并存储到集合中
         List<Long> flywordIds = infoFlywordService.selectFlywordIds(id);
         AdvFlyWordExample example1 = new AdvFlyWordExample();
@@ -113,20 +111,20 @@ public class AdvInfoContoller extends BaseController {
         AdvInfoServiceGroupExample example2 = new AdvInfoServiceGroupExample();
         example2.createCriteria().andAdvInfoIdEqualTo(id);
         List<AdvInfoServiceGroup> list = advInfoServiceGroupService.selectByExample(example2);
+        List<ServiceGroup> serviceGroups = new ArrayList<>();
         if (!CollectionUtils.isEmpty(list)) {
-            advInfoVO.setServiceGroup(serviceGroupService.findByPK(list.get(0).getServiceGroupId()));
+            list.forEach(advInfoServiceGroup -> {
+                serviceGroups.add(serviceGroupService.findByPK(advInfoServiceGroup.getServiceGroupId()));
+            });
+            advInfoVO.setServiceGroups(serviceGroups);
         }
         //将区域名称和子名称查询出来
         //所有区域
         advInfoVO.setAdvRegions(advRegionService.selectAdvRegionAll());
         //有效区域名称
-        List<Integer> ids = StringUtil.getRegionId(advInfo.getRegion());
-        if (!CollectionUtils.isEmpty(ids)) {
-            List<String> regionNames = new ArrayList<>();
-            for (Integer regionId : ids) {
-                regionNames.add(advRegionService.selectAdvRegionById(regionId).getRegionName());
-            }
-            advInfoVO.setRegionNames(regionNames);
+        if (advInfo.getRegion() != null) {
+            List<Integer> ids = StringUtil.getRegionId(advInfo.getRegion());
+            advInfoVO.setRegionNames(RegionUtils.addRegionName(ids));
         }
         return Result.success(advInfoVO);
     }
@@ -135,46 +133,33 @@ public class AdvInfoContoller extends BaseController {
      * 查询广告信息
      * @param status 广告状态
      * @param name 广告名称
-     * @param start 开始日期
-     * @param end 结束日期
+     * @param startDate 开始日期
+     * @param endDate 结束日期
      * @param pageNum 页码数
      * @param pageSize 显示条数
-     * @param advType 广告类型
+     * @param advTypeId 广告类型
      * @return Result -> 广告信息前端信息
      */
     @RequestMapping(value = "query")
-    public Result queryAdvInfo(Integer status, String name, String start, String end,
-                               Integer pageNum, Integer pageSize, String advType) {
+    public Result queryAdvInfo(Integer status, String name, String startDate, String endDate,
+                               Integer pageNum, Integer pageSize, String advTypeId) {
         //检查是否缺少必须参数
-        if (pageNum == null || pageSize == null || status == null || advType == null) {
+        if (pageNum == null || pageSize == null || status == null || advTypeId == null) {
             throw new AdvInfoException(ExceptionConstants.INFO_EXCEPTION_QUERYPARAMS_IS_NULL);
-        }
-        //根据广告类型查询广告类型ID
-        AdvTypeExample example1 = new AdvTypeExample();
-        example1.createCriteria().andAdvtypeEqualTo(advType);
-        List<AdvType> advTypes = advTypeService.selectByExample(example1);
-        //进行分页查询
-        PageHelper.startPage(pageNum, pageSize);
-        //获取广告类型ID并存入List集合中
-        List<Long> list = new ArrayList<>();
-        for (AdvType advType1 : advTypes) {
-            list.add(advType1.getId());
         }
         //将查询参数存入map中
         Map<String, Object> map = new HashMap<>();
         map.put("name", name);
         map.put("status", status);
-        map.put("startDate", start);
-        map.put("endDate", end);
+        map.put("startDate", startDate);
+        map.put("endDate", endDate);
         PageInfo<AdvInfo> listPageInfo = new PageInfo<>();
-        if (!CollectionUtils.isEmpty(list)) {
-            map.put("ids", list);
-            //根据map查询出广告信息
-            List<AdvInfo> advInfoList = advInfoService.selectAdvInfo(map);
-            //将广告信息和查询出来的总数存入PageInfo中返回给前端
-            listPageInfo.setList(advInfoList);
-            listPageInfo.setTotal(advInfoList.size());
-        }
+        map.put("advTypeId",advTypeId);
+        //根据map查询出广告信息
+        List<AdvInfo> advInfoList = advInfoService.selectAdvInfo(map);
+        //将广告信息和查询出来的总数存入PageInfo中返回给前端
+        listPageInfo.setList(advInfoList);
+        listPageInfo.setTotal(advInfoList.size());
         System.out.println(listPageInfo);
         return Result.success(listPageInfo);
     }
@@ -242,7 +227,7 @@ public class AdvInfoContoller extends BaseController {
         AdvInfoExample example = new AdvInfoExample();
         example.createCriteria().andNameEqualTo(name);
         List<AdvInfo> advInfoList = advInfoService.selectByExample(example);
-        if (advInfoList.size() != 0) {
+        if (!CollectionUtils.isEmpty(advInfoList)) {
             throw new AdvInfoException(ExceptionConstants.INFO_EXCEPTION_INFO_NAME_IS_EXIT);
         }
         //若不存在,则创建广告信息
@@ -289,10 +274,12 @@ public class AdvInfoContoller extends BaseController {
         //获取频道信息
         AdvInfoServiceGroup advInfoServiceGroup = new AdvInfoServiceGroup();
         advInfoServiceGroup.setAdvInfoId(advInfoId);
-        if (advInfoVO.getServiceGroup() != null) {
-            advInfoServiceGroup.setType(advInfoVO.getServiceGroup().getType());
-            advInfoServiceGroup.setServiceGroupId(advInfoVO.getServiceGroup().getSgid());
-            advInfoServiceGroupService.save(advInfoServiceGroup);
+        if (!CollectionUtils.isEmpty(advInfoVO.getServiceGroups())) {
+            advInfoVO.getServiceGroups().forEach(serviceGroup -> {
+                advInfoServiceGroup.setType(serviceGroup.getType());
+                advInfoServiceGroup.setServiceGroupId(serviceGroup.getSgid());
+                advInfoServiceGroupService.save(advInfoServiceGroup);
+            });
         }
         //从广告信息中获取region信息
         return Result.success();
@@ -329,21 +316,24 @@ public class AdvInfoContoller extends BaseController {
         //将前端传过来的广告资源数据复制到资源关系对象中 advInfoUpdateVO -> infoMaterial中
         //获得前端资源关系VO对象列表
         List<InfoMaterialVO> infoMaterialVOS = advInfoUpdateVO.getInfoMaterialVOS();
-        for (InfoMaterialVO infoMaterialVO : infoMaterialVOS) {
-            //根据资源名称查找对应资源
-            AdvMaterialExample example1 = new AdvMaterialExample();
-            example1.createCriteria().andFileNameEqualTo(infoMaterialVO.getFileName());
-            List<AdvMaterial> advMaterials = advMaterialService.selectByExample(example1);
-            //如果资源存在，则更新对应资源关系信息
-            if (advMaterials != null) {
-                Long advMaterialId = advMaterials.get(0).getId();
-                InfoMaterial infoMaterial = new InfoMaterial();
-                infoMaterial.setMaterialId(advMaterialId);
-                infoMaterial.setAdvInfoId(advInfo.getId());
-                BeanUtils.copyProperties(infoMaterialVO, infoMaterial);
-                infoMaterialService.updateByDoubleId(infoMaterial);
-            }
+        if (!CollectionUtils.isEmpty(infoMaterialVOS)) {
+            infoMaterialVOS.forEach(infoMaterialVO -> {
+                //根据资源名称查找对应资源
+                AdvMaterialExample example1 = new AdvMaterialExample();
+                example1.createCriteria().andFileNameEqualTo(infoMaterialVO.getFileName());
+                List<AdvMaterial> advMaterials = advMaterialService.selectByExample(example1);
+                //如果资源存在，则更新对应资源关系信息
+                if (advMaterials != null) {
+                    Long advMaterialId = advMaterials.get(0).getId();
+                    InfoMaterial infoMaterial = new InfoMaterial();
+                    infoMaterial.setMaterialId(advMaterialId);
+                    infoMaterial.setAdvInfoId(advInfo.getId());
+                    BeanUtils.copyProperties(infoMaterialVO, infoMaterial);
+                    infoMaterialService.updateByDoubleId(infoMaterial);
+                }
+            });
         }
+
         //更新字幕广告信息
         //从updateVO中获得字幕广告信息
         List<AdvFlyWord> advFlyWords = advInfoUpdateVO.getAdvFlyWords();
@@ -364,14 +354,18 @@ public class AdvInfoContoller extends BaseController {
             }
         }
         //读取频道信息,更新数据库
-        ServiceGroup serviceGroup = advInfoUpdateVO.getServiceGroup();
+        List<ServiceGroup> serviceGroups = advInfoUpdateVO.getServiceGroups();
         AdvInfoServiceGroupExample example = new AdvInfoServiceGroupExample();
         example.createCriteria().andAdvInfoIdEqualTo(advInfo.getId());
-        List<AdvInfoServiceGroup> list = advInfoServiceGroupService.selectByExample(example);
-        if (!CollectionUtils.isEmpty(list)) {
-            AdvInfoServiceGroup advInfoServiceGroup = list.get(0);
-            advInfoServiceGroup.setServiceGroupId(serviceGroup.getSgid());
-            advInfoServiceGroup.setType(serviceGroup.getType());
+        advInfoServiceGroupService.deleteByExample(example);
+        if (!CollectionUtils.isEmpty(serviceGroups)) {
+            serviceGroups.forEach(serviceGroup -> {
+                AdvInfoServiceGroup advInfoServiceGroup = new AdvInfoServiceGroup();
+                advInfoServiceGroup.setAdvInfoId(advInfo.getId());
+                advInfoServiceGroup.setServiceGroupId(serviceGroup.getSgid());
+                advInfoServiceGroup.setType(serviceGroup.getType());
+                advInfoServiceGroupService.save(advInfoServiceGroup);
+            });
         }
         //更新区域信息
         return Result.success();
