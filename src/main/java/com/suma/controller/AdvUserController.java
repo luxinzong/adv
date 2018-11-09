@@ -121,7 +121,6 @@ public class AdvUserController extends BaseController{
 
         advUserDtoPageInfo.setTotal(page.getTotal());
 
-
         if(CollectionUtils.isEmpty(advUserDtoPageInfo.getList())){
             return Result.selectIsNullError();
         }
@@ -152,7 +151,6 @@ public class AdvUserController extends BaseController{
 
     /**
      * 修改用户密码
-     * 你们做的是将数据全查出来，交给前台。这样肯定卡
      * @param oldPassword
      * @param confirmPassword
      * @param newPassword

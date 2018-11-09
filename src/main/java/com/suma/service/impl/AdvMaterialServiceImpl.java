@@ -45,7 +45,7 @@ public class AdvMaterialServiceImpl extends BaseServiceImpl<AdvMaterial, AdvMate
     private MaterialTypeService materialTypeService;
 
 
-    @Transactional
+    @Transactional(rollbackFor = Exception.class)
     @Override
     public void save(AdvMaterial material, String typeIds) {
         super.save(material);
@@ -106,7 +106,7 @@ public class AdvMaterialServiceImpl extends BaseServiceImpl<AdvMaterial, AdvMate
         }
     }
 
-    @Transactional
+    @Transactional(rollbackFor = Exception.class)
     @Override
     public void update(AdvMaterial materialPojo, String typeIds) {
         try {
@@ -118,7 +118,7 @@ public class AdvMaterialServiceImpl extends BaseServiceImpl<AdvMaterial, AdvMate
         }
     }
 
-    @Transactional
+    @Transactional(rollbackFor = Exception.class)
     @Override
     public void cascadeDelete(Long id) {
         try {

@@ -35,6 +35,8 @@ public interface AdvDeptMapper {
      */
     List<AdvDept> selectAdvDeptList(AdvDept advDept);
 
+    List<AdvDept> selectAdvDeptChildByParentId(Integer parentId);
+
     /**
      * 查询部门所有数据
      *
@@ -49,6 +51,8 @@ public interface AdvDeptMapper {
      * @return
      */
     int checkAdvDeptNameUnique(@Param("deptName") String deptName);
+
+    int checkAdvDeptNameUniqueInOthers(@Param("deptId")Integer deptId,@Param("deptName") String deptName);
 
     /**
      * 删除部门信息
@@ -88,6 +92,8 @@ public interface AdvDeptMapper {
      */
     int updateByPrimaryKeySelective(AdvDept record);
 
+    int batchUpdateAncestors(List<AdvDept> advDeptList);
+
     /**
      * 修改部门信息
      * @param record
@@ -102,6 +108,7 @@ public interface AdvDeptMapper {
      * @return
      */
     int getMaxAdvDeptOrderNum(@Param("parentId") Integer parentId);
+
 
     int getAdvDeptCount();
 

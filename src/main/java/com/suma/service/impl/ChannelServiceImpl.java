@@ -81,7 +81,7 @@ public class ChannelServiceImpl extends BaseServiceImpl<ChannelInfo, ChannelInfo
         return StringUtils.join(channelIds, ",");
     }
 
-    @Transactional
+    @Transactional(rollbackFor = Exception.class)
     @Override
     public int deleteByPK(Long id) {
         ServiceInfoGroupExample example = new ServiceInfoGroupExample();

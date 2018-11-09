@@ -41,6 +41,16 @@
       </if>
     </where>
   </select>
+  <select id="selectAdvDeptChildByParentId" resultMap="BaseResultMap" parameterType="java.lang.Integer">
+    select <include refid="Base_Column_List"/>
+    from adv_dept
+    where parent_id = #{parentId};
+  </select>
+  <select id="checkAdvDeptNameUniqueInOthers" resultType="java.lang.Integer">
+    select count(*) from adv_dept
+    where dept_id != #{deptId}
+    and dept_name = #{deptName};
+  </select>
   <select id="getAdvDeptCount" resultType="java.lang.Integer">
     select COUNT(*) FROM adv_dept;
   </select>
@@ -206,5 +216,21 @@
       update_by = #{updateBy,jdbcType=VARCHAR},
       update_time = sysdate()
     where dept_id = #{deptId,jdbcType=INTEGER}
+  </update>
+  <update id="batchUpdateAncestors" parameterType="java.util.List">
+    update adv_dept
+    <set>
+      <trim prefix="ancestors=case" suffix="end">
+        <foreach collection="list" item="item">
+            when dept_id=#{item.deptId} then #{item.ancestors}
+        </foreach>
+      </trim>
+    </set>
+    <where>
+      dept_id in
+      <foreach collection="list" item="item" open="(" separator="," close=")">
+          #{item.deptId}
+      </foreach>
+    </where>
   </update>
 </mapper>

@@ -82,6 +82,24 @@ public class AdvRegionController extends BaseController{
 
 
     /**
+     *获得有效区域树列表
+     *
+     * @return
+     */
+    @RequestMapping("/validTreeList")
+    public Result validTreeData(){
+        List<AdvRegionDto> tree = advRegionService.selectAdvRegionValidTree();
+        if(CollectionUtils.isEmpty(tree)){
+            return Result.selectIsNullError();
+        }
+        return Result.success(tree);
+
+    }
+
+
+
+
+    /**
      * 根据条件查询部门
      *
      * @return

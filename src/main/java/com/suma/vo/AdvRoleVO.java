@@ -26,6 +26,8 @@ public class AdvRoleVO {
     private Integer roleSort;
     //角色状态
     private String status;
+    //tempMenuIds
+    private String tempMenuIds;
     //角色对应id信息
     @NotEmpty
     private List<Integer> menuIds;

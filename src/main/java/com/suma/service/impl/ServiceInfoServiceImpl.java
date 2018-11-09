@@ -37,7 +37,7 @@ public class ServiceInfoServiceImpl extends BaseServiceImpl<ServiceInfo, Service
     @Autowired
     private NetworkService networkService;
 
-    @Transactional
+    @Transactional(rollbackFor = Exception.class)
     @Override
     public int deleteByPK(Long id) {
 

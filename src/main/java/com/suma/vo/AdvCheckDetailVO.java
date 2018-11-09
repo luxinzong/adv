@@ -3,6 +3,7 @@ package com.suma.vo;
 import com.suma.pojo.AdvFlyWord;
 import com.suma.pojo.AdvLocation;
 import lombok.Data;
+import org.omg.CORBA.PRIVATE_MEMBER;
 
 import java.util.Date;
 import java.util.List;
@@ -59,14 +60,14 @@ public class AdvCheckDetailVO {
 
     private String mark;//备注
 
-    private Long serviceGroupId;//频道分组信息
-
     private List<String> regionNames;//区域信息
 
-    private String serviceGroupName;//频道名称
+    private List<String> serviceGroupNames;//频道名称
 
     private AdvLocation advLocation;//广告位置信息
 
     private List<AdvFlyWord> advFlyWords;//字幕广告信息
+
+    private List<InfoMaterialVO> infoMaterialVOS;
 
 }

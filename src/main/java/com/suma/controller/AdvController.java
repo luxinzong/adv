@@ -6,14 +6,17 @@ import com.suma.dao.AdvInfoServiceGroupMapper;
 import com.suma.exception.AdvRequestException;
 import com.suma.pojo.*;
 import com.suma.service.*;
+import lombok.extern.log4j.Log4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.CollectionUtils;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 
 /**
@@ -22,6 +25,7 @@ import java.util.List;
  * @description:
  */
 @RestController
+@Log4j
 public class AdvController {
 
     @Autowired
@@ -47,8 +51,14 @@ public class AdvController {
     @Autowired
     private ServiceGroupService serviceGroupService;
 
+    @RequestMapping("getAdvShowP")
+    public AdvResponseVO getAdvShow1(AdvRequestVO requestVO) {
+        return getAdvShow(requestVO);
+    }
+
+
     @RequestMapping("getAdvShow")
-    public AdvResponseVO getAdvShow(AdvRequestVO requestVO) {
+    public AdvResponseVO getAdvShow(@RequestBody AdvRequestVO requestVO) {
 
         //判断参数
         if (StringUtils.isAnyBlank(requestVO.getSessionId(), requestVO.getClientId())) {
@@ -110,7 +120,7 @@ public class AdvController {
             serviceParamType = AdvContants.SERVICE_TYPE_ON_DEMAND_ALL;
         }
 
-        List<AdvInfo> advInfos = advServiceGroupService.findAdvByGroups(groups, advType, serviceParamType);
+        List<AdvInfo> advInfos = advServiceGroupService.findAdvByGroups(groups, advType, serviceParamType, requestVO.getRegionCode(),requestVO.getClientId());
         List<AdvItem> advItems = transform(advInfos, serviceParamType);
 
         responseVO.setResultCount((long) advItems.size());
@@ -151,15 +161,19 @@ public class AdvController {
             //图片或视频
             if (materialType.equals(AdvContants.IMAGE_MATERIAL) || materialType.equals(AdvContants.VEDIO_MATERIAL)) {
                 List<InfoMaterial> infoMaterials = infoMaterialService.findByAdv(advInfo.getId());
-                List<AdvMaterial> materials = infoMaterialService.findMaterialByAdv(advInfo.getId());
-
+                //infoMaterials.sort(Comparator.comparingInt(InfoMaterial::getSequence));
+                //List<AdvMaterial> materials = infoMaterialService.findMaterialByAdv(advInfo.getId());
                 for (InfoMaterial infoMaterial : infoMaterials) {
                     AdvMaterial material = advMaterialService.findByPK(infoMaterial.getMaterialId());
-                    advItem.setDuration(Long.valueOf(infoMaterial.getDuration()));
-                    advItem.setHref(material.getHref());
-                    advItem.setAdvURL(material.getFileUrl());
-                    advItem.setMD5(material.getMd5());
-                    advItems.add(advItem);
+
+                    AdvItem perAdvItem = new AdvItem();
+                    BeanUtils.copyProperties(advItem, perAdvItem);
+
+                    perAdvItem.setDuration(Long.valueOf(infoMaterial.getDuration()));
+                    perAdvItem.setHref(material.getHref());
+                    perAdvItem.setAdvURL(material.getFileUrl());
+                    perAdvItem.setMD5(material.getMd5());
+                    advItems.add(perAdvItem);
                 }
 
             }

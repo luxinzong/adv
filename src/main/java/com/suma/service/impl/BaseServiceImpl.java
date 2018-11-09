@@ -85,4 +85,14 @@ public class BaseServiceImpl<T, Ex, PK extends Serializable> implements BaseServ
 	public int updateByExample(T t, Ex ex) {
 		return baseDAO.updateByExample(t,ex);
 	}
+
+	@Override
+	public int updateByPrimaryKeySelective(T record,Ex ex) {
+		return baseDAO.updateByExampleSelective(record,ex);
+	}
+
+	@Override
+	public int updateByPrimaryKeySelective(T record) {
+		return baseDAO.updateByPrimaryKeySelective(record);
+	}
 }

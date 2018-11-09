@@ -2,7 +2,9 @@ package com.suma.utils;
 
 import com.suma.constants.CommonConstants;
 import com.suma.dto.AdvLoginDto;
+import com.suma.service.iAdvMenuService;
 import lombok.Data;
+import org.springframework.beans.factory.annotation.Autowired;
 
 
 /**
@@ -20,7 +22,6 @@ public class Result {
     private String resultDesc;
 
     private Object resultData;
-
 
     public static Result buildResult(int resultCode,String resultDesc,Object resultData){
         Result result = new Result();
@@ -41,13 +42,15 @@ public class Result {
     }
 
     public static Result loginSuccess(){
-        AdvLoginDto advLoginDto = new AdvLoginDto();
-        advLoginDto.setUsername(ShiroUtils.getUser().getUserName());
-        advLoginDto.setToken((String) ShiroUtils.getSession().getId());
-        return buildResult(CommonConstants.SUCCESS,"登录成功",advLoginDto);
+        return buildResult(CommonConstants.SUCCESS,"登录成功",null);
     }
 
-    public static Result hasLogined(){return buildResult(CommonConstants.SUCCESS,"你已经成功登录",null);}
+
+    public static Result loginSuccess(Object resultData){
+        return buildResult(CommonConstants.SUCCESS,"登录成功",resultData);
+    }
+
+    public static Result hasLogined(Object data){return buildResult(CommonConstants.SUCCESS,"你已经成功登录,正在跳转首页",data);}
 
     public static Result loginOut(){
         return buildResult(CommonConstants.SUCCESS,"登出成功",null);

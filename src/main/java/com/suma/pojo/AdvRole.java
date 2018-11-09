@@ -18,6 +18,8 @@ public class AdvRole extends BasePojo{
 
     private String status;
 
+    private String tempMenuIds;
+
     //保存角色对应菜单id
     private List<Integer> menuIds;
     //用户是否存在此角色标识,默认不保存

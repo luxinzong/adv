@@ -4,6 +4,9 @@ import com.suma.realm.AuthenticationFilter;
 import com.suma.realm.UserRealm;
 import org.apache.shiro.codec.Base64;
 import org.apache.shiro.mgt.SecurityManager;
+import org.apache.shiro.session.Session;
+import org.apache.shiro.session.mgt.eis.MemorySessionDAO;
+import org.apache.shiro.session.mgt.eis.SessionDAO;
 import org.apache.shiro.spring.security.interceptor.AuthorizationAttributeSourceAdvisor;
 import org.apache.shiro.spring.web.ShiroFilterFactoryBean;
 import org.apache.shiro.web.mgt.CookieRememberMeManager;
@@ -86,6 +89,12 @@ public class ShiroConfig {
         return cookieRememberMeManager;
     }
 
+    @Bean(name="sessionDao")
+    public SessionDAO mySessionDao(){
+        SessionDAO sessionDAO = new MemorySessionDAO();
+        return sessionDAO;
+    }
+
     /**
      * 安全管理器
      *
@@ -111,6 +120,8 @@ public class ShiroConfig {
     @Bean
     public DefaultWebSessionManager defaultWebSessionManager() {
         DefaultWebSessionManager defaultWebSessionManager = new DefaultWebSessionManager();
+        defaultWebSessionManager.setSessionDAO(mySessionDao());
+//        defaultWebSessionManager.setGlobalSessionTimeout();//配置session有效期，默认30min
         return defaultWebSessionManager;
     }
 
@@ -131,7 +142,7 @@ public class ShiroConfig {
         filtersMap.put("myAccessControlFilter", new AuthenticationFilter());
         shiroFilterFactoryBean.setFilters(filtersMap);
         //必须通过认证才能访问
-//        filterChainDefinitionMap.put("/**","authc");
+//       filterChainDefinitionMap.put("/**","authc");
         Map<String,String> filterChainDefinitionMap = new LinkedHashMap<String,String>();
         filterChainDefinitionMap.put("/index","anon");
         filterChainDefinitionMap.put("/logout","anon");

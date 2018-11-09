@@ -46,7 +46,8 @@ public class ServiceInfoGroupServiceImpl extends BaseServiceImpl<ServiceInfoGrou
         if (serviceInfoGroups != null) {
             for (ServiceInfoGroup serviceInfoGroup : serviceInfoGroups) {
                 ServiceInfo serviceInfo = serviceInfoMapper.selectByPrimaryKey(serviceInfoGroup.getSid());
-                list.add(serviceInfo.getServiceName());
+                if (serviceInfo != null)
+                    list.add(serviceInfo.getServiceName());
             }
         }
         return list;

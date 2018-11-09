@@ -67,13 +67,8 @@ public interface iAdvRoleService {
      */
     public int deleteRoleByIds(List<Integer> advRoleIds);
 
-    /**
-     * 通过id查询角色信息
-     *
-     * @param advRoleId
-     * @return
-     */
-    public AdvRole selectRoleById(Integer advRoleId);
+
+    public List<Integer> selectMenuIdsByRoleId(Integer advRoleId);
 
     /**
      * 根据用户id查询对应角色id
@@ -82,6 +77,8 @@ public interface iAdvRoleService {
      * @return
      */
     public Set<String> selectRoleKeys(Integer userId);
+
+    public List<Integer> selectTempMenuIdsByRoleId(Integer roleId);
 
 
 

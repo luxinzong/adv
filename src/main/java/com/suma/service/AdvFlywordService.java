@@ -12,4 +12,6 @@ import java.util.List;
  */
 public interface AdvFlywordService extends BaseService<AdvFlyWord,AdvFlyWordExample,Long>{
     int saveAll(List<AdvFlyWord> advFlyWords);
+
+    List<AdvFlyWord> findList(List<Long> flywordIds);
 }

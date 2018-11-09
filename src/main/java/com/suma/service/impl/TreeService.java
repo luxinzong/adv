@@ -38,7 +38,7 @@ public class TreeService<T>{
                     if(invokeStatus.equals(status)){
                         multimap.put(invokeAncestors,element);
                     }
-                    if(invokeAncestors.equals(ancestors) && invokeAncestors.equals(status)){
+                    if(invokeAncestors.equals(ancestors) && invokeStatus.equals(status)){
                         rootList.add(element);
                     }
                 }

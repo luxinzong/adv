@@ -29,4 +29,5 @@ public class AdvUser extends BasePojo{
 
     private List<Integer> roleIds;
 
+
 }

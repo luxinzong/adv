@@ -1,6 +1,5 @@
 package com.suma.service.impl;
 
-import com.google.common.base.Strings;
 import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
@@ -11,6 +10,7 @@ import com.suma.dao.AdvDeptMapper;
 import com.suma.dto.AdvDeptDto;
 import com.suma.exception.DeptException;
 import com.suma.pojo.AdvDept;
+import com.suma.pojo.AdvUser;
 import com.suma.service.iAdvDeptService;
 import com.suma.utils.AncestorUtil;
 import com.suma.utils.ShiroUtils;
@@ -121,23 +121,6 @@ public class AdvDeptServiceImpl implements iAdvDeptService {
         Multimap<String,AdvDeptDto> ancestorMutimap = ArrayListMultimap.create();
         //生成rootList
         List<AdvDeptDto> rootList = Lists.newArrayList();
-        //遍历deptDtoList
-//        deptDtoList.forEach(deptDto -> {
-//            //根据ancestor,存储对应dept对象
-//            if(Strings.isNullOrEmpty(status)){
-//                ancestorMutimap.put(deptDto.getAncestors(),deptDto);
-//                if(deptDto.getAncestors().equals(ancestor)){
-//                    rootList.add(deptDto);
-//                }
-//            }else{
-//                if(deptDto.getStatus().equals(status)){
-//                    ancestorMutimap.put(deptDto.getAncestors(),deptDto);
-//                }
-//                if(deptDto.getAncestors().equals(ancestor) && deptDto.getStatus().equals(status)){
-//                    rootList.add(deptDto);
-//                }
-//            }
-//        });
         treeService.addRootToRootList(deptDtoList,rootList,ancestor,status,ancestorMutimap);
         //对root按照从大到小排序
         Collections.sort(rootList,advDeptDtoComparator);
@@ -221,28 +204,6 @@ public class AdvDeptServiceImpl implements iAdvDeptService {
         return advDeptMapper.insertSelective(advDept);
     }
 
-    /**
-     * 自动生成ancestorId，扩展使用
-     * @return
-     */
-    private String makeAdvAncestorId(){
-        //获取当前Ancestor列表
-        List<String> ancestorList = advDeptMapper.getAncestorList();
-        //过滤包含，的节点
-        List<String> filterAncestorList = ancestorList.stream().filter(node -> !node.contains(","))
-                                .collect(Collectors.toList());
-
-        //如果过滤节点为null，默认为0
-        if(filterAncestorList.isEmpty()){
-            return "0";
-        }
-        String currentMaxAncestorId = filterAncestorList.get(0);
-        String newAncestor = (Integer.valueOf(currentMaxAncestorId) + 1) + "";
-
-        return newAncestor;
-    }
-
-
     @Override
     public int deleteAdvDeptById(Integer advDeptId) {
         AdvDept advDept = advDeptMapper.selectByPrimaryKey(advDeptId);
@@ -270,17 +231,43 @@ public class AdvDeptServiceImpl implements iAdvDeptService {
         if(selectAdvDept == null){
             throw new DeptException(ExceptionConstants.DEPT_EXCEPTION_DEPT_ID_NOT_EXIST);
         }
-
+        //判断修改姓名是否重复
+        int existRepeatDeptName = advDeptMapper.checkAdvDeptNameUniqueInOthers(deptId,advDept.getDeptName());
+        if(existRepeatDeptName > 0){
+            throw new DeptException(ExceptionConstants.DEPT_EXCEPTION_DEPT_EXIST_NAME);
+        }
         //修改对应祖先数据
         AdvDept parentAdvDept = advDeptMapper.selectByPrimaryKey(advDept.getParentId());
         if(parentAdvDept == null){
             advDept.setAncestors(AncestorUtil.ROOT);
+        }else if(parentAdvDept.getAncestors().length() > selectAdvDept.getAncestors().length()){//判断修改的父类部门与新部门是否出现跨层修改
+            throw new DeptException(ExceptionConstants.DEPT_EXCEPTION_DEPT_NOT_ALLOW_CROSS_LAYER);
         }else{
             advDept.setAncestors(parentAdvDept.getAncestors() + "," + advDept.getParentId());
         }
+
+        updateChildrenByParentId(advDept);
         advDept.setUpdateBy(ShiroUtils.getUser().getUserName());
         return advDeptMapper.updateByPrimaryKeySelective(advDept);
     }
+
+    private void updateChildrenByParentId(AdvDept advDept){
+        List<AdvDept> childAdvDept = advDeptMapper.selectAdvDeptChildByParentId(advDept.getDeptId());
+        if(CollectionUtils.isEmpty(childAdvDept)){
+            return;
+        }else{
+            childAdvDept.forEach(element ->{
+                element.setAncestors(advDept.getAncestors() + "," + element.getParentId());
+            });
+            advDeptMapper.batchUpdateAncestors(childAdvDept);
+            childAdvDept.forEach(element ->{
+                updateChildrenByParentId(element);
+            });
+            return;
+        }
+    }
+
+
 
     @Override
     public AdvDept selectAdvDeptById(Integer deptId) {

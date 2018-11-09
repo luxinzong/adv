@@ -19,12 +19,20 @@ public class WebAppConfig implements WebMvcConfigurer {
         registry.addInterceptor(new HttpInterceptor()).addPathPatterns("/info/**");
         registry.addInterceptor(new HttpInterceptor()).addPathPatterns("/system/role/**");
         registry.addInterceptor(new HttpInterceptor()).addPathPatterns("/login");
-        registry.addInterceptor(new HttpInterceptor()).addPathPatterns("/location/**");
         registry.addInterceptor(new HttpInterceptor()).addPathPatterns("/system/menu/**");
-
-        registry.addInterceptor(new HttpInterceptor()).addPathPatterns("/getAdvShow");
-
         registry.addInterceptor(new HttpInterceptor()).addPathPatterns("/system/user/**");
+        registry.addInterceptor(new HttpInterceptor()).addPathPatterns("/getAdvShow");
+        registry.addInterceptor(new HttpInterceptor()).addPathPatterns("/channel/**");
+        registry.addInterceptor(new HttpInterceptor()).addPathPatterns("/material/**");
+        registry.addInterceptor(new HttpInterceptor()).addPathPatterns("/type/**");
+        registry.addInterceptor(new HttpInterceptor()).addPathPatterns("/service/**");
+        registry.addInterceptor(new HttpInterceptor()).addPathPatterns("/serviceGroup/**");
+        registry.addInterceptor(new HttpInterceptor()).addPathPatterns("/ts/**");
+        registry.addInterceptor(new HttpInterceptor()).addPathPatterns("/net/**");
+        registry.addInterceptor(new HttpInterceptor()).addPathPatterns("/location/**");
+        registry.addInterceptor(new HttpInterceptor()).addPathPatterns("/system/region/**");
+        registry.addInterceptor(new HttpInterceptor()).addPathPatterns("/system/user/**");
+        registry.addInterceptor(new HttpInterceptor()).addPathPatterns("/check/**");
 
     }
 

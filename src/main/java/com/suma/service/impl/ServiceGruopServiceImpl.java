@@ -47,7 +47,7 @@ public class ServiceGruopServiceImpl extends BaseServiceImpl<ServiceGroup, Servi
         return serviceGroupMapper.selectByExample(example);
     }
 
-    @Transactional
+    @Transactional(rollbackFor = Exception.class)
     @Override
     public void save(ServiceGroup serviceGroup, List<String> serviceNames) {
         try {
@@ -59,7 +59,7 @@ public class ServiceGruopServiceImpl extends BaseServiceImpl<ServiceGroup, Servi
         }
     }
 
-    @Transactional
+    @Transactional(rollbackFor = Exception.class)
     @Override
     public void update(ServiceGroup serviceGroup, List<String> serviceNames) {
         serviceInfoGroupService.deleteByGroupId(serviceGroup.getSgid());

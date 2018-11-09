@@ -36,6 +36,11 @@ public class TsServiceImpl extends BaseServiceImpl<TsInfo, TsInfoExample, Long> 
     @Autowired
     private ServiceInfoService serviceInfoService;
 
+    /**
+     *
+     *
+     * @param tsInfo
+     */
     @Override
     public void checkExist(TsInfo tsInfo) {
         TsInfoExample example = new TsInfoExample();
@@ -75,7 +80,7 @@ public class TsServiceImpl extends BaseServiceImpl<TsInfo, TsInfoExample, Long> 
         }
     }
 
-    @Transactional
+    @Transactional(rollbackFor = Exception.class)
     @Override
     public void deleteTsInfos(Long[] ids) {
         for (Long id : ids) {

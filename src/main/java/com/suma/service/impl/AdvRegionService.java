@@ -4,6 +4,7 @@ import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Multimap;
+import com.suma.constants.CommonConstants;
 import com.suma.constants.ExceptionConstants;
 import com.suma.dao.AdvRegionMapper;
 import com.suma.dto.AdvRegionDto;
@@ -156,6 +157,19 @@ public class AdvRegionService implements iAdvRegionService {
     }
 
     /**
+     * 查询有效状态树
+     *
+     * @return
+     */
+    public List<AdvRegionDto> selectAdvRegionValidTree(){
+        //先获取全部区域信息
+        List<AdvRegion> regionList = advRegionMapper.selectAdvRegionAll();
+        //进行拼装区域树
+        return CollectionUtils.isEmpty(regionList)?null:
+                produceAdvRegionTree(regionList,AncestorUtil.ROOT,CommonConstants.NORMAL_STATUS);
+    }
+
+    /**
      * 生产advRegionDtoList
      *
      * @param advRegionList
@@ -212,7 +226,6 @@ public class AdvRegionService implements iAdvRegionService {
         if(CollectionUtils.isEmpty(advRegionList)){
             return null;
         }
-
         Multimap<String,AdvRegionDto> ancestorMutiMap = ArrayListMultimap.create();
         //生成rootList
         List<AdvRegionDto> rootList = Lists.newArrayList();
@@ -234,6 +247,7 @@ public class AdvRegionService implements iAdvRegionService {
 //            }
 //        });
         treeService.addRootToRootList(advRegionList,rootList,ancestor,status,ancestorMutiMap);
+
         //对root进行排序
         Collections.sort(rootList,advRegionDtoComparator);
         //进行递归拼装

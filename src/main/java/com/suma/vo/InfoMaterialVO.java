@@ -1,5 +1,6 @@
 package com.suma.vo;
 
+import com.suma.pojo.AdvMaterial;
 import lombok.Data;
 
 /**
@@ -8,12 +9,14 @@ import lombok.Data;
  * @description
  */
 @Data
-public class InfoMaterialVO {
-
-    private String fileName;
+public class InfoMaterialVO{
 
     private Integer duration;
 
     private Integer sequence;
+
+    private String fileName;
+
+    private Long id;
 
 }

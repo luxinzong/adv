@@ -10,10 +10,10 @@ import com.suma.dto.AdvPermsDto;
 import com.suma.exception.MenuException;
 import com.suma.exception.UserException;
 import com.suma.pojo.AdvMenu;
-import com.suma.pojo.AdvRole;
 import com.suma.pojo.AdvUser;
 import com.suma.service.iAdvMenuService;
 import com.suma.utils.AncestorUtil;
+import com.suma.utils.CommonUtils;
 import com.suma.utils.ShiroUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -327,18 +327,18 @@ public class AdvMenuServiceImpl implements iAdvMenuService {
     /**
      * 通过用户id查询对应权限列表
      *
-     * @param userId
+     * @param username
      * @return
      */
     @Override
-    public List<AdvPermsDto> selectMenuTreeByUserId(Integer userId) {
+    public List<AdvPermsDto> selectMenuTreeByUserName(String username) {
         //判断是否存在用户id
-        AdvUser advUser = advUserMapper.selectByPrimaryKey(userId);
+        AdvUser advUser = advUserMapper.selectAdvUserByUserName(username);
         if(advUser == null){
             throw new UserException(ExceptionConstants.USER_EXCEPTION_ID_NOT_EXIST);
         }
         //通过用户id查询对应角色id
-        List<Integer> advRoleList = advUseRoleMapper.selectRoleIdsByUserId(userId);
+        List<Integer> advRoleList = advUseRoleMapper.selectRoleIdsByUserId(advUser.getUserId());
         if(CollectionUtils.isEmpty(advRoleList)){//说明用户没有角色
             return null;
         }
@@ -367,7 +367,7 @@ public class AdvMenuServiceImpl implements iAdvMenuService {
      *
      * @return
      */
-    private List<AdvPermsDto> produceAdvPermsList(List<List<AdvMenuDto>> advMenuDtos){
+    private List<AdvPermsDto> produceAdvPermsList(List<List<AdvMenuDto>> advMenuDtos){//todo 代码优化
         if(CollectionUtils.isEmpty(advMenuDtos)){
             return null;
         }
@@ -388,15 +388,19 @@ public class AdvMenuServiceImpl implements iAdvMenuService {
                     //判断firstMenuDto是否为空，为空未进行存储.
                     firstMenuDto.forEach(viewMenuDto ->{
                         boolean flag = saveMap.containsKey(viewMenuDto.getMenuName());//判断map中是否包含menuName
-                        AdvPermsDto saveAdvPermsDto = null;
+                        AdvPermsDto saveAdvPermsDto;
                         if(flag){//如果包含了，不在继续创建
                             saveAdvPermsDto = saveMap.get(viewMenuDto.getMenuName());
-
                         }else{
                             saveAdvPermsDto = new AdvPermsDto();
                             //当前存储的是管理层菜单
                             saveAdvPermsDto.setTitle(viewMenuDto.getMenuName());
-                            saveAdvPermsDto.setPath(viewMenuDto.getUrl());
+                            //应前端要求，添加菜单位置
+                            CommonUtils.permMap.keySet().forEach(key ->{
+                                if(viewMenuDto.getMenuName().equals(key)){
+                                    saveAdvPermsDto.setIndex(CommonUtils.permMap.get(key).get(0));
+                                }
+                            });
                             saveAdvPermsDto.setChildren(Lists.newArrayList());
                             saveMap.put(saveAdvPermsDto.getTitle(),saveAdvPermsDto);
                         }
@@ -409,7 +413,11 @@ public class AdvMenuServiceImpl implements iAdvMenuService {
                                 if(!multimap.containsKey(menu.getMenuName())){//如果不包含menuName，进行数据添加
                                     AdvPermsDto childAdvPermDto = new AdvPermsDto();
                                     childAdvPermDto.setTitle(menu.getMenuName());
-                                    childAdvPermDto.setPath(menu.getUrl());
+                                    CommonUtils.permMap.keySet().forEach(key ->{
+                                        if(childAdvPermDto.getTitle().equals(key)){
+                                            childAdvPermDto.setPath(CommonUtils.permMap.get(key).get(1));
+                                        }
+                                    });
                                     advPermsDtoList.add(childAdvPermDto);
                                     //添加到mutimap中
                                     multimap.put(viewMenuDto.getMenuName(),childAdvPermDto.getTitle());

@@ -139,7 +139,7 @@ public class AdvServiceController extends BaseController {
         ServiceTreeVO netTreeVO = new ServiceTreeVO();
         netTreeVO.setId(networkInfo.getId());
         netTreeVO.setType("net");
-        netTreeVO.setLabel(networkInfo.getNetworkName());
+        netTreeVO.setLabel("直播频道信息");
         netTreeVO.setValue(String.valueOf(UUID.randomUUID()));
 
         TsInfoExample tsInfoExample = new TsInfoExample();
@@ -152,6 +152,7 @@ public class AdvServiceController extends BaseController {
             tsTreeVO.setValue(String.valueOf(UUID.randomUUID()));
             tsTreeVO.setType("ts");
             tsTreeVO.setLabel(tsInfo.getTsName());
+            tsTreeVO.setTsId(tsInfo.getTsId());
 
 
             List<ServiceTreeVO> serviceTreeVOs = new ArrayList<>();

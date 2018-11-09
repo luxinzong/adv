@@ -2,6 +2,7 @@ package com.suma.service;
 
 import com.suma.pojo.AdvInfo;
 import com.suma.pojo.AdvInfoExample;
+import com.suma.pojo.AdvMaterial;
 
 import java.util.List;
 import java.util.Map;
@@ -14,4 +15,13 @@ public interface AdvInfoService extends BaseService<AdvInfo, AdvInfoExample, Lon
     List<AdvInfo> selectAdvInfo(Map<String,Object> map);
 
     AdvInfo findById(Long id);
+
+    List<AdvMaterial> getVedioMaterial();
+
+    void deleteByAdvInfoIds(List<Long> list);
+
+    void judgeAdvInfo(AdvInfo advInfo);
+
+    int updateByExampleSelective(Map<String,Object> map);
+
 }

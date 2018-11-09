@@ -11,6 +11,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
@@ -71,6 +72,7 @@ public class AdvDeptController extends BaseController{
      * @param advDept
      * @return
      */
+    @Transactional(rollbackFor = Exception.class)
     @PostMapping("/update")
     public Result updateAdvDept(@RequestBody @Validated AdvDept advDept){
         return toResult(advDeptService.updateAdvDept(advDept));

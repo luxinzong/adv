@@ -103,6 +103,9 @@
     </if>
   </delete>
   <insert id="insert" parameterType="com.suma.pojo.AdvLocation">
+    <selectKey resultType="java.lang.Long" order="AFTER" keyProperty="id">
+      SELECT LAST_INSERT_ID()
+    </selectKey>
     insert into adv_location (ID, NAME, ADV_TYPE_ID, 
       X_POSITION, Y_POSITION, M_WIDTH, 
       M_HEIGHT, MASK)

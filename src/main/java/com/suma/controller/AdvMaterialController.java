@@ -61,7 +61,7 @@ public class AdvMaterialController extends BaseController {
         return Result.success(pageInfoResult);
     }
 
-    @RequestMapping("upload")
+    @RequestMapping("add")
     public Result uploadMaterial(String typeIds, AdvMaterialVO materialVO, MultipartFile file) {
         if (typeIds == null || file == null || materialVO.getMaterialType() == null) {
             throw new MaterialException(ExceptionConstants.BASE_EXCEPTION_MISSING_PARAMETERS);

@@ -50,7 +50,7 @@
       <if test="startTime != null and endTime != ''">
         and create_time &gt;= #{startTime}
       </if>
-      <if test="endTime != null and endTime != null">
+      <if test="endTime != null and endTime != ''">
         and create_time &lt;= #{endTime}
       </if>
     </where>

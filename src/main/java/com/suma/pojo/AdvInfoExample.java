@@ -1298,66 +1298,6 @@ public class AdvInfoExample {
             return (Criteria) this;
         }
 
-        public Criteria andRegionIsNull() {
-            addCriterion("REGION is null");
-            return (Criteria) this;
-        }
-
-        public Criteria andRegionIsNotNull() {
-            addCriterion("REGION is not null");
-            return (Criteria) this;
-        }
-
-        public Criteria andRegionEqualTo(Integer value) {
-            addCriterion("REGION =", value, "region");
-            return (Criteria) this;
-        }
-
-        public Criteria andRegionNotEqualTo(Integer value) {
-            addCriterion("REGION <>", value, "region");
-            return (Criteria) this;
-        }
-
-        public Criteria andRegionGreaterThan(Integer value) {
-            addCriterion("REGION >", value, "region");
-            return (Criteria) this;
-        }
-
-        public Criteria andRegionGreaterThanOrEqualTo(Integer value) {
-            addCriterion("REGION >=", value, "region");
-            return (Criteria) this;
-        }
-
-        public Criteria andRegionLessThan(Integer value) {
-            addCriterion("REGION <", value, "region");
-            return (Criteria) this;
-        }
-
-        public Criteria andRegionLessThanOrEqualTo(Integer value) {
-            addCriterion("REGION <=", value, "region");
-            return (Criteria) this;
-        }
-
-        public Criteria andRegionIn(List<Integer> values) {
-            addCriterion("REGION in", values, "region");
-            return (Criteria) this;
-        }
-
-        public Criteria andRegionNotIn(List<Integer> values) {
-            addCriterion("REGION not in", values, "region");
-            return (Criteria) this;
-        }
-
-        public Criteria andRegionBetween(Integer value1, Integer value2) {
-            addCriterion("REGION between", value1, value2, "region");
-            return (Criteria) this;
-        }
-
-        public Criteria andRegionNotBetween(Integer value1, Integer value2) {
-            addCriterion("REGION not between", value1, value2, "region");
-            return (Criteria) this;
-        }
-
         public Criteria andReservedStringIsNull() {
             addCriterion("RESERVED_STRING is null");
             return (Criteria) this;

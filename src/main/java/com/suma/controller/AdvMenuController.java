@@ -136,19 +136,19 @@ public class AdvMenuController extends BaseController{
         return Result.success(advMenuDtoList);
     }
 
-    /**
-     * 给前端返回用户对应的权限树
-     * 支持post&get请求
-     * @return
-     */
-    @RequestMapping("/selectMenuTreeByUserId")
-    public Result selectMenuTreeByUserId(Integer userId){
-       if(userId == null){
-           throw new UserException(ExceptionConstants.ROLE_EXCEPTION_ROLE_ID_IS_NULL);
-       }
-
-       List<AdvPermsDto> advPermsDtoList = advMenuService.selectMenuTreeByUserId(userId);
-       return Result.success(advPermsDtoList);
-
-    }
+//    /**
+//     * 给前端返回用户对应的权限树
+//     * 支持post&get请求
+//     * @return
+//     */
+//    @RequestMapping("/selectMenuTreeByUserId")
+//    public Result selectMenuTreeByUserId(Integer userId){
+//       if(userId == null){
+//           throw new UserException(ExceptionConstants.ROLE_EXCEPTION_ROLE_ID_IS_NULL);
+//       }
+//
+//       List<AdvPermsDto> advPermsDtoList = advMenuService.selectMenuTreeByUserId(userId);
+//       return Result.success(advPermsDtoList);
+//
+//    }
 }

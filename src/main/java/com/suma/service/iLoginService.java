@@ -1,5 +1,6 @@
 package com.suma.service;
 
+import com.suma.dto.AdvLoginDto;
 import com.suma.pojo.AdvUser;
 import com.suma.vo.LoginVO;
 
@@ -13,6 +14,10 @@ public interface iLoginService {
     public AdvUser login(LoginVO loginVO);
 
     public void recordLoginInfo(AdvUser user);
+
+    public AdvLoginDto produceLoginDto();
+
+    public void logout();
 
 
 }

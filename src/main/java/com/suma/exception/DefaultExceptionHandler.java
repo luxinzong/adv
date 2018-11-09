@@ -171,4 +171,6 @@ public class DefaultExceptionHandler {
         log.error(e.getMessage());
         return Result.error(e.getMessage());
     }
+
+
 }

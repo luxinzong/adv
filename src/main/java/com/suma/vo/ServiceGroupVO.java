@@ -6,6 +6,7 @@ import com.suma.utils.Update;
 import lombok.Data;
 import lombok.ToString;
 
+import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 import java.util.List;
 
@@ -20,7 +21,7 @@ public class ServiceGroupVO {
     @NotNull(groups = {Update.class})
     private Long sgid;
 
-    @NotNull(groups = {Update.class, Insert.class})
+    @NotEmpty(groups = {Update.class, Insert.class})
     private String groupName;
 
     @NotNull(groups = {Update.class, Insert.class})

@@ -97,18 +97,18 @@ public class AdvRoleController extends BaseController{
     /**
      * 删除角色
      * 涉及到多表操作，加事务进行处理
-     * @param roleIds
+     * @param roleId
      * @return
      */
     @PostMapping("/delete")
     @Transactional(rollbackFor = Exception.class)
-    public Result remove(Integer roleIds){
+    public Result remove(Integer roleId){
         //对参数进行校验
-        if(roleIds == null){
+        if(roleId == null){
             throw new RoleException(ExceptionConstants.ROLE_EXCEPTION_ROLE_ID_IS_NULL);
         }
 
-        return toResult(advRoleService.deleteRoleById(roleIds));
+        return toResult(advRoleService.deleteRoleById(roleId));
     }
 
     @PostMapping("/batchDelete")
@@ -150,7 +150,23 @@ public class AdvRoleController extends BaseController{
         BeanUtils.copyProperties(advRoleVO,advRole);
 
         return toResult(advRoleService.updateRole(advRole));
-
     }
+
+    /**
+     * 按照前端要求返回，根据角色id返回角色对应菜单id
+     * @return
+     */
+    @RequestMapping("/getMenuIdsByRoleId")
+    public Result getMenuIdsByRoleId(Integer roleId){
+        if(roleId == null){
+            throw new RoleException(ExceptionConstants.ROLE_EXCEPTION_ROLE_ID_IS_NULL);
+        }
+
+        List<Integer> menuIds = advRoleService.selectTempMenuIdsByRoleId(roleId);
+        return Result.success(menuIds);
+    }
+
+
+
 
 }

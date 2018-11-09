@@ -49,7 +49,6 @@ public class ShiroUtils {
                 advUser = new AdvUser();
                 BeanUtils.copyProperties(object,advUser);
             }
-
             return advUser;
         }
     }

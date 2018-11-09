@@ -1,5 +1,6 @@
 package com.suma.dto;
 
+import com.google.common.collect.Lists;
 import lombok.Data;
 
 import java.util.List;
@@ -12,11 +13,13 @@ import java.util.List;
 @Data
 public class AdvPermsDto {
 
-    private String title;
+    private String title = "";
 
-    private String path;
+    private String path = "null";
 
-    private List<AdvPermsDto> children;
+    private String index = "null";
+
+    private List<AdvPermsDto> children = Lists.newArrayList();
 
 
 }

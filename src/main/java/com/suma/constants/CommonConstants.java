@@ -45,7 +45,8 @@ public class CommonConstants {
     /**
      * 文件上传路径
      */
-    public static final String MATERIAL_FILE_PATH = "/usr/share/nginx/html/download/adv/";
+   // public static final String MATERIAL_FILE_PATH = "/usr/share/nginx/html/download/adv/";
+    public static final String MATERIAL_FILE_PATH = "D:/";
 
     /**
      * 文件获取路径

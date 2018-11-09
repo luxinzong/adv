@@ -35,7 +35,7 @@ public interface iAdvMenuService {
 
     public int selectAdvMenuCountByParentId(Integer parentId);
 
-    public List<AdvPermsDto>  selectMenuTreeByUserId(Integer userId);
+    public List<AdvPermsDto>  selectMenuTreeByUserName(String userName);
 
 
 

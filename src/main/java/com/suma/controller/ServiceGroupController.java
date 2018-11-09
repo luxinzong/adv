@@ -18,6 +18,7 @@ import com.suma.utils.Insert;
 import com.suma.utils.Result;
 import com.suma.utils.Update;
 import com.suma.vo.ServiceGroupVO;
+import org.apache.ibatis.session.SqlSessionException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeanUtils;
@@ -48,10 +49,10 @@ public class ServiceGroupController extends BaseController {
 
     @RequestMapping("query")
     public Result queryServiceGroup(Integer pageNum, Integer pageSize) {
-        if (pageNum == null || pageSize == null) {
-            throw new BaseException(ExceptionConstants.BASE_EXCEPTION_MISSING_PARAMETERS);
+        if (pageNum != null && pageSize != null) {
+            PageHelper.startPage(pageNum, pageSize);
         }
-        PageHelper.startPage(pageNum, pageSize);
+
         List<ServiceGroup> serviceGroups = serviceGroupService.findALL();
         PageInfo<ServiceGroup> pageInfo = new PageInfo<>(serviceGroups);
 
@@ -86,7 +87,7 @@ public class ServiceGroupController extends BaseController {
     @RequestMapping("update")
     public Result updateServiceGroup(@Validated({Update.class}) ServiceGroupVO serviceGroupVO) {
         ServiceGroup oldGroup = serviceGroupService.findByPK(serviceGroupVO.getSgid());
-        if (!oldGroup.getGroupName().equals(serviceGroupVO.getGroupName())){
+        if (!oldGroup.getGroupName().equals(serviceGroupVO.getGroupName())) {
             List<ServiceGroup> serviceGroups = serviceGroupService.findByName(serviceGroupVO.getGroupName());
             if (serviceGroups != null && serviceGroups.size() > 0) {
                 return Result.error("该分组名称已被占用");
@@ -101,7 +102,7 @@ public class ServiceGroupController extends BaseController {
     }
 
 
-    @Transactional
+    @Transactional(rollbackFor = Exception.class)
     @RequestMapping("delete")
     public Result deleteServiceGroup(Long[] ids) {
         if (ids == null)
@@ -111,6 +112,7 @@ public class ServiceGroupController extends BaseController {
             for (Long id : ids) {
                 serviceGroupService.deleteByPK(id);
                 serviceInfoGroupService.deleteByGroupId(id);
+
             }
         } catch (Exception e) {
             e.printStackTrace();

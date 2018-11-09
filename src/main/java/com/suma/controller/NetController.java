@@ -40,7 +40,7 @@ public class NetController extends BaseController {
         return Result.success(netVO);
     }
 
-    @Transactional
+    @Transactional(rollbackFor = Exception.class)
     @RequestMapping("edit")
     public Result editNet(NetVO netVO) {
         NetworkInfo networkInfo = new NetworkInfo();

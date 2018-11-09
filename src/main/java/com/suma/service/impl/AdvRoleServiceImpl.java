@@ -1,6 +1,7 @@
 package com.suma.service.impl;
 
 import com.github.pagehelper.PageInfo;
+import com.google.common.base.Strings;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
 import com.suma.constants.ExceptionConstants;
@@ -16,6 +17,7 @@ import org.springframework.stereotype.Service;
 import com.suma.service.iAdvRoleService;
 import org.springframework.util.CollectionUtils;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.Set;
 
@@ -167,6 +169,8 @@ public class AdvRoleServiceImpl implements iAdvRoleService {
         }
         //对信息进行修改
         int updateRows = advRoleMapper.updateByPrimaryKeySelective(advRole);
+
+        System.out.println("x");
         //对应菜单进行修改,先删除后添加
         int deleteRows = advRoleMenuMapper.deleteAdvRoleMenuByAdvRoleId(advRole.getRoleId());
         //说明删除了数据,则需要进行添加，否则不需要添加
@@ -175,7 +179,7 @@ public class AdvRoleServiceImpl implements iAdvRoleService {
             insertRows = insertAdvRoleMenu(advRole);
         }
 
-        advRole.setUpdateBy(advRole.getUpdateBy());
+        advRole.setUpdateBy(ShiroUtils.getUser().getUserName());
         //返回影响表的行数
         return updateRows + insertRows + deleteRows;
     }
@@ -243,7 +247,20 @@ public class AdvRoleServiceImpl implements iAdvRoleService {
     }
 
     @Override
-    public AdvRole selectRoleById(Integer advRoleId) {
-        return null;
+    public List<Integer> selectMenuIdsByRoleId(Integer advRoleId) {
+        return advRoleMenuMapper.selectMenuIdsByAdvRoleId(advRoleId);
+    }
+
+    public List<Integer> selectTempMenuIdsByRoleId(Integer roleId){
+        String tempMenuIds =advRoleMapper.selectByPrimaryKey(roleId).getTempMenuIds();
+        List<Integer> tempMenuList = Lists.newArrayList();
+        if(Strings.isNullOrEmpty(tempMenuIds)){
+            String[] strings = tempMenuIds.split(",");
+            Arrays.stream(strings).forEach(tempString ->{
+                tempMenuList.add(Integer.valueOf(tempString));
+            });
+        }
+
+        return tempMenuList;
     }
 }

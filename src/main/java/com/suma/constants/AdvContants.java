@@ -1,5 +1,8 @@
 package com.suma.constants;
 
+import org.apache.commons.collections.MultiMap;
+import org.omg.CORBA.StringHolder;
+
 import java.util.HashMap;
 import java.util.Map;
 
@@ -11,9 +14,10 @@ import java.util.Map;
 public class AdvContants {
 
     public static Map<Integer, String> checkMap = new HashMap<>();//广告状态
-    public static Map<Integer, String> typeMap = new HashMap<>();//点播直播
+    public static Map<Long, Integer> typeMap = new HashMap<>();//点播直播
+    public static Map<Long, String> advTypeMap = new HashMap<>();//广告类型
 
-    public static Map<Integer,String > getCheckMap() {
+    public static Map<Integer, String> getCheckMap() {
         checkMap.put(STATUS_EDIT, STATUS_EDIT_DSC);
         checkMap.put(STATUS_PASS, STATUS_PASS_DSC);
         checkMap.put(STATUS_WAIT_CHECK, STATUS_WAIT_CHECK_DSC);
@@ -21,10 +25,25 @@ public class AdvContants {
         return checkMap;
     }
 
-    public static Map<Integer, String> getTypeMap() {
-        typeMap.put(ADV_SERVICE_TYPE_1, ADV_SERVICE_TYPE_1_DESC);
-        typeMap.put(ADV_SERVICE_TYPE_2, ADV_SERVICE_TYPE_2_DESC);
+    public static Map<Long, Integer> getTypeMap() {
+        typeMap.put(SERVICE_GROUP_STATUS_VOD, ADV_SERVICE_TYPE_1);
+        typeMap.put(SERVICE_GROUP_STATUS_LIVE, ADV_SERVICE_TYPE_2);
+        typeMap.put(SERVICE_GROUP_STATUS_SLEEP, ADV_SERVICE_TYPE_3);
+
         return typeMap;
+    }
+
+    public static Map<Long, String> getAdvTypeMap() {
+        advTypeMap.put(1L, START_LOGO_ADV_SUBTYPE);
+        advTypeMap.put(2L, START_MACHINE_ADV_SUBTYPE);
+        advTypeMap.put(3L, CUT_CHANNEL_ADV_SUBTYPE);
+        advTypeMap.put(4L, VOLUM_ADV_SUBTYPE);
+        advTypeMap.put(5L, MAIN_MENU_ADV_SUBTYPE);
+        advTypeMap.put(6L, LIST_ADV_SUBTYPE);
+        advTypeMap.put(7L, POP_ADV_SUBTYPE);
+        advTypeMap.put(8L, BEFORE_MOVIE_ADV_SUBTYPE);
+        advTypeMap.put(9L, SUSPAND_MOVIE_ADV_SUBTYPE);
+        return advTypeMap;
     }
 
     /**
@@ -41,44 +60,62 @@ public class AdvContants {
      */
     public static final String START_ADV_TYPE = "001";//开机广告
     public static final String EPG_ADV_TYPE = "002";//EPG广告
-    public static final String POP_ADV_TYPE = "003";//POP广告
-    public static final String ONDEMOND_TIME_MOVE_BACK_LOOK_ADV_TYPE = "004";//点播、回看、时移广告
-    public static final String VEDIO_ADV_type = "005";//视频广告
+    public static final String POP_ADV_TYPE = "003";//弹出广告
+    public static final String IMPLANT_ADV_TYPE = "004";//植入广告
+    public static final String START_LOGO_ADV_SUBTYPE = "开机LOGO广告";//
+    public static final String START_MACHINE_ADV_SUBTYPE = "开机广告";//
+    public static final String CUT_CHANNEL_ADV_SUBTYPE = "切台PF广告";//
+    public static final String VOLUM_ADV_SUBTYPE = "音量条广告";//
+    public static final String MAIN_MENU_ADV_SUBTYPE = "主菜单广告";//
+    public static final String LIST_ADV_SUBTYPE = "节目列表广告";//
+    public static final String POP_ADV_SUBTYPE = "弹出广告";//
+    public static final String BEFORE_MOVIE_ADV_SUBTYPE = "片头广告";//
+    public static final String SUSPAND_MOVIE_ADV_SUBTYPE = "暂停广告";//
 
+    /**
+     * 广告位
+     */
+    public static final Long START_LOGO_ADV_LOCATION_ID = 1L;
+    public static final Long START_ADV_LOCATION_ID = 2L;
 
     /**
      * 广告状态常量
      */
     public static final Integer STATUS_EDIT = 1;//编辑状态
     public static final String STATUS_EDIT_DSC = "编辑状态";
-    public static final Integer STATUS_WAIT_CHECK = 3;//待审核状态
+    public static final Integer STATUS_WAIT_CHECK = 2;//待审核状态
     public static final String STATUS_WAIT_CHECK_DSC = "待审核状态";
-    public static final Integer STATUS_PASS = 2;//审核通过
+    public static final Integer STATUS_PASS = 3;//审核通过
     public static final String STATUS_PASS_DSC = "审核通过";
     public static final Integer STATUS_NOT_PASS = 4;//审核不通过
     public static final String STATUS_NOT_PASS_DSC = "审核不通过";
 
-    //频道分组信息
-    public static final Integer ADV_SERVICE_CODE = 0;//所有频道
-    public static final String ADV_SERVICE_DESCODE = "所有频道";
-    public static final Integer ADV_SERVICE_GROUP_CODE = 1;//按频道分组
-    public static final String ADV_SERVICE_DROUP_DESCODE = "按频道分组";
-
 
     //点播直播
-    private static final Integer ADV_SERVICE_TYPE_1 = 0;//直播状态码
-    private static final String ADV_SERVICE_TYPE_1_DESC = "直播";//直播状态码描述
-    private static final Integer ADV_SERVICE_TYPE_2 = 1;//点播状态码
-    private static final String ADV_SERVICE_TYPE_2_DESC = "点播";//点播状态码描述
+    public static final Integer ADV_SERVICE_TYPE_1 = 0;//直播状态码
+    public static final String ADV_SERVICE_TYPE_1_DESC = "直播";//直播状态码描述
+    public static final Integer ADV_SERVICE_TYPE_2 = 1;//点播状态码
+    public static final String ADV_SERVICE_TYPE_2_DESC = "点播";//点播状态码描述
+    public static final Integer ADV_SERVICE_TYPE_3 = 2;//所有节目
+    public static final String ADV_SERVICE_TYPE_3_DESC = "所有节目";
+
+    //频道分组状态标记
+    public static final Long SERVICE_GROUP_STATUS_ACTIVE = 0L;//按频道分组标记
+    public static final Long SERVICE_GROUP_STATUS_SLEEP = -1L;//不按频道进行分组
+    public static final Long SERVICE_GROUP_STATUS_LIVE = 1L;//不按频道进行分组，所有频道，点播
+    public static final Long SERVICE_GROUP_STATUS_VOD = 2L;//不按频道进行分组，所有频道，直播
+
     //频道类型
-    public static final Integer SERVICE_TYPE_LIVE=0;
+    public static final Integer SERVICE_TYPE_LIVE = 0;
 
-    public static final Integer SERVICE_TYPE_ON_DEMAND=1;
+    public static final Integer SERVICE_TYPE_ON_DEMAND = 1;
 
-    public static final Integer SERVICE_TYPE_ON_DEMAND_ALL=2;
+    public static final Integer SERVICE_TYPE_ON_DEMAND_ALL = 2;
 
     //广告是否与频道广联
-    public static final Long ADV_SERVICE_ASSOCIATE= 0L;//关联
-    public static final Long ADV_SERVICE_NOT_ASSOCIATE= 1L;//直播不关联
-    public static final Long ADV_CHANNEL_NOT_ASSOCIATE=2L;//点播不关联
+    public static final Long ADV_SERVICE_ASSOCIATE = 0L;//关联
+    public static final Long ADV_SERVICE_NOT_ASSOCIATE = 1L;//直播不关联
+    public static final Long ADV_CHANNEL_NOT_ASSOCIATE = 2L;//点播不关联
+    public static final Long ADV_NOT_ASSOCIATE = -1L;//全部不关联
+
 }

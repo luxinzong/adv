@@ -28,6 +28,6 @@ public interface iAdvRegionService {
 
    public List<AdvRegionDto> selectAdvRegionTree();
 
-
+   public List<AdvRegionDto> selectAdvRegionValidTree();
 
 }

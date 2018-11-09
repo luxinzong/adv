@@ -15,6 +15,7 @@ public class ExceptionConstants {
     public static final String LOGIN_EXCEPTION_PASSWORD_NOT_RIGHT = "密码不正确";
     public static final String LOGIN_EXCEPTION_PASSWORD_INPUT_NOT_RIGHT = "两次密码输入不一致";
     public static final String LOGIN_EXCEPTION_INPUT_PASSWORD_IS_VALID = "输入密码无效";
+    public static final String LOGIN_EXCEPTION_CAN_NOT_REPEAT_LOGIN = "用户不能重复登录";
     //权限异常常量
     public static final String NO_MENU_PERMISSION = "没有此功能权限";
 
@@ -32,6 +33,7 @@ public class ExceptionConstants {
     public static final String DEPT_EXCEPTION_DEPT_EXIST_USER = "部门存在用户，不允许删除";
     public static final String DEPT_EXCEPTION_DEPT_EXIST_NAME = "部门名称已存在";
     public static final String DEPT_EXCEPTION_DEPT_ID_NOT_EXIST = "部门ID不存在";
+    public static final String DEPT_EXCEPTION_DEPT_NOT_ALLOW_CROSS_LAYER = "不允许跨层修改部门层级";
 
     //菜单异常常量
     public static final String MENU_EXCEPTION_DEPT_ID_ISNULL = "菜单ID为空";
@@ -92,6 +94,8 @@ public class ExceptionConstants {
 
     //广告位置异常
     public static final String ADV_LOCATION_IS_NOT_EXIST = "广告位置不存在";
+
+
 
 
 }

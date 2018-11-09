@@ -13,13 +13,8 @@ import javax.validation.constraints.NotBlank;
 @Data
 public class LoginVO {
 
-    @NotBlank
-    @Length(max = 32)
     private String username;
-    @NotBlank
-    @Length(max = 32)
     private String password;
-
     private boolean rememberMe;
 
 }

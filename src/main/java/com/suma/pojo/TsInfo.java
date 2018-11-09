@@ -3,6 +3,7 @@ package com.suma.pojo;
 import com.suma.utils.Insert;
 import com.suma.utils.Update;
 
+import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import java.util.Date;
 
@@ -10,10 +11,10 @@ public class TsInfo {
     @NotNull(groups = Update.class)
     private Long id;
 
-    @NotNull(groups = {Insert.class, Update.class})
+    @NotBlank(groups = {Insert.class, Update.class})
     private String tsId;
 
-    @NotNull(groups = {Insert.class, Update.class})
+    @NotBlank(groups = {Insert.class, Update.class})
     private String tsName;
 
     @NotNull(groups = {Insert.class})

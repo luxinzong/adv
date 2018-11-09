@@ -1,52 +1,46 @@
 package com.suma.pojo;
 
-import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Data;
-import org.springframework.format.annotation.DateTimeFormat;
 
-import java.sql.Time;
 import java.util.Date;
 
-
 @Data
-public class AdvInfo {
+public class AdvInfo extends VideoInfo{
     private Long id;
 
-    private Long advLocationId;//广告位ID
+    private Long advLocationId;
 
-    private Long advTypeId;// 广告类型ID
+    private Long advTypeId;
 
-    private String name;//广告名称
+    private String name;
 
-    private Integer materialType;//素材类型
+    private Integer materialType;
 
-    private Integer status;//广告状态
+    private Integer status;
 
-    private String startDate;//起始日期
+    private String startDate;
 
-    private String endDate;//终止日期
+    private String endDate;
 
-    private String periodTimeStart;//有效期生效日期
+    private String periodTimeStart;
 
-    private String periodTimeEnd;//有效期结束日期
+    private String periodTimeEnd;
 
-    private String checkUser;//审核人
+    private String checkUser;
 
-    private String checkNote;//审核意见
+    private String checkNote;
 
-    private Date checkTime;//审核时间
+    private Date checkTime;
 
-    private String createdUser;//创建用户
+    private String createdUser;
 
-    private Date createdTime;//创建时间
+    private Date createdTime;
 
-    private Date lastEditTime;//编辑时间
+    private Date lastEditTime;
 
-    private String lastEditUser;//编辑用户
+    private String lastEditUser;
 
-    private String lastEditModule;//编辑模块
-
-    private String region;//区域码
+    private String lastEditModule;
 
     private String reservedString;
 

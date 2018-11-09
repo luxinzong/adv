@@ -3,6 +3,7 @@ package com.suma.pojo;
 import com.suma.utils.Insert;
 import com.suma.utils.Update;
 
+import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 import java.util.Date;
 
@@ -11,12 +12,12 @@ public class ServiceInfo {
     @NotNull(groups = Update.class)
     private Long id;
 
-    @NotNull(groups = {Insert.class, Update.class})
+    @NotEmpty(groups = {Insert.class, Update.class})
     private String serviceId;
 
     private Long tid;
 
-    @NotNull(groups = {Insert.class, Update.class})
+    @NotEmpty(groups = {Insert.class, Update.class})
     private String serviceName;
 
     @NotNull(groups = {Insert.class, Update.class})

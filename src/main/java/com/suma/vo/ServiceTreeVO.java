@@ -16,5 +16,6 @@ public class ServiceTreeVO {
     private String type;
     private Long id;
     private String label;
+    private String tsId;
     private List<ServiceTreeVO> children;
 }

@@ -105,6 +105,8 @@ public class AdvUserServiceImpl implements iAdvUserService {
             addRoleIdsFroAdvUser(advUserList);
             //进行bean属性赋值
             advUserList.forEach(advUser -> {
+                //前台返回6位密码
+                advUser.setPassword(advUser.getPassword().substring(0,6));
                 AdvUserDto advUserDto = new AdvUserDto();
                 BeanUtils.copyProperties(advUser,advUserDto);
                 advUserDtoList.add(advUserDto);
@@ -218,7 +220,7 @@ public class AdvUserServiceImpl implements iAdvUserService {
             insertRows = insertAdvUserRole(advUser);
         }
 
-        advUser.setUpdateBy(ShiroUtils.getUser().getCreateBy());
+        advUser.setUpdateBy(ShiroUtils.getUser().getUserName());
         return deleteRows + insertRows + updateRows;
     }
 
