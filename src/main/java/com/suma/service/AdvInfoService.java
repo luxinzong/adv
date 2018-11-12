@@ -12,7 +12,7 @@ import java.util.Map;
  * @date: 2018/10/15
  */
 public interface AdvInfoService extends BaseService<AdvInfo, AdvInfoExample, Long> {
-    List<AdvInfo> selectAdvInfo(Map<String,Object> map);
+    List<AdvInfo> selectAdvInfo(Map<String, Object> map);
 
     AdvInfo findById(Long id);
 
@@ -22,6 +22,6 @@ public interface AdvInfoService extends BaseService<AdvInfo, AdvInfoExample, Lon
 
     void judgeAdvInfo(AdvInfo advInfo);
 
-    int updateByExampleSelective(Map<String,Object> map);
+    List<AdvInfo> getAdvInfoByRegionIdAndAdvTypeId(List<Long> advInfoIds,Long advTypeId);
 
 }

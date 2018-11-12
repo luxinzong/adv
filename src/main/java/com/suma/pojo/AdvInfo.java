@@ -5,7 +5,7 @@ import lombok.Data;
 import java.util.Date;
 
 @Data
-public class AdvInfo extends VideoInfo{
+public class AdvInfo{
     private Long id;
 
     private Long advLocationId;

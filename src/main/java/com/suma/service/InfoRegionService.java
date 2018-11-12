@@ -2,7 +2,6 @@ package com.suma.service;
 
 import com.suma.pojo.InfoRegion;
 import com.suma.pojo.InfoRegionExample;
-import com.suma.vo.AdvInfoVO;
 
 import java.util.List;
 
@@ -12,7 +11,7 @@ import java.util.List;
  * @description
  */
 public interface InfoRegionService extends BaseService<InfoRegion,InfoRegionExample,Long> {
-    List<Long> selectAdvByRegion(Integer regionCode);
+    List<Long> selectAdvByRegion(Integer regionId);
     List<String> getRegionNames(Long id);
 
     List<Integer> getRegionIds(Long advInfoId);

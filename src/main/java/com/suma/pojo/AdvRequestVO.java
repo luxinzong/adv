@@ -44,6 +44,11 @@ public class AdvRequestVO {
 
     private String channelID;//频道号
 
+    /**
+     * 添加版本识别号
+     */
+    private Integer version;
+
     private Map<String, String> extInfos;
 
 

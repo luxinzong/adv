@@ -55,6 +55,10 @@ public class AdvInfoServiceImpl extends BaseServiceImpl<AdvInfo, AdvInfoExample,
         return advMaterialMapper.selectByExample(example);
     }
 
+    /**
+     * 删除广告信息
+     * @param list
+     */
     @Override
     public void deleteByAdvInfoIds(List<Long> list) {
         if (!CollectionUtils.isEmpty(list)) {
@@ -64,6 +68,10 @@ public class AdvInfoServiceImpl extends BaseServiceImpl<AdvInfo, AdvInfoExample,
         }
     }
 
+    /**
+     * 判断广告是否存在
+     * @param advInfo
+     */
     @Override
     public void judgeAdvInfo(AdvInfo advInfo) {
         String name = advInfo.getName();
@@ -76,9 +84,18 @@ public class AdvInfoServiceImpl extends BaseServiceImpl<AdvInfo, AdvInfoExample,
         }
     }
 
+    /**
+     * 根据光阿狗ID 和广告类型 把广告信息查询出来
+     * @param advInfoIds
+     * @param advTypeId
+     * @return
+     */
     @Override
-    public int updateByExampleSelective(Map<String, Object> map) {
-        
-        return 0;
+    public List<AdvInfo> getAdvInfoByRegionIdAndAdvTypeId(List<Long> advInfoIds, Long advTypeId) {
+        AdvInfoExample example = new AdvInfoExample();
+        if (!CollectionUtils.isEmpty(advInfoIds)) {
+            example.createCriteria().andIdIn(advInfoIds).andAdvTypeIdEqualTo(advTypeId);
+        }
+        return selectByExample(example);
     }
 }

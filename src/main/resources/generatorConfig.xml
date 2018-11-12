@@ -35,7 +35,8 @@
         <!--<table tableName="adv_dept" domainObjectName="AdvDept" enableCountByExample="false" enableUpdateByExample="false" enableDeleteByExample="false" enableSelectByExample="false" selectByExampleQueryId="false" />-->
         <!--<table tableName="adv_role" domainObjectName="AdvRole" enableCountByExample="false" enableUpdateByExample="false" enableDeleteByExample="false" enableSelectByExample="false" selectByExampleQueryId="false" />-->
         <!--<table tableName="adv_menu" domainObjectName="AdvMenu" enableCountByExample="false" enableUpdateByExample="false" enableDeleteByExample="false" enableSelectByExample="false" selectByExampleQueryId="false" />-->
-        <!--<table tableName="adv_flyword" domainObjectName="AdvFlyWord" enableCountByExample="true" enableUpdateByExample="true" enableDeleteByExample="true" enableSelectByExample="true" selectByExampleQueryId="true" />-->
+<!--
         <table tableName="info_region" domainObjectName="InfoRegion" enableCountByExample="true" enableUpdateByExample="true" enableDeleteByExample="true" enableSelectByExample="true" selectByExampleQueryId="true" />
+-->
     </context>
 </generatorConfiguration>

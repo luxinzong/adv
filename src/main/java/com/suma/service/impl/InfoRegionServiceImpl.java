@@ -1,15 +1,11 @@
 package com.suma.service.impl;
 
 import com.google.common.collect.Lists;
-import com.suma.constants.AdvContants;
 import com.suma.dao.*;
-import com.suma.pojo.AdvInfoServiceGroup;
 import com.suma.pojo.InfoRegion;
 import com.suma.pojo.InfoRegionExample;
-import com.suma.pojo.ServiceGroup;
 import com.suma.service.InfoRegionService;
 import com.suma.service.ServiceGroupService;
-import com.suma.vo.AdvInfoVO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
@@ -42,9 +38,18 @@ public class InfoRegionServiceImpl extends BaseServiceImpl<InfoRegion, InfoRegio
     private ServiceGroupService serviceGroupService;
 
     @Override
-    public List<Long> selectAdvByRegion(Integer regionCode) {
-        return infoRegionMapper.selectAdvByRegion(regionCode);
+    public List<Long> selectAdvByRegion(Integer regionId) {
+        InfoRegionExample example = new InfoRegionExample();
+        example.createCriteria().andRegionIdEqualTo(regionId);
+        List<InfoRegion> infoRegions =  infoRegionMapper.selectByExample(example);
+        List<Long> list = Lists.newArrayList();
+        infoRegions.forEach((infoRegion) ->{
+            list.add(infoRegion.getAdvInfoId());
+        });
+        return list;
     }
+
+
 
     /**
      * 根据Id查出对应区域的名称

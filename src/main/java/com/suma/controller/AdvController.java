@@ -11,6 +11,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.CollectionUtils;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -196,5 +197,14 @@ public class AdvController {
 
         return advItems;
     }
+
+    @RequestMapping("bootAdv")
+    public AdvResponseVO getUpToDateBootAdv(@Validated AdvRequestVO advRequestVO) {
+
+        return null;
+    }
+
+
+
 
 }
