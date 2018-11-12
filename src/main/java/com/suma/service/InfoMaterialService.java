@@ -1,5 +1,6 @@
 package com.suma.service;
 
+import com.suma.pojo.AdvItem;
 import com.suma.pojo.AdvMaterial;
 import com.suma.pojo.InfoMaterial;
 import com.suma.pojo.InfoMaterialExample;
@@ -26,4 +27,6 @@ public interface InfoMaterialService extends BaseService<InfoMaterial,InfoMateri
     void deleteByAdvInfoIds(List<Long> list);
 
     List<InfoMaterialVO> getInfoMaterialVOS(List<InfoMaterial> infoMaterials);
+
+    AdvItem setAdvItem(List<InfoMaterial> infoMaterials,AdvItem advItem);
 }

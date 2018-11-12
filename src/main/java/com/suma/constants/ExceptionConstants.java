@@ -1,5 +1,7 @@
 package com.suma.constants;
 
+import org.omg.CORBA.PUBLIC_MEMBER;
+
 /**
  * @Autor gaozhongbao
  * @Date 2018/10/15 0015
@@ -95,7 +97,10 @@ public class ExceptionConstants {
     //广告位置异常
     public static final String ADV_LOCATION_IS_NOT_EXIST = "广告位置不存在";
 
+    //广告类型异常
+    public static final String ADV_TYPE_PARAMS_MISSING = "缺少广告类型或子类型参数";
+    public static final String NOT_START_MACHINE_ADV_TYPE = "不是开机广告类型";
 
-
-
+    //广告版本异常
+    public static final String INFO_VERSION_NOT_EXIST_UPDATE = "当前是最新版本";
 }

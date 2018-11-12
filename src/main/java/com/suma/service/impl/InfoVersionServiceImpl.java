@@ -64,14 +64,8 @@ public class InfoVersionServiceImpl extends BaseServiceImpl<InfoVersion, InfoVer
      */
     @Override
     public Integer getUpToDateVersion(Integer regionId, Long advTypeId) {
-        //查出对应区域的所有广告ID
-        List<Long> list = infoRegionService.selectAdvByRegion(regionId);
-        System.out.println(list);
-        //查出所有开机广告
-        List<AdvInfo> advInfoList = advInfoService.getAdvInfoByRegionIdAndAdvTypeId(list, advTypeId);
-        System.out.println(advInfoList);
-        //获取广告的版本信息
-        List<InfoVersion> infoVersions = getInfoVersions(advInfoList);
+        List<InfoVersion> infoVersions = getInfoVersions(regionId, advTypeId);
+
         System.out.println("\n"+infoVersions);
         if (!CollectionUtils.isEmpty(infoVersions)) {
             infoVersions.sort(Comparator.comparingInt(InfoVersion::getVersion));
@@ -79,6 +73,37 @@ public class InfoVersionServiceImpl extends BaseServiceImpl<InfoVersion, InfoVer
         Collections.reverse(infoVersions);
         Integer version = infoVersions.get(0).getVersion();
         return version;
+    }
+
+    private List<InfoVersion> getInfoVersions(Integer regionId, Long advTypeId) {
+        //查出对应区域的所有广告ID
+        List<Long> list = infoRegionService.selectAdvByRegion(regionId);
+        System.out.println(list);
+        //查出所有开机广告
+        List<AdvInfo> advInfoList = advInfoService.getAdvInfoByRegionIdAndAdvTypeId(list, advTypeId);
+        System.out.println(advInfoList);
+        //获取广告的版本信息
+        return getInfoVersions(advInfoList);
+    }
+
+    /**
+     * 根据区域信息和广告类型以及版本号确定最新开机广告版本信息
+     * @param regionId
+     * @param advTypeId
+     * @param version
+     * @return
+     */
+    @Override
+    public AdvInfo getAdvInfoByRegionIdAndAdvTypeIdAndVersion(Integer regionId, Long advTypeId, Integer version) {
+        List<InfoVersion> infoVersions = getInfoVersions(regionId, advTypeId);
+        if (!CollectionUtils.isEmpty(infoVersions)) {
+            infoVersions.stream().filter((p) -> p.getVersion() == version);
+        }
+        if (!CollectionUtils.isEmpty(infoVersions)) {
+            AdvInfo advInfo = advInfoService.findById(infoVersions.get(0).getAdvInfoId());
+            return advInfo;
+        }
+        return null;
     }
 
     /**
@@ -191,6 +216,7 @@ public class InfoVersionServiceImpl extends BaseServiceImpl<InfoVersion, InfoVer
         }
         return null;
     }
+
 
 
 }

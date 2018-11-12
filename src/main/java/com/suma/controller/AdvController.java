@@ -1,13 +1,17 @@
 package com.suma.controller;
 
+import com.google.common.collect.Lists;
 import com.suma.constants.AdvContants;
 import com.suma.constants.ExceptionConstants;
 import com.suma.dao.AdvInfoServiceGroupMapper;
 import com.suma.exception.AdvRequestException;
+import com.suma.exception.AdvTypeException;
+import com.suma.exception.InfoVersionException;
 import com.suma.pojo.*;
 import com.suma.service.*;
 import lombok.extern.log4j.Log4j;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.el.lang.ELArithmetic;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.CollectionUtils;
@@ -51,6 +55,8 @@ public class AdvController {
     private AdvMaterialService advMaterialService;
     @Autowired
     private ServiceGroupService serviceGroupService;
+    @Autowired
+    private InfoVersionService infoVersionService;
 
     @RequestMapping("getAdvShowP")
     public AdvResponseVO getAdvShow1(AdvRequestVO requestVO) {
@@ -200,8 +206,50 @@ public class AdvController {
 
     @RequestMapping("bootAdv")
     public AdvResponseVO getUpToDateBootAdv(@Validated AdvRequestVO advRequestVO) {
-
-        return null;
+        //判断参数
+        if (StringUtils.isAnyEmpty(advRequestVO.getSessionId(), advRequestVO.getClientId())) {
+            throw new AdvRequestException(ExceptionConstants.ADV_REQUEST_MISSING_PARAMETERS,advRequestVO.getSessionId());
+        }
+        AdvResponseVO advResponseVO = new AdvResponseVO();
+        advResponseVO.setSessionId(advRequestVO.getSessionId());
+        //根据advType和advTypeSubType，判断是否是开机广告
+        String advType = advRequestVO.getAdvType();
+        String advTypeSubType = advRequestVO.getAdvSubType();
+        Long advTypeId = advTypeService.getAdvTypeIdByAdvTypeAndSubType(advType, advTypeSubType);
+        if (!advTypeId.equals(AdvContants.START_MACHINE_ADV_SUBTYPE)) {
+            throw new AdvTypeException(ExceptionConstants.NOT_START_MACHINE_ADV_TYPE);
+        }
+        //获取区域信息
+        Integer regionId = Integer.valueOf(advRequestVO.getRegionCode());
+        //获取当前广告版本信息
+        Integer version = advRequestVO.getVersion();
+        //获取最新版本信息
+        Integer upToDateVersion = infoVersionService.getUpToDateVersionNumByRegion(regionId, advTypeId);
+        //当前版本是最新版本
+        AdvItem advItem = null;
+        List<AdvItem> list = Lists.newArrayList();
+        if (version.equals(upToDateVersion)) {
+            throw new InfoVersionException(ExceptionConstants.INFO_VERSION_NOT_EXIST_UPDATE);
+        } else {
+            //若不是最新版本信息，则将最新版本信息推送给终端
+            AdvInfo advInfo = infoVersionService.getAdvInfoByRegionIdAndAdvTypeIdAndVersion(regionId, advTypeId, version);
+            if (advInfo != null) {
+                //设置返回终端的广告类型
+                advItem = advTypeService.setAdvItem(advTypeId);
+                //设置位置信息
+                AdvLocation advLocation = advLocationService.findByPK(advInfo.getAdvLocationId());
+                BeanUtils.copyProperties(advLocation, advItem);
+                //设置素材
+                List<InfoMaterial> infoMaterials = infoMaterialService.findByAdv(advTypeId);
+                AdvItem advItem1 = infoMaterialService.setAdvItem(infoMaterials, advItem);
+                list.add(advItem);
+            }
+        }
+        advResponseVO.setAdvItem(list);
+        advResponseVO.setResultCode("0");
+        advResponseVO.setCheckInterval(null);
+        advResponseVO.setResultCount((long)list.size());
+        return advResponseVO;
     }
 
 

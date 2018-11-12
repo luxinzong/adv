@@ -85,7 +85,7 @@ public class AdvInfoServiceImpl extends BaseServiceImpl<AdvInfo, AdvInfoExample,
     }
 
     /**
-     * 根据光阿狗ID 和广告类型 把广告信息查询出来
+     * 根据广告ID 和广告类型 把广告信息查询出来
      * @param advInfoIds
      * @param advTypeId
      * @return

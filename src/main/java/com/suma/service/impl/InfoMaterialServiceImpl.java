@@ -5,10 +5,7 @@ import com.suma.constants.ExceptionConstants;
 import com.suma.dao.AdvMaterialMapper;
 import com.suma.dao.InfoMaterialMapper;
 import com.suma.exception.AdvMaterialException;
-import com.suma.pojo.AdvMaterial;
-import com.suma.pojo.AdvMaterialExample;
-import com.suma.pojo.InfoMaterial;
-import com.suma.pojo.InfoMaterialExample;
+import com.suma.pojo.*;
 import com.suma.service.AdvMaterialService;
 import com.suma.service.InfoMaterialService;
 import com.suma.vo.InfoMaterialVO;
@@ -40,6 +37,20 @@ public class InfoMaterialServiceImpl extends BaseServiceImpl<InfoMaterial, InfoM
     AdvMaterialMapper advMaterialMapper;
     @Autowired
     private AdvMaterialService advMaterialService;
+
+    @Override
+    public AdvItem setAdvItem(List<InfoMaterial> infoMaterials,AdvItem advItem) {
+        if (!CollectionUtils.isEmpty(infoMaterials)) {
+            infoMaterials.forEach(infoMaterial -> {
+                AdvMaterial advMaterial = advMaterialService.findByPK(infoMaterial.getMaterialId());
+                advItem.setDuration(Long.valueOf(infoMaterial.getDuration()));
+                advItem.setHref(advMaterial.getHref());
+                advItem.setAdvURL(advMaterial.getFileUrl());
+                advItem.setMD5(advMaterial.getMd5());
+            });
+        }
+        return advItem;
+    }
 
     @Override
     public int updateByDoubleId(InfoMaterial infoMaterial) {

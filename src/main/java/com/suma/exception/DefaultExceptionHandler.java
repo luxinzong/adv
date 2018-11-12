@@ -28,6 +28,18 @@ public class DefaultExceptionHandler {
 
     private static final Logger log = LoggerFactory.getLogger(DefaultExceptionHandler.class);
 
+    @ExceptionHandler(InfoVersionException.class)
+    public Result InfoVersionException(InfoVersionException e) {
+        log.error(e.getMessage(), e);
+        return Result.error(e.getMessage());
+    }
+
+    @ExceptionHandler(AdvTypeException.class)
+    public Result advTypeException(AdvTypeException e) {
+        log.error(e.getMessage(), e);
+        return Result.error(e.getMessage());
+    }
+
     @ExceptionHandler(DeptException.class)
     public Result deptException(DeptException e) {
         log.error(e.getMessage(), e);
@@ -102,8 +114,8 @@ public class DefaultExceptionHandler {
     }
 
     @ExceptionHandler(RegionException.class)
-    public Result regionException(RegionException e){
-        log.error(e.getMessage(),e);
+    public Result regionException(RegionException e) {
+        log.error(e.getMessage(), e);
         return Result.error(e.getMessage());
     }
 

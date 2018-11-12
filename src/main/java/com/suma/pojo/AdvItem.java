@@ -25,13 +25,13 @@ public class AdvItem {
 
     private String MD5;//素材MD5 验证码，如果值为0，不校验。对文件内容校验
 
-    private String context;//文字滚动内容
-
     private Long duration;//非视频广告的显示持续时间，单位秒。如果是视频广告，则是视频广告实际时长。
 
     private Long displayTimes;//显示次数，默认显示一次，显示多次时，间隔时间由interval 参数控制
 
     private Long interval;//显示多次情况下的两次显示之间的间隔，单位秒，默认间隔为0
+
+    private String context;//文字滚动内容
 
     private Long xPosition;//-1 为无效值
 

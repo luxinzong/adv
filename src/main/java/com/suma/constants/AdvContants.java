@@ -58,10 +58,6 @@ public class AdvContants {
     /**
      * 广告类型
      */
-    public static final String START_ADV_TYPE = "001";//开机广告
-    public static final String EPG_ADV_TYPE = "002";//EPG广告
-    public static final String POP_ADV_TYPE = "003";//弹出广告
-    public static final String IMPLANT_ADV_TYPE = "004";//植入广告
     public static final String START_LOGO_ADV_SUBTYPE = "开机LOGO广告";//
     public static final String START_MACHINE_ADV_SUBTYPE = "开机广告";//
     public static final String CUT_CHANNEL_ADV_SUBTYPE = "切台PF广告";//
