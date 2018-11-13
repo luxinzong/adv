@@ -4,12 +4,14 @@ import com.alibaba.fastjson.JSON;
 import com.github.pagehelper.PageInfo;
 import com.suma.constants.ExceptionConstants;
 import com.suma.exception.AdvInfoException;
-import com.suma.pojo.AdvDept;
-import com.suma.pojo.AdvInfo;
+import com.suma.pojo.*;
 import com.suma.service.*;
 import com.suma.utils.Result;
+import com.suma.utils.StringUtil;
 import com.suma.utils.UserAndTimeUtils;
 import com.suma.vo.AdvInfoVO;
+import com.suma.vo.InfoMaterialVO;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
@@ -37,6 +39,7 @@ public class FlyWordAdvController extends BaseController {
     private InfoRegionService infoRegionService;
     @Autowired
     private AdvLocationService advLocationService;
+
     /**
      * 创建字幕广告接口
      * @param data
@@ -55,18 +58,50 @@ public class FlyWordAdvController extends BaseController {
         }
         AdvInfo advInfo = UserAndTimeUtils.setCreateUserAndTime();
         BeanUtils.copyProperties(advInfoVO, advInfo);
-
+        //判断广告信息是否存在
+        advInfoService.judgeAdvInfo(advInfo);
+        //获取广告位信息
+        AdvLocation advLocation = advInfoVO.getAdvLocation();
+        if (advLocation != null) {
+            advLocationService.save(advLocation);
+            advInfo.setAdvLocationId(advLocation.getId());
+        }
+        //保存广告信息
+        advInfoService.save(advInfo);
+        //获取广告信息ID
+        Long advInfoId = advInfo.getId();
+        //获取字幕广告信息，保存字幕广告信息
+        List<AdvFlyWord> advFlyWords = advInfoVO.getAdvFlyWords();
+        infoFlywordService.saveFlyWords(advFlyWords, advInfoId);
+        //保存频道信息
+        advInfoServiceGroupService.saveServiceInfomation(advInfoVO, advInfoId);
+        //保存区域信息
+        infoRegionService.saveInfoRegion(advInfoVO.getRegionIds(), advInfoId);
         return Result.success();
     }
 
     /**
      * 删除字幕广告接口
-     * @param advInfoId
+     * @param str
      * @return
      */
     @RequestMapping("delete")
     @Transactional(rollbackFor = Exception.class)
-    public Result delete(Long advInfoId) {
+    public Result delete(String str) {
+        if (StringUtils.isBlank(str)) {
+            throw new AdvInfoException(ExceptionConstants.INFO_EXCEPTION_MISSING_REQUIRED_PARAMS);
+        }
+        List<Long> advInfoIds = StringUtil.convertstr(str);
+        //删除广告信息
+        advInfoService.deleteByAdvInfoIds(advInfoIds);
+        //删除广告对应字幕列表
+        infoFlywordService.deleteByAdvInfoIds(advInfoIds);
+        //删除广告信息对应频道信息
+        advInfoServiceGroupService.deleteAdvServicenByAdvInfoId(advInfoIds);
+        //删除广告对应区域信息
+        infoRegionService.deleteByAdvInfoIds(advInfoIds);
+        //删除广告位
+        advInfoService.deleteAdvLocationByAdvInfoIds(advInfoIds);
         return Result.success();
     }
 
@@ -78,56 +113,60 @@ public class FlyWordAdvController extends BaseController {
     @RequestMapping("update")
     @Transactional(rollbackFor = Exception.class)
     public Result update(String data) {
+        AdvInfoVO advInfoVO = JSON.parseObject(data, AdvInfoVO.class);
+        //判断是否缺少参数
+        if (advInfoVO.getId() == null || advInfoVO.getName() == null || advInfoVO.getStartDate() == null ||
+                advInfoVO.getEndDate() == null || advInfoVO.getStatus() == null
+                || advInfoVO.getMaterialType() == null || advInfoVO.getAdvTypeId() == null) {
+            throw new AdvInfoException(ExceptionConstants.INFO_EXCEPTION_MISSING_REQUIRED_PARAMS);
+        }
+        if (advInfoService.findByPK(advInfoVO.getId()) == null) {
+            throw new AdvInfoException(ExceptionConstants.INFO_EXCEPTION_INFO_IS_NOT_EXIT);
+        }
+        //获取广告位
+        AdvLocation advLocation = advInfoVO.getAdvLocation();
+        if (advLocation != null) {
+            advLocationService.update(advLocation);
+        }
+        //设置编辑信息
+        AdvInfo advInfo = UserAndTimeUtils.setEditUserAndTime();
+        BeanUtils.copyProperties(advInfoVO, advInfo);
+        //保存广告信息
+        advInfoService.updateByPrimaryKeySelective(advInfo);
+        //更新字幕信息
+        //获取字幕信息,更新数据库
+        infoFlywordService.deletByAdvInfoId(advInfo.getId());
+        List<AdvFlyWord> advFlyWords = advInfoVO.getAdvFlyWords();
+        infoFlywordService.saveFlyWords(advFlyWords, advInfo.getId());
+        //更新区域信息
+        infoRegionService.deleteByAdvInfoId(advInfo.getId());
+        infoRegionService.saveInfoRegion(advInfoVO.getRegionIds(), advInfo.getId());
         return Result.success();
     }
 
     /**
      * 根据ID查询字幕广告的所有信息
-     * @param advInfoId
+     * @param id
      * @return
      */
-    @RequestMapping("select")
-    public Result select(Long advInfoId) {
+    @RequestMapping("queryById")
+    public Result select(Long id) {
         //创建前端显示对象
         AdvInfoVO advInfoVO = new AdvInfoVO();
         //查询出ID为advInfoId的广告信息
-        AdvInfo advInfo = advInfoService.findByPK(advInfoId);
+        AdvInfo advInfo = advInfoService.findByPK(id);
         if (advInfo == null) {
             throw new AdvInfoException(ExceptionConstants.INFO_EXCEPTION_INFO_IS_NOT_EXIT);
         }
         //设置字幕信息
-        advInfoVO.setAdvFlyWords(infoFlywordService.getAdvFlyWords(advInfoId));
+        advInfoVO.setAdvFlyWords(infoFlywordService.getAdvFlyWords(id));
         BeanUtils.copyProperties(advInfo, advInfoVO);
         //设置频道信息
         advInfoServiceGroupService.getServiceGroup(advInfoVO);
         //设置有效区域ID
-        advInfoVO.setRegionIds(infoRegionService.getRegionIds(advInfoId));
+        advInfoVO.setRegionIds(infoRegionService.getRegionIds(id));
         //设置对应的广告位
         advInfoVO.setAdvLocation(advLocationService.findByPK(advInfo.getAdvLocationId()));
         return Result.success(advInfoVO);
     }
-
-
-    /**
-     * 按条件查询所有字幕广告
-     * @param status
-     * @param name
-     * @param startDate
-     * @param endDate
-     * @param pageNum
-     * @param pageSize
-     * @param advTypeId
-     * @return
-     */
-    @RequestMapping("selectAll")
-    public Result selectAll(Integer status, String name, String startDate, String endDate,
-                            Integer pageNum, Integer pageSize, String advTypeId) {
-        List<AdvInfo> list = advInfoService.selectAdvInfoByNameAndStatusAndOthor(status, name, startDate, endDate, pageNum, pageSize, advTypeId);
-        PageInfo<AdvInfo> advInfoPageInfo = new PageInfo<>();
-        advInfoPageInfo.setList(list);
-        advInfoPageInfo.setTotal(list.size());
-        return Result.success(advInfoPageInfo);
-    }
-
-
 }

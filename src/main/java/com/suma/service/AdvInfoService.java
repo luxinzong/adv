@@ -27,4 +27,8 @@ public interface AdvInfoService extends BaseService<AdvInfo, AdvInfoExample, Lon
     List<AdvInfo> selectAdvInfoByNameAndStatusAndOthor(Integer status, String name, String startDate, String endDate,
                                                        Integer pageNum, Integer pageSize, String advTypeId);
 
+    int deleteAdvRelationInfo(List<Long> advInfoIds);
+
+    int deleteAdvLocationByAdvInfoIds(List<Long> advInfoId);
+
 }

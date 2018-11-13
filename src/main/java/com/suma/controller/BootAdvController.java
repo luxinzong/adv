@@ -61,8 +61,9 @@ public class BootAdvController extends BaseController {
             advInfoService.save(advInfo);
             //获取广告信息ID
             Long advInfoId = advInfo.getId();
+            //设置开机广告位
+            advInfo.setAdvLocationId(AdvContants.START_LOGO_ADV_LOCATION_ID);
             //保存广告版本号
-
             //获取并保存区域信息
             List<Integer> regionIds = bootAdvVO.getRegionIds();
             infoRegionService.saveInfoRegion(regionIds, advInfoId);

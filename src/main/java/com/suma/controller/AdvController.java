@@ -9,6 +9,7 @@ import com.suma.exception.AdvTypeException;
 import com.suma.exception.InfoVersionException;
 import com.suma.pojo.*;
 import com.suma.service.*;
+import com.suma.utils.Result;
 import lombok.extern.log4j.Log4j;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.el.lang.ELArithmetic;
@@ -20,9 +21,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.List;
+import java.util.*;
 
 /**
  * @auther: zhangzhaoyuan
@@ -200,12 +199,10 @@ public class AdvController {
             }
 
         }
-
-
         return advItems;
     }
 
-    @RequestMapping("bootAdv")
+    @RequestMapping("upDateBootAdv")
     public AdvResponseVO getUpToDateBootAdv(@RequestBody AdvRequestVO advRequestVO) {
         System.out.println(advRequestVO);
         //判断参数
@@ -241,6 +238,8 @@ public class AdvController {
                 //设置位置信息
                 AdvLocation advLocation = advLocationService.findByPK(advInfo.getAdvLocationId());
                 BeanUtils.copyProperties(advLocation, advItem);
+                //设置素材类型
+                advItem.setAssetType((long) advInfo.getMaterialType());
                 //设置素材
                 List<InfoMaterial> infoMaterials = infoMaterialService.findByAdv(advTypeId);
                 list.add(infoMaterialService.setAdvItem(infoMaterials, advItem));
@@ -251,6 +250,55 @@ public class AdvController {
         advResponseVO.setResultCode("0");
         advResponseVO.setCheckInterval(null);
         advResponseVO.setResultCount((long)list.size());
+        return advResponseVO;
+    }
+
+    @RequestMapping("bootAdv")
+    public AdvResponseVO getAllBootAdv(@RequestBody AdvRequestVO advRequestVO) {
+        System.out.println(advRequestVO);
+        //判断参数
+        if (StringUtils.isAnyEmpty(advRequestVO.getSessionId(), advRequestVO.getClientId())) {
+            throw new AdvRequestException(ExceptionConstants.ADV_REQUEST_MISSING_PARAMETERS,advRequestVO.getSessionId());
+        }
+        AdvResponseVO advResponseVO = new AdvResponseVO();
+        advResponseVO.setSessionId(advRequestVO.getSessionId());
+        //根据advType和advTypeSubType，判断是否是开机广告
+        String advType = advRequestVO.getAdvType();
+        String advTypeSubType = advRequestVO.getAdvSubType();
+        Long advTypeId = advTypeService.getAdvTypeIdByAdvTypeAndSubType(advType, advTypeSubType);
+        System.out.println();
+        if (!advTypeId.equals(2L)) {
+            throw new AdvTypeException(ExceptionConstants.NOT_START_MACHINE_ADV_TYPE);
+        }
+        //获取区域信息
+        Integer regionId = Integer.valueOf(advRequestVO.getRegionCode());
+        //获取当前广告版本信息
+        Integer version = advRequestVO.getVersion();
+        List<AdvItem> list = Lists.newArrayList();
+        List<AdvInfo> advInfoList = infoVersionService.getBootAdv(regionId, advTypeId);
+        if (!CollectionUtils.isEmpty(advInfoList)) {
+            advInfoList.forEach(advInfo -> {
+                if (advInfo != null) {
+                    //设置返回终端的广告类型
+                    AdvItem advItem = advTypeService.setAdvItem(advTypeId);
+                    //设置位置信息
+                    AdvLocation advLocation = advLocationService.findByPK(advInfo.getAdvLocationId());
+                    BeanUtils.copyProperties(advLocation, advItem);
+                    //设置素材类型
+                    advItem.setAssetType((long) advInfo.getMaterialType());
+                    //设置素材
+                    List<InfoMaterial> infoMaterials = infoMaterialService.findByAdv(advInfo.getId());
+                    if (!CollectionUtils.isEmpty(infoMaterials)) {
+                        list.add(infoMaterialService.setAdvItem(infoMaterials, advItem));
+                    }
+                }
+            });
+        }
+        advResponseVO.setVersion(2);
+        advResponseVO.setAdvItem(list);
+        advResponseVO.setResultCode("0");
+        advResponseVO.setCheckInterval(null);
+        advResponseVO.setResultCount((long) list.size());
         return advResponseVO;
     }
 

@@ -36,7 +36,7 @@ public class AdvInfoServiceGroupServiceImpl extends BaseServiceImpl<AdvInfoServi
     AdvInfoServiceGroupMapper advInfoServiceGroupMapper;
 
     @Override
-    public void deleteAdvRegionByAdvInfoId(Long id) {
+    public void deleteAdvServiceByAdvInfoId(Long id) {
         AdvInfoServiceGroupExample example3 = new AdvInfoServiceGroupExample();
         example3.createCriteria().andAdvInfoIdEqualTo(id);
         advInfoServiceGroupMapper.deleteByExample(example3);
@@ -46,7 +46,7 @@ public class AdvInfoServiceGroupServiceImpl extends BaseServiceImpl<AdvInfoServi
     ServiceGroupService serviceGroupService;
 
     @Override
-    public void deleteAdvRegionByAdvInfoId(List<Long> list) {
+    public void deleteAdvServicenByAdvInfoId(List<Long> list) {
         if (!CollectionUtils.isEmpty(list)) {
             AdvInfoServiceGroupExample example3 = new AdvInfoServiceGroupExample();
             example3.createCriteria().andAdvInfoIdIn(list);

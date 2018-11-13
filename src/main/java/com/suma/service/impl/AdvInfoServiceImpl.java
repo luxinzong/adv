@@ -1,15 +1,18 @@
 package com.suma.service.impl;
 
+import com.github.pagehelper.Page;
+import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
+import com.google.common.collect.Lists;
 import com.suma.constants.ExceptionConstants;
 import com.suma.dao.AdvInfoMapper;
 import com.suma.dao.AdvMaterialMapper;
 import com.suma.exception.AdvInfoException;
-import com.suma.pojo.AdvInfo;
-import com.suma.pojo.AdvInfoExample;
-import com.suma.pojo.AdvMaterial;
-import com.suma.pojo.AdvMaterialExample;
+import com.suma.pojo.*;
 import com.suma.service.AdvInfoService;
+import com.suma.service.AdvLocationService;
+import com.suma.service.InfoMaterialService;
+import com.suma.service.InfoRegionService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
@@ -30,6 +33,12 @@ public class AdvInfoServiceImpl extends BaseServiceImpl<AdvInfo, AdvInfoExample,
     AdvInfoMapper advInfoMapper;
     @Autowired
     AdvMaterialMapper advMaterialMapper;
+    @Autowired
+    InfoRegionService infoRegionService;
+    @Autowired
+    AdvLocationService advLocationService;
+    @Autowired
+    InfoMaterialService infoMaterialService;
 
     @Resource
     public void setBaseDao(AdvInfoMapper baseDao) {
@@ -44,6 +53,29 @@ public class AdvInfoServiceImpl extends BaseServiceImpl<AdvInfo, AdvInfoExample,
     @Override
     public AdvInfo findById(Long id) {
         return advInfoMapper.findById(id);
+    }
+
+    /**
+     * 更具广告ID删除广告位
+     * @param advInfoIds
+     * @return
+     */
+    @Override
+    public int deleteAdvLocationByAdvInfoIds(List<Long> advInfoIds) {
+        List<Long> list = Lists.newArrayList();
+        if (!CollectionUtils.isEmpty(advInfoIds)) {
+            advInfoIds.forEach(id ->{
+                if (findById(id) != null) {
+                    list.add(findById(id).getAdvLocationId());
+                }
+            });
+        }
+        if (!CollectionUtils.isEmpty(list)) {
+            AdvLocationExample example = new AdvLocationExample();
+            example.createCriteria().andIdIn(list);
+            advLocationService.deleteByExample(example);
+        }
+        return 0;
     }
 
     /**
@@ -125,5 +157,22 @@ public class AdvInfoServiceImpl extends BaseServiceImpl<AdvInfo, AdvInfoExample,
         //根据map查询出广告信息
         List<AdvInfo> advInfoList = selectAdvInfo(map);
         return advInfoList;
+    }
+
+    @Override
+    public int deleteAdvRelationInfo(List<Long> advInfoIds) {
+        if (!CollectionUtils.isEmpty(advInfoIds)) {
+            advInfoIds.forEach(advInfoId -> {
+                //删除广告信息
+                deleteByPK(advInfoId);
+                //删除广告位
+                advLocationService.deleteByPK(findByPK(advInfoId).getAdvLocationId());
+                //删除有效区域
+                infoRegionService.deleteByAdvInfoId(advInfoId);
+                //删除对应关系
+                infoMaterialService.deleteByAdvInfoId(advInfoId);
+            });
+        }
+        return 0;
     }
 }

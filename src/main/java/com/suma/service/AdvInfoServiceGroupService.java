@@ -13,8 +13,8 @@ import java.util.Map;
  * @description
  */
 public interface AdvInfoServiceGroupService extends BaseService<AdvInfoServiceGroup,AdvInfoServiceGroupExample,Long> {
-    void deleteAdvRegionByAdvInfoId(List<Long> list);
-    void deleteAdvRegionByAdvInfoId(Long id);
+    void deleteAdvServicenByAdvInfoId(List<Long> list);
+    void deleteAdvServiceByAdvInfoId(Long id);
     void saveServiceInfomation(AdvInfoVO advInfoVO, Long advInfoId);
     void updateServiceGroup(AdvInfoVO advInfoVO);
     List<ServiceGroup> findGroupNamesByAdvId(Long advInfoId);
