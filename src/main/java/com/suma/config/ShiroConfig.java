@@ -143,7 +143,7 @@ public class ShiroConfig {
         shiroFilterFactoryBean.setFilters(filtersMap);
         //必须通过认证才能访问
 //       filterChainDefinitionMap.put("/**","authc");
-        Map<String,String> filterChainDefinitionMap = new LinkedHashMap<String,String>();
+       /* Map<String,String> filterChainDefinitionMap = new LinkedHashMap<String,String>();
         filterChainDefinitionMap.put("/index","anon");
         filterChainDefinitionMap.put("/logout","anon");
         filterChainDefinitionMap.put("/**","myAccessControlFilter");
@@ -151,7 +151,7 @@ public class ShiroConfig {
         shiroFilterFactoryBean.setSuccessUrl("/index");
         shiroFilterFactoryBean.setLoginUrl(loginUrl);
 
-        shiroFilterFactoryBean.setFilterChainDefinitionMap(filterChainDefinitionMap);
+        shiroFilterFactoryBean.setFilterChainDefinitionMap(filterChainDefinitionMap);*/
         return shiroFilterFactoryBean;
     }
 

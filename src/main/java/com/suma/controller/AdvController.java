@@ -201,11 +201,13 @@ public class AdvController {
 
         }
 
+
         return advItems;
     }
 
     @RequestMapping("bootAdv")
-    public AdvResponseVO getUpToDateBootAdv(@Validated AdvRequestVO advRequestVO) {
+    public AdvResponseVO getUpToDateBootAdv(@RequestBody AdvRequestVO advRequestVO) {
+        System.out.println(advRequestVO);
         //判断参数
         if (StringUtils.isAnyEmpty(advRequestVO.getSessionId(), advRequestVO.getClientId())) {
             throw new AdvRequestException(ExceptionConstants.ADV_REQUEST_MISSING_PARAMETERS,advRequestVO.getSessionId());
@@ -216,7 +218,7 @@ public class AdvController {
         String advType = advRequestVO.getAdvType();
         String advTypeSubType = advRequestVO.getAdvSubType();
         Long advTypeId = advTypeService.getAdvTypeIdByAdvTypeAndSubType(advType, advTypeSubType);
-        if (!advTypeId.equals(AdvContants.START_MACHINE_ADV_SUBTYPE)) {
+        if (!advTypeId.equals(2L)) {
             throw new AdvTypeException(ExceptionConstants.NOT_START_MACHINE_ADV_TYPE);
         }
         //获取区域信息
@@ -224,7 +226,7 @@ public class AdvController {
         //获取当前广告版本信息
         Integer version = advRequestVO.getVersion();
         //获取最新版本信息
-        Integer upToDateVersion = infoVersionService.getUpToDateVersionNumByRegion(regionId, advTypeId);
+        Integer upToDateVersion = infoVersionService.getUpToDateVersion(regionId, advTypeId);
         //当前版本是最新版本
         AdvItem advItem = null;
         List<AdvItem> list = Lists.newArrayList();
@@ -241,10 +243,10 @@ public class AdvController {
                 BeanUtils.copyProperties(advLocation, advItem);
                 //设置素材
                 List<InfoMaterial> infoMaterials = infoMaterialService.findByAdv(advTypeId);
-                AdvItem advItem1 = infoMaterialService.setAdvItem(infoMaterials, advItem);
-                list.add(advItem);
+                list.add(infoMaterialService.setAdvItem(infoMaterials, advItem));
             }
         }
+        advResponseVO.setVersion(upToDateVersion);
         advResponseVO.setAdvItem(list);
         advResponseVO.setResultCode("0");
         advResponseVO.setCheckInterval(null);

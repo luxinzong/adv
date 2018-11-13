@@ -1,5 +1,6 @@
 package com.suma.service.impl;
 
+import com.github.pagehelper.PageInfo;
 import com.suma.constants.ExceptionConstants;
 import com.suma.dao.AdvInfoMapper;
 import com.suma.dao.AdvMaterialMapper;
@@ -14,6 +15,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 
 import javax.annotation.Resource;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -97,5 +99,31 @@ public class AdvInfoServiceImpl extends BaseServiceImpl<AdvInfo, AdvInfoExample,
             example.createCriteria().andIdIn(advInfoIds).andAdvTypeIdEqualTo(advTypeId);
         }
         return selectByExample(example);
+    }
+
+    /**
+     *  按条件查询所有符合条件的广告
+     * @param status
+     * @param name
+     * @param startDate
+     * @param endDate
+     * @param pageNum
+     * @param pageSize
+     * @param advTypeId
+     * @return
+     */
+    @Override
+    public List<AdvInfo> selectAdvInfoByNameAndStatusAndOthor(
+            Integer status, String name, String startDate, String endDate,
+            Integer pageNum, Integer pageSize, String advTypeId) {
+        Map<String, Object> map = new HashMap<>();
+        map.put("name", name);
+        map.put("status", status);
+        map.put("startDate", startDate);
+        map.put("endDate", endDate);
+        map.put("advTypeId",advTypeId);
+        //根据map查询出广告信息
+        List<AdvInfo> advInfoList = selectAdvInfo(map);
+        return advInfoList;
     }
 }

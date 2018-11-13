@@ -21,7 +21,6 @@ public class RegionUtils {
     public static List<String> addRegionName(List<Integer> ids) {
         List<String> regionNames = new ArrayList<>();
         if (!CollectionUtils.isEmpty(ids)) {
-
             ids.forEach(regionId->{
                 regionNames.add(advRegionService.selectAdvRegionById(regionId).getRegionName());
             });

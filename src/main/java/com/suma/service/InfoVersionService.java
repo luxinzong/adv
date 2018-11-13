@@ -30,4 +30,6 @@ public interface InfoVersionService extends BaseService<InfoVersion,InfoVersionE
 
     AdvInfo getAdvInfoByRegionIdAndAdvTypeIdAndVersion(Integer regionId, Long advTypeId,Integer version);
 
+    List<AdvInfo> getBootAdv(Integer regionId,Long advTypeId);
+
 }

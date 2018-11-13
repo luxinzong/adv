@@ -9,7 +9,6 @@ import com.suma.pojo.InfoVersionExample;
 import com.suma.service.AdvInfoService;
 import com.suma.service.InfoRegionService;
 import com.suma.service.InfoVersionService;
-import com.sun.org.apache.xml.internal.resolver.readers.ExtendedXMLCatalogReader;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
@@ -54,6 +53,23 @@ public class InfoVersionServiceImpl extends BaseServiceImpl<InfoVersion, InfoVer
             }
         }
         return null;
+    }
+
+    /**
+     * 查询所有的开机广告
+     * @param regionId
+     * @param advTypeId
+     * @return
+     */
+    @Override
+    public List<AdvInfo> getBootAdv(Integer regionId, Long advTypeId) {
+        //查出对应区域的所有广告ID
+        List<Long> list = infoRegionService.selectAdvByRegion(regionId);
+        System.out.println(list);
+        //查出所有开机广告
+        List<AdvInfo> advInfoList = advInfoService.getAdvInfoByRegionIdAndAdvTypeId(list, advTypeId);
+        System.out.println(advInfoList);
+        return advInfoList;
     }
 
     /**
@@ -105,6 +121,10 @@ public class InfoVersionServiceImpl extends BaseServiceImpl<InfoVersion, InfoVer
         }
         return null;
     }
+
+
+
+
 
     /**
      * 查询某个区域对应的所有开机广告版本信息

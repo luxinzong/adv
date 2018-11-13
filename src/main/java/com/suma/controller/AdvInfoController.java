@@ -12,7 +12,9 @@ import com.suma.service.*;
 import com.suma.utils.Result;
 import com.suma.utils.ShiroUtils;
 import com.suma.utils.StringUtil;
+import com.suma.utils.UserAndTimeUtils;
 import com.suma.vo.*;
+import org.apache.catalina.User;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -116,16 +118,9 @@ public class AdvInfoController extends BaseController {
             throw new AdvInfoException(ExceptionConstants.INFO_EXCEPTION_QUERYPARAMS_IS_NULL);
         }
         //将查询参数存入map中
-        Map<String, Object> map = new HashMap<>();
-        map.put("name", name);
-        map.put("status", status);
-        map.put("startDate", startDate);
-        map.put("endDate", endDate);
-        PageInfo<AdvInfo> listPageInfo = new PageInfo<>();
-        map.put("advTypeId",advTypeId);
-        //根据map查询出广告信息
-        List<AdvInfo> advInfoList = advInfoService.selectAdvInfo(map);
+        List<AdvInfo> advInfoList = advInfoService.selectAdvInfoByNameAndStatusAndOthor(status, name, startDate, endDate, pageNum, pageSize, advTypeId);
         //将广告信息和查询出来的总数存入PageInfo中返回给前端
+        PageInfo<AdvInfo> listPageInfo = new PageInfo<>();
         listPageInfo.setList(advInfoList);
         listPageInfo.setTotal(advInfoList.size());
         System.out.println(listPageInfo);
@@ -190,20 +185,15 @@ public class AdvInfoController extends BaseController {
     public Result insertAdvInfo(String data){
         //将传过来的字符串转换成json对象
         AdvInfoVO advInfoVO = JSON.parseObject(data, AdvInfoVO.class);
-        //将广告信息存入到advInfo中
-        AdvInfo advInfo = new AdvInfo();
-        BeanUtils.copyProperties(advInfoVO, advInfo);
         //判断是否缺少参数
-        if (advInfo.getName() == null || advInfo.getStartDate() == null ||
-                advInfo.getEndDate() == null || advInfo.getStatus() == null
-                || advInfo.getMaterialType() == null || advInfo.getAdvTypeId() == null) {
+        if (advInfoVO.getName() == null || advInfoVO.getStartDate() == null ||
+                advInfoVO.getEndDate() == null || advInfoVO.getStatus() == null
+                || advInfoVO.getMaterialType() == null || advInfoVO.getAdvTypeId() == null) {
             throw new AdvInfoException(ExceptionConstants.INFO_EXCEPTION_MISSING_REQUIRED_PARAMS);
         }
-        advInfo.setCreatedUser(ShiroUtils.getLoginName());
-        System.out.println(ShiroUtils.getLoginName()+"哈哈");
-        advInfo.setCreatedTime(new Date());
-        advInfo.setLastEditUser(ShiroUtils.getLoginName());
-        advInfo.setLastEditModule("");//TODO 最近编辑模块
+        AdvInfo advInfo = UserAndTimeUtils.setCreateUserAndTime();
+        //将广告信息存入到advInfo中
+        BeanUtils.copyProperties(advInfoVO, advInfo);
         //判断广告信息是否存在
         advInfoService.judgeAdvInfo(advInfo);
         //获取广告位
@@ -336,11 +326,7 @@ public class AdvInfoController extends BaseController {
             }
             advLocationService.save(advLocation);
             //保存广告信息
-            AdvInfo advInfo = new AdvInfo();
-            advInfo.setCreatedUser(ShiroUtils.getLoginName());
-            advInfo.setCreatedTime(new Date());
-            advInfo.setLastEditUser(ShiroUtils.getLoginName());
-            advInfo.setLastEditModule("");//TODO 最近编辑模块
+            AdvInfo advInfo = UserAndTimeUtils.setCreateUserAndTime();
             BeanUtils.copyProperties(menuAdvVO, advInfo);
             advInfo.setAdvLocationId(advLocation.getId());
             advInfoService.save(advInfo);
@@ -373,9 +359,7 @@ public class AdvInfoController extends BaseController {
             throw new AdvInfoException(ExceptionConstants.INFO_EXCEPTION_MISSING_REQUIRED_PARAMS);
         }
         //更新广告信息
-        AdvInfo advInfo = new AdvInfo();
-        advInfo.setLastEditModule("");
-        advInfo.setLastEditUser(ShiroUtils.getLoginName());
+        AdvInfo advInfo = UserAndTimeUtils.setEditUserAndTime();
         advInfoService.updateByPrimaryKeySelective(advInfo);
         //更新广告位
         AdvLocation advLocation = menuAdvVO.getAdvLocation();
@@ -451,9 +435,7 @@ public class AdvInfoController extends BaseController {
             throw new AdvInfoException(ExceptionConstants.INFO_EXCEPTION_MISSING_REQUIRED_PARAMS);
         }
         //更新广告信息
-        AdvInfo advInfo = new AdvInfo();
-        advInfo.setLastEditUser(ShiroUtils.getLoginName());
-        advInfo.setLastEditModule("");//TODO 最近编辑模块
+        AdvInfo advInfo = UserAndTimeUtils.setEditUserAndTime();
         BeanUtils.copyProperties(netAdvVO, advInfo);
         advInfoService.updateByPrimaryKeySelective(advInfo);
         //更新位置信息
@@ -504,11 +486,7 @@ public class AdvInfoController extends BaseController {
                 || netAdvVO.getMaterialType() == null || netAdvVO.getAdvTypeId() == null || netAdvVO.getVideoId() == null) {
             throw new AdvInfoException(ExceptionConstants.INFO_EXCEPTION_MISSING_REQUIRED_PARAMS);
         }
-        AdvInfo advInfo = new AdvInfo();
-        advInfo.setLastEditModule("");
-        advInfo.setLastEditUser(ShiroUtils.getLoginName());
-        advInfo.setCreatedTime(new Date());
-        advInfo.setCreatedUser(ShiroUtils.getLoginName());
+        AdvInfo advInfo = UserAndTimeUtils.setCreateUserAndTime();
         BeanUtils.copyProperties(netAdvVO, advInfo);
         AdvLocation advLocation = netAdvVO.getAdvLocation();
         System.out.println(advLocation);
