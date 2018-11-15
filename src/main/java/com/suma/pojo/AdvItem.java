@@ -4,6 +4,7 @@ import lombok.Data;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
 /**
  * @auther: zhangzhaoyuan
@@ -54,6 +55,5 @@ public class AdvItem {
     private String channelIds;//多个以逗号隔开，请求EPG 广告时， 如果没有带请求参数channelId，返回时要把广告关联的频道带上
 
     private Map<String, String> extInfos;
-
 
 }

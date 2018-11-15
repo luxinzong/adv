@@ -15,8 +15,7 @@ public class UserAndTimeUtils {
      * 生成创建用户和创建时间
      * @return
      */
-    public static AdvInfo setCreateUserAndTime() {
-        AdvInfo advInfo = new AdvInfo();
+    public static AdvInfo setCreateUserAndTime(AdvInfo advInfo) {
         advInfo.setCreatedUser("ASD");//todo
         advInfo.setCreatedTime(new Date());
         advInfo.setLastEditUser("ASD");//todo
@@ -27,8 +26,7 @@ public class UserAndTimeUtils {
      * 生成编辑用户和编辑模块
      * @return
      */
-    public static AdvInfo setEditUserAndTime() {
-        AdvInfo advInfo = new AdvInfo();
+    public static AdvInfo setEditUserAndTime(AdvInfo advInfo) {
         advInfo.setLastEditModule("");
         advInfo.setLastEditUser("asda");
         return advInfo;

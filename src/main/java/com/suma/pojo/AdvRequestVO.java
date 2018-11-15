@@ -18,7 +18,7 @@ public class AdvRequestVO {
     private String sessionId;//随机生成对当前请求的唯一标
 
     @NotNull
-    private String clientId;//大屏下为机顶盒ca卡号，其他平台传入用户注册账号id
+    private String clientId;//大屏下为机顶                                                                                                                                                                                        盒ca卡号，其他平台传入用户注册账号id
 
     private String advType;//广告位类型编码，可以为空或只有一个值
 

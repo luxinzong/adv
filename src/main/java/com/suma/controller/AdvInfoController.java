@@ -13,36 +13,30 @@ import com.suma.utils.Result;
 import com.suma.utils.StringUtil;
 import com.suma.utils.UserAndTimeUtils;
 import com.suma.vo.*;
+import com.sun.org.apache.xpath.internal.operations.Bool;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.CollectionUtils;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.*;
 
 /**
- * PF条、音量条广告 增删改查
+ * PF条、音量条广告 增删改查 以及根据类型查询所有的广告
  * @auther: luxinzong
  * @date: 2018/10/15
  */
 @RestController
-@RequestMapping(value = "pfAndVolume")
+@RequestMapping(value = "info")
 public class AdvInfoController extends BaseController {
     @Autowired
     private AdvInfoService advInfoService;
     @Autowired
     private InfoMaterialService infoMaterialService;
     @Autowired
-    private AdvMaterialService advMaterialService;
-    @Autowired
-    private AdvFlywordService advFlywordService;
-    @Autowired
-    private InfoFlywordService infoFlywordService;
-    @Autowired
     private AdvInfoServiceGroupService advInfoServiceGroupService;
-    @Autowired
-    private ServiceGroupService serviceGroupService;
     @Autowired
     private iAdvRegionService advRegionService;
     @Autowired
@@ -66,7 +60,7 @@ public class AdvInfoController extends BaseController {
         if (advInfo == null) {
             throw new AdvInfoException(ExceptionConstants.INFO_EXCEPTION_INFO_IS_NOT_EXIT);
         }
-        if (advInfo.getMaterialType() == 1 || advInfo.getMaterialType() == 3) {
+        if (advInfo.getMaterialType().equals(AdvContants.IMAGE_MATERIAL)|| advInfo.getMaterialType().equals(AdvContants.VEDIO_MATERIAL)) {
             throw new AdvInfoException("PF条仅支持图片广告");
         }
         List<InfoMaterial> infoMaterials = infoMaterialService.findByAdv(advInfo.getId());
@@ -84,7 +78,7 @@ public class AdvInfoController extends BaseController {
         //所有区域
         advInfoVO.setAdvRegions(advRegionService.selectAdvRegionAll());
         //有效区域ID
-        advInfoVO.setRegionIds(infoRegionService.getRegionIds(advInfo.getId()));
+        advInfoVO.setRegionId(infoRegionService.getRegionIds(advInfo.getId()));
         //查询出对应的广告位
         advInfoVO.setAdvLocation(advLocationService.findByPK(advInfo.getAdvLocationId()));
         return Result.success(advInfoVO);
@@ -156,13 +150,21 @@ public class AdvInfoController extends BaseController {
                 || advInfoVO.getMaterialType() == null || advInfoVO.getAdvTypeId() == null) {
             throw new AdvInfoException(ExceptionConstants.INFO_EXCEPTION_MISSING_REQUIRED_PARAMS);
         }
-        AdvInfo advInfo = UserAndTimeUtils.setCreateUserAndTime();
+        Boolean flag = advInfoVO.getAdvTypeId().equals(AdvContants.CUT_CHANNEL_ADV_SUBTYPE_ID);
+        if (!flag) {
+            throw new AdvInfoException("请添加切台广告");
+        }
+        AdvInfo advInfo = new AdvInfo();
         //将广告信息存入到advInfo中
         BeanUtils.copyProperties(advInfoVO, advInfo);
+        advInfo = UserAndTimeUtils.setCreateUserAndTime(advInfo);
         //判断广告信息是否存在
         advInfoService.judgeAdvInfo(advInfo);
         //获取广告位
         AdvLocation advLocation = advInfoVO.getAdvLocation();
+        if (advLocation == null) {
+            throw new AdvInfoException(AdvContants.LOCATION_IS_NULL);
+        }
         advLocationService.save(advLocation);
         advInfo.setAdvLocationId(advLocation.getId());
         //保存广告信息
@@ -171,11 +173,14 @@ public class AdvInfoController extends BaseController {
         Long advInfoId = advInfo.getId();
         //获取广告信息与资源关系集合
         List<InfoMaterialVO> infoMaterialVOS = advInfoVO.getInfoMaterialVOS();
+        if (CollectionUtils.isEmpty(infoMaterialVOS)) {
+            throw new AdvInfoException(AdvContants.MATERIAL_IS_NULL);
+        }
         infoMaterialService.saveInfoMaterial(infoMaterialVOS,advInfoId);
         // 如果按照频道进行分组，保存频道信息。
         advInfoServiceGroupService.saveServiceInfomation(advInfoVO, advInfoId);
         //保存region信息
-        infoRegionService.saveInfoRegion(advInfoVO.getRegionIds(), advInfoId);
+        infoRegionService.saveInfoRegion(advInfoVO.getRegionId(), advInfoId);
         return Result.success();
     }
 
@@ -196,28 +201,41 @@ public class AdvInfoController extends BaseController {
                 || advInfoVO.getMaterialType() == null || advInfoVO.getAdvTypeId() == null) {
             throw new AdvInfoException(ExceptionConstants.INFO_EXCEPTION_MISSING_REQUIRED_PARAMS);
         }
+        Boolean flag = advInfoVO.getAdvTypeId().equals(AdvContants.CUT_CHANNEL_ADV_SUBTYPE_ID);
+        if (!flag) {
+            throw new AdvInfoException("请添加切台广告");
+        }
         if (advInfoService.findByPK(advInfoVO.getId()) == null) {
             throw new AdvInfoException(ExceptionConstants.INFO_EXCEPTION_INFO_IS_NOT_EXIT);
         }
         //获取广告位
         AdvLocation advLocation = advInfoVO.getAdvLocation();
+        if (advLocation == null) {
+            throw new AdvInfoException(AdvContants.LOCATION_IS_NULL);
+        }
         //更新广告位信息
         if (advLocation != null) {
             advLocationService.update(advLocation);
         }
         //更新广告信息
-        AdvInfo advInfo = UserAndTimeUtils.setEditUserAndTime();
+        AdvInfo advInfo = new AdvInfo();
         BeanUtils.copyProperties(advInfoVO, advInfo);
+        advInfo = UserAndTimeUtils.setEditUserAndTime(advInfo);
         advInfoService.updateByPrimaryKeySelective(advInfo);
-        //更新广告对应资源表信息
+        /* 更新广告对应资源表信息 */
+        if (CollectionUtils.isEmpty(advInfoVO.getInfoMaterialVOS())) {
+        }
         infoMaterialService.deleteByAdvInfoId(advInfo.getId());
         infoMaterialService.saveInfoMaterial(advInfoVO.getInfoMaterialVOS(),advInfo.getId());
-        //读取频道信息,更新数据库
+        /* 读取频道信息,更新数据库 */
         advInfoServiceGroupService.deleteAdvServiceByAdvInfoId(advInfo.getId());
         advInfoServiceGroupService.updateServiceGroup(advInfoVO);
         //更新区域信息
+        if (CollectionUtils.isEmpty(advInfoVO.getRegionId())) {
+            throw new AdvInfoException(AdvContants.REGION_ID_IS_NULL);
+        }
         infoRegionService.deleteByAdvInfoId(advInfo.getId());
-        infoRegionService.saveInfoRegion(advInfoVO.getRegionIds(),advInfo.getId());
+        infoRegionService.saveInfoRegion(advInfoVO.getRegionId(),advInfo.getId());
         return Result.success();
     }
 

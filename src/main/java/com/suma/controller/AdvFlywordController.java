@@ -24,7 +24,7 @@ import java.util.List;
 /**
  * @auther: luxinzong
  * @date: 2018/10/22 0022
- * @description 字幕广告属性增删改查
+ * @description 字幕模板 增查接口
  */
 @RestController
 @RequestMapping(value = "flyword")
@@ -39,7 +39,7 @@ public class AdvFlywordController extends BaseController{
     InfoFlywordService infoFlywordService;
 
     /**
-     * 插入字幕广告数据
+     * 插入字幕模板数据
      * @param advFlyWord
      * @return
      */
@@ -49,11 +49,12 @@ public class AdvFlywordController extends BaseController{
         if (advFlyWord == null) {
             throw new AdvFlyWordException(ExceptionConstants.ADV_FLYWOR_REQUESTPARAM_IS_NULL);
         }
+        //TODO 在创建广告时 模板添加 ID返回问题需要解决
         return toResult(advFlywordService.save(advFlyWord));
     }
 
     /**
-     * 删除字幕广告数据
+     * 删除字幕模板数据
      * @param id
      * @return
      */
@@ -70,27 +71,7 @@ public class AdvFlywordController extends BaseController{
     }
 
     /**
-     * 批量删除字幕广告数据
-     * @param str
-     * @return
-     */
-    @Transactional(rollbackFor = Exception.class)
-    @RequestMapping(value = "deleteAll", method = RequestMethod.POST)
-    public Result delete(String str) {
-        if (StringUtils.isEmpty(str)) {
-            throw new AdvFlyWordException(ExceptionConstants.ADV_FLYWOR_REQUESTPARAM_IS_NULL);
-        }
-        List<Long> ids = StringUtil.convertstr(str);
-        InfoFlyWordExample example = new InfoFlyWordExample();
-        example.createCriteria().andFlywordIdIn(ids);
-        infoFlywordService.deleteByExample(example);
-        AdvFlyWordExample example1 = new AdvFlyWordExample();
-        example1.createCriteria().andIdIn(ids);
-        return toResult(advFlywordService.deleteByExample(example1));
-    }
-
-    /**
-     * 更新字幕广告数据
+     * 更新字幕模板数据
      * @param advFlyWord
      * @return 字幕广告数据 AdvFlyWord
      */
@@ -100,49 +81,34 @@ public class AdvFlywordController extends BaseController{
         if (advFlyWord.getId() == null) {
             throw new AdvFlyWordException(ExceptionConstants.ADV_FLYWOR_REQUESTPARAM_IS_NULL);
         }
-        return toResult(advFlywordService.update(advFlyWord));
-    }
-
-    /**
-     * 批量更新字幕广告数据
-     * @param advFlyWords
-     * @return List<AdvFlyWord> 字幕广告数据的集合
-     */
-    @Transactional(rollbackFor = Exception.class)
-    @RequestMapping(value = "updateAll")
-    public Result update(List<AdvFlyWord> advFlyWords) {
-        if (advFlyWords == null) {
-            throw new AdvFlyWordException(ExceptionConstants.ADV_FLYWOR_REQUESTPARAM_IS_NULL);
-        }
-        advFlyWords.forEach(advFlyWord -> {
-            if (advFlyWord.getId() == null) {
-                logger.error("缺少必要参数");
-            }
-            if (advFlywordService.findByPK(advFlyWord.getId()) == null) {
-                throw new AdvFlyWordException("广告ID:" + advFlyWord.getId() + "不存在");
-            }
-            advFlywordService.update(advFlyWord);
-        });
-        return Result.success();
+        return toResult(advFlywordService.updateByPrimaryKeySelective(advFlyWord));
     }
 
     /**
      * 查询字幕广告对应的字幕信息
-     * @param advFlywordId
+     * @param
      * @return
      */
-    @RequestMapping(value = "query")
-    public Result query(Long advFlywordId) {
-        if (advFlywordId == null) {
+    @RequestMapping(value = "queryById")
+    public Result query(Long id) {
+        if (id == null) {
             throw new AdvFlyWordException(ExceptionConstants.ADV_FLYWOR_REQUESTPARAM_IS_NULL);
         }
-        AdvFlyWordExample example = new AdvFlyWordExample();
-        example.createCriteria().andIdEqualTo(advFlywordId);
-        List<AdvFlyWord> advFlyWords = advFlywordService.selectByExample(example);
-        if (CollectionUtils.isEmpty(advFlyWords)) {
+        AdvFlyWord advFlyWord = advFlywordService.findByPK(id);
+        if (advFlyWord == null) {
             throw new AdvFlyWordException(ExceptionConstants.ADV_FLYWORD_IS_NOT_EXIST);
         }
-        return Result.success(advFlyWords.get(0));
+        return Result.success(advFlyWord);
+    }
+
+    /**
+     * 查询所有字幕广告
+     * @return
+     */
+    @RequestMapping("queryAll")
+    public Result queryAll() {
+        List<AdvFlyWord> advFlyWords = advFlywordService.findALL();
+        return Result.success(advFlyWords);
     }
 
 }

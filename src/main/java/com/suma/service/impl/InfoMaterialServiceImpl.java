@@ -1,6 +1,7 @@
 package com.suma.service.impl;
 
 import com.fasterxml.jackson.databind.type.CollectionLikeType;
+import com.google.common.collect.Lists;
 import com.suma.constants.ExceptionConstants;
 import com.suma.dao.AdvMaterialMapper;
 import com.suma.dao.InfoMaterialMapper;
@@ -39,7 +40,32 @@ public class InfoMaterialServiceImpl extends BaseServiceImpl<InfoMaterial, InfoM
     private AdvMaterialService advMaterialService;
 
     @Override
-    public AdvItem setAdvItem(List<InfoMaterial> infoMaterials,AdvItem advItem) {
+    public InfoMaterial getInfoMaterialByAdvInfoId(Long advInfoId) {
+        InfoMaterialExample example = new InfoMaterialExample();
+        example.createCriteria().andAdvInfoIdEqualTo(advInfoId);
+        example.setOrderByClause("sequence asc");
+        List<InfoMaterial> infoMaterials = selectByExample(example);
+        if (!CollectionUtils.isEmpty(infoMaterials)) {
+            return infoMaterials.get(0);
+        }
+        return null;
+    }
+
+    @Override
+    public AdvItem setAdvItemWithVideoMaterial(InfoMaterial infoMaterial, AdvItem advItem) {
+        if (infoMaterial != null) {
+            AdvMaterial advMaterial = advMaterialService.findByPK(infoMaterial.getMaterialId());
+            advItem.setHref(advMaterial.getHref());
+            advItem.setDuration(Long.valueOf(infoMaterial.getDuration()));
+            advItem.setHref(advMaterial.getHref());
+            advItem.setAdvURL(advMaterial.getFileUrl());
+            advItem.setMD5(advMaterial.getMd5());
+        }
+        return advItem;
+    }
+
+    @Override
+    public List<AdvItem> setAdvItem(List<InfoMaterial> infoMaterials,AdvItem advItem,List<AdvItem> itemList) {
         if (!CollectionUtils.isEmpty(infoMaterials)) {
             infoMaterials.forEach(infoMaterial -> {
                 AdvMaterial advMaterial = advMaterialService.findByPK(infoMaterial.getMaterialId());
@@ -47,9 +73,10 @@ public class InfoMaterialServiceImpl extends BaseServiceImpl<InfoMaterial, InfoM
                 advItem.setHref(advMaterial.getHref());
                 advItem.setAdvURL(advMaterial.getFileUrl());
                 advItem.setMD5(advMaterial.getMd5());
+                itemList.add(advItem);
             });
         }
-        return advItem;
+        return itemList;
     }
 
     @Override
@@ -121,7 +148,9 @@ public class InfoMaterialServiceImpl extends BaseServiceImpl<InfoMaterial, InfoM
                 InfoMaterial infoMaterial = new InfoMaterial();
                 BeanUtils.copyProperties(infoMaterialVO, infoMaterial);
                 infoMaterial.setAdvInfoId(advInfoId);
-                infoMaterial.setMaterialId(getAdvMaterialByName(infoMaterialVO.getFileName()).getId());
+                if (getAdvMaterialByName(infoMaterialVO.getFileName()) != null){
+                    infoMaterial.setMaterialId(getAdvMaterialByName(infoMaterialVO.getFileName()).getId());
+                }
                 infoMaterialMapper.insert(infoMaterial);
             });
         }
@@ -138,12 +167,15 @@ public class InfoMaterialServiceImpl extends BaseServiceImpl<InfoMaterial, InfoM
                     throw new AdvMaterialException(ExceptionConstants.ADV_MATERIAL_IS_NULL);
                 }
                 //查找对应资源文件名称
-                String fileName = advMaterialService.findByPK(infoMaterial.getMaterialId()).getFileName();
+                AdvMaterial advMaterial = advMaterialService.findByPK(infoMaterial.getMaterialId());
+                String fileName = advMaterial.getFileName();
+                Long id = advMaterial.getId();
                 //创建资源信息VO对象，将资源信息存储到VO对象中
                 //将前端资源信息VO对象存储到信息列表中
                 InfoMaterialVO infoMaterialVO = new InfoMaterialVO();
                 BeanUtils.copyProperties(infoMaterial, infoMaterialVO);
                 infoMaterialVO.setFileName(fileName);
+                infoMaterialVO.setId(id);
                 infoMaterialVOS.add(infoMaterialVO);
             });
         }

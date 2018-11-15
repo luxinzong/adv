@@ -1,6 +1,7 @@
 package com.suma.controller;
 
 import com.alibaba.fastjson.JSON;
+import com.suma.constants.AdvContants;
 import com.suma.constants.ExceptionConstants;
 import com.suma.exception.AdvInfoException;
 import com.suma.pojo.AdvInfo;
@@ -50,8 +51,7 @@ public class MenuAdvController extends BaseController {
      * @return
      */
     @Transactional(rollbackFor = Exception.class)
-    @RequestMapping("menuAdv")
-
+    @RequestMapping("insert")
     public Result saveMenuAdv(String data) {
         MenuAdvVO menuAdvVO = JSON.parseObject(data, MenuAdvVO.class);
         if (menuAdvVO == null) {
@@ -62,36 +62,41 @@ public class MenuAdvController extends BaseController {
                 || menuAdvVO.getMaterialType() == null || menuAdvVO.getAdvTypeId() == null) {
             throw new AdvInfoException(ExceptionConstants.INFO_EXCEPTION_MISSING_REQUIRED_PARAMS);
         }
-        try {
-            //保存位置信息
-            AdvLocation advLocation = menuAdvVO.getAdvLocation();
-            if (advLocation == null) {
-                throw new AdvInfoException("未填写广告位信息");
-            }
-            advLocationService.save(advLocation);
-            //保存广告信息
-            AdvInfo advInfo = UserAndTimeUtils.setCreateUserAndTime();
-            BeanUtils.copyProperties(menuAdvVO, advInfo);
-            advInfo.setAdvLocationId(advLocation.getId());
-            advInfoService.save(advInfo);
-            //保存区域信息
-            if (CollectionUtils.isEmpty(menuAdvVO.getRegionIds())) {
-                throw new AdvInfoException("未填写区域信息");
-            }
-            infoRegionService.saveInfoRegion(menuAdvVO.getRegionIds(), advInfo.getId());
-            //保存关系列表
-            if (CollectionUtils.isEmpty(menuAdvVO.getInfoMaterialVOS())) {
-                throw new AdvInfoException("未添加资源列表");
-            }
-            infoMaterialService.saveInfoMaterial(menuAdvVO.getInfoMaterialVOS(), advInfo.getId());
-        } catch (Exception e) {
-
+        Boolean flag = menuAdvVO.getAdvTypeId().equals(AdvContants.MAIN_MENU_ADV_SUBTYPE_ID)
+                || menuAdvVO.getAdvTypeId().equals(AdvContants.LIST_ADV_SUBTYPE_ID)
+                || menuAdvVO.getAdvTypeId().equals(AdvContants.VOLUM_ADV_SUBTYPE_ID);
+        if (!flag) {
+            throw new AdvInfoException("请添加菜单或节目列表或音量条广告");
         }
+        //保存位置信息
+        AdvLocation advLocation = menuAdvVO.getAdvLocation();
+        if (advLocation == null) {
+            throw new AdvInfoException("未填写广告位信息");
+        }
+        advLocationService.save(advLocation);
+        //保存广告信息
+        AdvInfo advInfo = new AdvInfo();
+        BeanUtils.copyProperties(menuAdvVO, advInfo);
+        //判断广告信息是否存在
+        advInfoService.judgeAdvInfo(advInfo);
+        advInfo = UserAndTimeUtils.setCreateUserAndTime(advInfo);
+        advInfo.setAdvLocationId(advLocation.getId());
+        advInfoService.save(advInfo);
+        //保存区域信息
+        if (CollectionUtils.isEmpty(menuAdvVO.getRegionId())) {
+            throw new AdvInfoException("未填写区域信息");
+        }
+        infoRegionService.saveInfoRegion(menuAdvVO.getRegionId(), advInfo.getId());
+        //保存关系列表
+        if (CollectionUtils.isEmpty(menuAdvVO.getInfoMaterialVOS())) {
+            throw new AdvInfoException("未添加资源列表");
+        }
+        infoMaterialService.saveInfoMaterial(menuAdvVO.getInfoMaterialVOS(), advInfo.getId());
         return Result.success();
     }
 
     @Transactional(rollbackFor = Exception.class)
-    @RequestMapping("updateMenuAdv")
+    @RequestMapping("update")
     public Result updateMenuAdv(String data) {
         MenuAdvVO menuAdvVO = JSON.parseObject(data, MenuAdvVO.class);
         if (menuAdvVO == null) {
@@ -102,8 +107,16 @@ public class MenuAdvController extends BaseController {
                 || menuAdvVO.getMaterialType() == null || menuAdvVO.getAdvTypeId() == null) {
             throw new AdvInfoException(ExceptionConstants.INFO_EXCEPTION_MISSING_REQUIRED_PARAMS);
         }
+        Boolean flag = menuAdvVO.getAdvTypeId().equals(AdvContants.MAIN_MENU_ADV_SUBTYPE_ID)
+                || menuAdvVO.getAdvTypeId().equals(AdvContants.LIST_ADV_SUBTYPE_ID)
+                || menuAdvVO.getAdvTypeId().equals(AdvContants.VOLUM_ADV_SUBTYPE_ID);
+        if (!flag) {
+            throw new AdvInfoException("不是菜单或节目列表或音量条广告");
+        }
         //更新广告信息
-        AdvInfo advInfo = UserAndTimeUtils.setEditUserAndTime();
+        AdvInfo advInfo = new AdvInfo();
+        BeanUtils.copyProperties(menuAdvVO, advInfo);
+        advInfo = UserAndTimeUtils.setEditUserAndTime(advInfo);
         advInfoService.updateByPrimaryKeySelective(advInfo);
         //更新广告位
         AdvLocation advLocation = menuAdvVO.getAdvLocation();
@@ -113,10 +126,10 @@ public class MenuAdvController extends BaseController {
         advLocationService.update(advLocation);
         //更新有效区域
         infoRegionService.deleteByAdvInfoId(advInfo.getId());
-        if (CollectionUtils.isEmpty(menuAdvVO.getRegionIds())) {
+        if (CollectionUtils.isEmpty(menuAdvVO.getRegionId())) {
             throw new AdvInfoException("未填写区域信息");
         }
-        infoRegionService.saveInfoRegion(menuAdvVO.getRegionIds(), advInfo.getId());
+        infoRegionService.saveInfoRegion(menuAdvVO.getRegionId(), advInfo.getId());
         //更新对应关系列表
         if (CollectionUtils.isEmpty(menuAdvVO.getInfoMaterialVOS())) {
             throw new AdvInfoException("未添加资源信息列表");
@@ -126,7 +139,7 @@ public class MenuAdvController extends BaseController {
         return Result.success();
     }
 
-    @RequestMapping("deleteMenuAdv")
+    @RequestMapping("delete")
     @Transactional(rollbackFor = Exception.class)
     public Result deleteMenuAdv(String str) {
         List<Long> advInfoIds = StringUtil.convertstr(str);
@@ -149,12 +162,12 @@ public class MenuAdvController extends BaseController {
         List<InfoMaterialVO> infoMaterialVOS = infoMaterialService.getInfoMaterialVOS(infoMaterials);
         menuAdvVO.setInfoMaterialVOS(infoMaterialVOS);
         //配置广告位
-        if (advInfo.getMaterialType().equals(2)) {
+        if (advInfo.getMaterialType().equals(AdvContants.IMAGE_MATERIAL)) {
             menuAdvVO.setAdvLocation(advLocationService.findByPK(advInfo.getAdvLocationId()));
         }
         //配置有效区域ID
-        menuAdvVO.setRegionIds(infoRegionService.getRegionIds(advInfo.getId()));
-        return Result.success();
+        menuAdvVO.setRegionId(infoRegionService.getRegionIds(advInfo.getId()));
+        return Result.success(menuAdvVO);
     }
 
 

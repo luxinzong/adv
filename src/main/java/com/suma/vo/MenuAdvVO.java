@@ -17,7 +17,7 @@ public class MenuAdvVO extends AdvInfo {
 
     private AdvLocation advLocation;//广告位
 
-    private List<Integer> regionIds;//有效区域id
+    private List<Integer> regionId;//有效区域id
 
     private List<InfoMaterialVO> infoMaterialVOS;//对应关系列表
 }

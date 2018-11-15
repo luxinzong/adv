@@ -55,6 +55,18 @@ public class AdvInfoServiceImpl extends BaseServiceImpl<AdvInfo, AdvInfoExample,
         return advInfoMapper.findById(id);
     }
 
+    @Override
+    public void setBootLocation(AdvInfo advInfo) {
+        AdvLocation advLocation = new AdvLocation();
+        advLocation.setmHeight(720L);
+        advLocation.setmWidth(1280L);
+        advLocation.setyPosition(0L);
+        advLocation.setxPosition(0L);
+        advLocationService.save(advLocation);
+        advInfo.setAdvLocationId(advLocation.getId());
+    }
+
+
     /**
      * 更具广告ID删除广告位
      * @param advInfoIds
@@ -164,13 +176,26 @@ public class AdvInfoServiceImpl extends BaseServiceImpl<AdvInfo, AdvInfoExample,
         if (!CollectionUtils.isEmpty(advInfoIds)) {
             advInfoIds.forEach(advInfoId -> {
                 //删除广告信息
+                AdvInfo advInfo = findById(advInfoId);
+                if (advInfo == null) {
+                    throw new AdvInfoException(ExceptionConstants.INFO_EXCEPTION_INFO_IS_NOT_EXIT);
+                }
                 deleteByPK(advInfoId);
                 //删除广告位
-                advLocationService.deleteByPK(findByPK(advInfoId).getAdvLocationId());
+                AdvLocation advLocation  = advLocationService.findByPK(advInfo.getAdvLocationId());
+                if (advLocation != null) {
+                    advLocationService.deleteByPK(advInfo.getAdvLocationId());
+                }
                 //删除有效区域
-                infoRegionService.deleteByAdvInfoId(advInfoId);
-                //删除对应关系
-                infoMaterialService.deleteByAdvInfoId(advInfoId);
+                List<Integer> list = infoRegionService.getRegionIds(advInfoId);
+                if (!CollectionUtils.isEmpty(list)) {
+                    infoRegionService.deleteByAdvInfoId(advInfoId);
+                }
+                //删除素材对应关系
+                List<InfoMaterial> infoMaterialList = infoMaterialService.findByAdv(advInfoId);
+                if (!CollectionUtils.isEmpty(infoMaterialList)) {
+                    infoMaterialService.deleteByAdvInfoId(advInfoId);
+                }
             });
         }
         return 0;

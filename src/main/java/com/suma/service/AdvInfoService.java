@@ -31,4 +31,6 @@ public interface AdvInfoService extends BaseService<AdvInfo, AdvInfoExample, Lon
 
     int deleteAdvLocationByAdvInfoIds(List<Long> advInfoId);
 
+    void setBootLocation(AdvInfo advInfo);
+
 }

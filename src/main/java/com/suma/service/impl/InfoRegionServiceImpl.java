@@ -2,6 +2,8 @@ package com.suma.service.impl;
 
 import com.google.common.collect.Lists;
 import com.suma.dao.*;
+import com.suma.exception.AdvInfoException;
+import com.suma.pojo.AdvInfo;
 import com.suma.pojo.InfoRegion;
 import com.suma.pojo.InfoRegionExample;
 import com.suma.service.InfoRegionService;
@@ -80,12 +82,14 @@ public class InfoRegionServiceImpl extends BaseServiceImpl<InfoRegion, InfoRegio
     @Override
     public void saveInfoRegion(List<Integer> regionIds, Long advInfoId) {
         if (!CollectionUtils.isEmpty(regionIds)) {
-            regionIds.forEach(regionId->{
+            regionIds.forEach(regionId -> {
                 InfoRegion infoRegion = new InfoRegion();
                 infoRegion.setAdvInfoId(advInfoId);
                 infoRegion.setRegionId(regionId);
                 infoRegionMapper.insert(infoRegion);
             });
+        } else {
+            throw new AdvInfoException("未填写区域信息");
         }
     }
 

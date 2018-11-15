@@ -21,12 +21,16 @@ public interface InfoMaterialService extends BaseService<InfoMaterial,InfoMateri
 
     void deleteByAdvInfoId(Long advInfoId);
 
-    public AdvMaterial getAdvMaterialByName(String fileName);
+    InfoMaterial getInfoMaterialByAdvInfoId(Long advInfoId);
+
+    AdvItem setAdvItemWithVideoMaterial(InfoMaterial infoMaterial,AdvItem advItem);
+
+    AdvMaterial getAdvMaterialByName(String fileName);
 
     void saveInfoMaterial(List<InfoMaterialVO> infoMaterialVOS, Long advInfoId);
     void deleteByAdvInfoIds(List<Long> list);
 
     List<InfoMaterialVO> getInfoMaterialVOS(List<InfoMaterial> infoMaterials);
 
-    AdvItem setAdvItem(List<InfoMaterial> infoMaterials,AdvItem advItem);
+    List<AdvItem> setAdvItem(List<InfoMaterial> infoMaterials,AdvItem advItem,List<AdvItem> itemList);
 }

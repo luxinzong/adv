@@ -1,6 +1,7 @@
 package com.suma.controller;
 
 import com.alibaba.fastjson.JSON;
+import com.suma.constants.AdvContants;
 import com.suma.constants.ExceptionConstants;
 import com.suma.exception.AdvInfoException;
 import com.suma.pojo.AdvInfo;
@@ -30,7 +31,7 @@ import java.util.List;
  * @date: 2018/11/13 0013
  * @description
  */
-@RequestMapping("netAdv")
+@RequestMapping("implant")
 @RestController
 public class ImplantAdvController extends BaseController {
 
@@ -68,13 +69,21 @@ public class ImplantAdvController extends BaseController {
                 || netAdvVO.getMaterialType() == null || netAdvVO.getAdvTypeId() == null) {
             throw new AdvInfoException(ExceptionConstants.INFO_EXCEPTION_MISSING_REQUIRED_PARAMS);
         }
+        Boolean flag = netAdvVO.getAdvTypeId().equals(AdvContants.BEFORE_MOVIE_ADV_SUBTYPE_ID) || netAdvVO.getAdvTypeId().equals(AdvContants.SUSPAND_MOVIE_ADV_SUBTYPE_ID);
+        if (!flag) {
+            throw new AdvInfoException("不是植入广告");
+        }
         //更新广告信息
-        AdvInfo advInfo = UserAndTimeUtils.setEditUserAndTime();
+        AdvInfo advInfo = new AdvInfo();
         BeanUtils.copyProperties(netAdvVO, advInfo);
+        //判断广告信息是否存在
+        advInfoService.judgeAdvInfo(advInfo);
+        advInfo = UserAndTimeUtils.setEditUserAndTime(advInfo);
         advInfoService.updateByPrimaryKeySelective(advInfo);
-        //更新位置信息
-        AdvLocation advLocation = netAdvVO.getAdvLocation();
-        if (advInfo.getMaterialType() == 2) {
+        //如果是图片类型的广告
+        if (advInfo.getMaterialType().equals(AdvContants.IMAGE_MATERIAL)) {
+            //更新位置信息
+            AdvLocation advLocation = netAdvVO.getAdvLocation();
             if (advLocation == null) {
                 throw new AdvInfoException("广告位信息未填写");
             }
@@ -120,12 +129,21 @@ public class ImplantAdvController extends BaseController {
                 || netAdvVO.getMaterialType() == null || netAdvVO.getAdvTypeId() == null || netAdvVO.getVideoId() == null) {
             throw new AdvInfoException(ExceptionConstants.INFO_EXCEPTION_MISSING_REQUIRED_PARAMS);
         }
-        AdvInfo advInfo = UserAndTimeUtils.setCreateUserAndTime();
+        Boolean flag = netAdvVO.getAdvTypeId().equals(AdvContants.BEFORE_MOVIE_ADV_SUBTYPE_ID) || netAdvVO.getAdvTypeId().equals(AdvContants.SUSPAND_MOVIE_ADV_SUBTYPE_ID);
+        if (!flag) {
+            throw new AdvInfoException("请添加植入广告");
+        }
+        AdvInfo advInfo = new AdvInfo();
         BeanUtils.copyProperties(netAdvVO, advInfo);
-        AdvLocation advLocation = netAdvVO.getAdvLocation();
-        System.out.println(advLocation);
-        //保存位置信息
-        if (advInfo.getMaterialType() == 2) {
+        advInfo = UserAndTimeUtils.setCreateUserAndTime(advInfo);
+        //如果是图片类型，则添加广告位
+        if (advInfo.getMaterialType().equals(AdvContants.IMAGE_MATERIAL)) {
+            AdvLocation advLocation = netAdvVO.getAdvLocation();
+            if (advLocation != null) {
+                throw new AdvInfoException("未填写广告位信息");
+            }
+            System.out.println(advLocation);
+            //保存位置信息
             if (advLocation != null) {
                 advLocationService.save(advLocation);
                 //保存广告信息
@@ -144,8 +162,7 @@ public class ImplantAdvController extends BaseController {
             throw new AdvInfoException("未填写资源信息列表");
         }
         infoMaterialService.saveInfoMaterial(infoMaterialVOS,advInfo.getId());
-
-        //获取视频源Id
+        //获取视频源Id todo
         List<Long> list = netAdvVO.getVideoId();
         System.out.println(list);
         return Result.success();
@@ -166,11 +183,11 @@ public class ImplantAdvController extends BaseController {
         List<InfoMaterialVO> infoMaterialVOS = infoMaterialService.getInfoMaterialVOS(infoMaterials);
         netAdvVO.setInfoMaterialVOS(infoMaterialVOS);
         //配置广告位
-        if (advInfo.getMaterialType().equals(2)) {
+        if (advInfo.getMaterialType().equals(AdvContants.IMAGE_MATERIAL)) {
             netAdvVO.setAdvLocation(advLocationService.findByPK(advInfo.getAdvLocationId()));
         }
         //配置有效区域ID
         netAdvVO.setRegionId(infoRegionService.getRegionIds(advInfo.getId()));
-        return Result.success();
+        return Result.success(netAdvVO);
     }
 }

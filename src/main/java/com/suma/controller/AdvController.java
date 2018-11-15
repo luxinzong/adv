@@ -3,25 +3,24 @@ package com.suma.controller;
 import com.google.common.collect.Lists;
 import com.suma.constants.AdvContants;
 import com.suma.constants.ExceptionConstants;
-import com.suma.dao.AdvInfoServiceGroupMapper;
 import com.suma.exception.AdvRequestException;
 import com.suma.exception.AdvTypeException;
 import com.suma.exception.InfoVersionException;
 import com.suma.pojo.*;
 import com.suma.service.*;
-import com.suma.utils.Result;
+import com.suma.utils.StringUtil;
 import lombok.extern.log4j.Log4j;
 import org.apache.commons.lang3.StringUtils;
-import org.apache.el.lang.ELArithmetic;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.CollectionUtils;
-import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.*;
+import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.concurrent.atomic.AtomicInteger;
 
 /**
  * @auther: zhangzhaoyuan
@@ -241,8 +240,8 @@ public class AdvController {
                 //设置素材类型
                 advItem.setAssetType((long) advInfo.getMaterialType());
                 //设置素材
-                List<InfoMaterial> infoMaterials = infoMaterialService.findByAdv(advTypeId);
-                list.add(infoMaterialService.setAdvItem(infoMaterials, advItem));
+                List<InfoMaterial> infoMaterials = infoMaterialService.findByAdv(advInfo.getId());
+                list = infoMaterialService.setAdvItem(infoMaterials, advItem,list);
             }
         }
         advResponseVO.setVersion(upToDateVersion);
@@ -253,6 +252,11 @@ public class AdvController {
         return advResponseVO;
     }
 
+    /**
+     * 开机广告请求接口
+     * @param advRequestVO
+     * @return
+     */
     @RequestMapping("bootAdv")
     public AdvResponseVO getAllBootAdv(@RequestBody AdvRequestVO advRequestVO) {
         System.out.println(advRequestVO);
@@ -263,36 +267,19 @@ public class AdvController {
         AdvResponseVO advResponseVO = new AdvResponseVO();
         advResponseVO.setSessionId(advRequestVO.getSessionId());
         //根据advType和advTypeSubType，判断是否是开机广告
-        String advType = advRequestVO.getAdvType();
-        String advTypeSubType = advRequestVO.getAdvSubType();
-        Long advTypeId = advTypeService.getAdvTypeIdByAdvTypeAndSubType(advType, advTypeSubType);
+        Long advTypeId = checkAdvType(advRequestVO);
         System.out.println();
-        if (!advTypeId.equals(2L)) {
+        if (!advTypeId.equals(AdvContants.START_MACHINE_ADV_SUBTYPE_ID)) {
             throw new AdvTypeException(ExceptionConstants.NOT_START_MACHINE_ADV_TYPE);
         }
         //获取区域信息
         Integer regionId = Integer.valueOf(advRequestVO.getRegionCode());
         //获取当前广告版本信息
-        Integer version = advRequestVO.getVersion();
         List<AdvItem> list = Lists.newArrayList();
         List<AdvInfo> advInfoList = infoVersionService.getBootAdv(regionId, advTypeId);
         if (!CollectionUtils.isEmpty(advInfoList)) {
-            advInfoList.forEach(advInfo -> {
-                if (advInfo != null) {
-                    //设置返回终端的广告类型
-                    AdvItem advItem = advTypeService.setAdvItem(advTypeId);
-                    //设置位置信息
-                    AdvLocation advLocation = advLocationService.findByPK(advInfo.getAdvLocationId());
-                    BeanUtils.copyProperties(advLocation, advItem);
-                    //设置素材类型
-                    advItem.setAssetType((long) advInfo.getMaterialType());
-                    //设置素材
-                    List<InfoMaterial> infoMaterials = infoMaterialService.findByAdv(advInfo.getId());
-                    if (!CollectionUtils.isEmpty(infoMaterials)) {
-                        list.add(infoMaterialService.setAdvItem(infoMaterials, advItem));
-                    }
-                }
-            });
+            System.out.println(advInfoList);
+            getMaterials(advTypeId, list, advInfoList);
         }
         advResponseVO.setVersion(2);
         advResponseVO.setAdvItem(list);
@@ -302,7 +289,57 @@ public class AdvController {
         return advResponseVO;
     }
 
+    private void getMaterials(Long advTypeId, List<AdvItem> list, List<AdvInfo> advInfoList) {
+        advInfoList.forEach(advInfo -> {
+            if (advInfo != null) {
+                //设置返回终端的广告类型
+                AdvItem advItem = advTypeService.setAdvItem(advTypeId);
+                //设置位置信息
+                AdvLocation advLocation = advLocationService.findByPK(advInfo.getAdvLocationId());
+                BeanUtils.copyProperties(advLocation, advItem);
+                //设置素材类型
+                advItem.setAssetType((long) advInfo.getMaterialType());
+                //设置素材
+                List<InfoMaterial> infoMaterials = infoMaterialService.findByAdv(advInfo.getId());
+                //设置素材
+                infoMaterialService.setAdvItem(infoMaterials, advItem,list);
+            }
+        });
+    }
 
+    /**
+     * 弹出广告请求接口
+     * @param advRequestVO
+     * @return
+     */
+    @RequestMapping("popAdv")
+    public AdvResponseVO getPopAdvController(@RequestBody AdvRequestVO advRequestVO) {
+        //判断参数
+        if (StringUtils.isAllBlank(advRequestVO.getSessionId(), advRequestVO.getClientId())) {
+            throw new AdvRequestException(ExceptionConstants.ADV_REQUEST_MISSING_PARAMETERS, advRequestVO.getSessionId());
+        }
+        AdvResponseVO advResponseVO = new AdvResponseVO();
+        advResponseVO.setSessionId(advRequestVO.getSessionId());
+        //判断广告类型
+        Long advTypeId = checkAdvType(advRequestVO);
+        if (!advTypeId.equals(AdvContants.POP_ADV_SUBTYPE_ID)) {
+            throw new AdvRequestException("不是弹出广告", advRequestVO.getSessionId());
+        }
+        //获取区域信息
+        Integer regionId = Integer.valueOf(advRequestVO.getRegionCode());
+        //获取当前广告版本信息
+        Integer version = advRequestVO.getVersion();
+        return advResponseVO;
+    }
 
-
+    /**
+     * 判断广告类型
+     * @param advRequestVO
+     */
+    public Long checkAdvType(AdvRequestVO advRequestVO) {
+        String advType = advRequestVO.getAdvType();
+        String advTypeSubType = advRequestVO.getAdvSubType();
+        Long advTypeId = advTypeService.getAdvTypeIdByAdvTypeAndSubType(advType, advTypeSubType);
+        return advTypeId;
+    }
 }

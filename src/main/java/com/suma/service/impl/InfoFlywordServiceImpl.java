@@ -2,11 +2,10 @@ package com.suma.service.impl;
 
 import com.suma.dao.AdvFlyWordMapper;
 import com.suma.dao.InfoFlyWordMapper;
-import com.suma.pojo.AdvFlyWord;
-import com.suma.pojo.AdvFlyWordExample;
-import com.suma.pojo.InfoFlyWord;
-import com.suma.pojo.InfoFlyWordExample;
+import com.suma.pojo.*;
+import com.suma.service.AdvInfoService;
 import com.suma.service.InfoFlywordService;
+import com.suma.service.InfoMaterialService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
@@ -32,6 +31,10 @@ public class InfoFlywordServiceImpl extends BaseServiceImpl<InfoFlyWord,InfoFlyW
     private InfoFlyWordMapper infoFlyWordMapper;
     @Autowired
     private AdvFlyWordMapper advFlyWordMapper;
+    @Autowired
+    private AdvInfoService advInfoService;
+    @Autowired
+    private InfoMaterialService infoMaterialService;
 
     @Override
     public List<Long> selectFlywordIds(Long advInfoId) {
@@ -45,9 +48,19 @@ public class InfoFlywordServiceImpl extends BaseServiceImpl<InfoFlyWord,InfoFlyW
     @Override
     public void deleteByAdvInfoIds(List<Long> advInfoIds){
         if (!CollectionUtils.isEmpty(advInfoIds)) {
-            InfoFlyWordExample example = new InfoFlyWordExample();
-            example.createCriteria().andAdvInfoIdIn(advInfoIds);
-            infoFlyWordMapper.deleteByExample(example);
+            advInfoIds.forEach(advInfoId ->{
+                AdvInfo advInfo = advInfoService.findByPK(advInfoId);
+                Integer materialType = advInfo.getMaterialType();
+                if (materialType == 1) {
+                    InfoFlyWordExample example = new InfoFlyWordExample();
+                    example.createCriteria().andAdvInfoIdIn(advInfoIds);
+                    infoFlyWordMapper.deleteByExample(example);
+                }
+                if (materialType == 2) {
+                    infoMaterialService.deleteByAdvInfoId(advInfoId);
+                }
+            });
+
         }
     }
 

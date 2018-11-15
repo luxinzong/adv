@@ -22,7 +22,7 @@ public class BootAdvVO extends AdvInfo {
     /**
      * 有效区域id
      */
-    private List<Integer> regionIds;
+    private List<Integer> regionId;
 
     /**
      * 所有区域

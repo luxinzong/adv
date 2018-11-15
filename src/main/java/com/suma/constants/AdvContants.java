@@ -26,8 +26,8 @@ public class AdvContants {
     }
 
     public static Map<Long, Integer> getTypeMap() {
-        typeMap.put(SERVICE_GROUP_STATUS_VOD, ADV_SERVICE_TYPE_1);
-        typeMap.put(SERVICE_GROUP_STATUS_LIVE, ADV_SERVICE_TYPE_2);
+        typeMap.put(SERVICE_GROUP_STATUS_VOD, ADV_SERVICE_TYPE_2);
+        typeMap.put(SERVICE_GROUP_STATUS_LIVE, ADV_SERVICE_TYPE_1);
         typeMap.put(SERVICE_GROUP_STATUS_SLEEP, ADV_SERVICE_TYPE_3);
 
         return typeMap;
@@ -59,14 +59,23 @@ public class AdvContants {
      * 广告类型
      */
     public static final String START_LOGO_ADV_SUBTYPE = "开机LOGO广告";//
+    public static final Long START_LOGO_ADV_SUBTYPE_ID = 1L;
     public static final String START_MACHINE_ADV_SUBTYPE = "开机广告";//
+    public static final Long START_MACHINE_ADV_SUBTYPE_ID = 2L;
     public static final String CUT_CHANNEL_ADV_SUBTYPE = "切台PF广告";//
+    public static final Long CUT_CHANNEL_ADV_SUBTYPE_ID = 3L;//
     public static final String VOLUM_ADV_SUBTYPE = "音量条广告";//
+    public static final Long VOLUM_ADV_SUBTYPE_ID = 4L;
     public static final String MAIN_MENU_ADV_SUBTYPE = "主菜单广告";//
+    public static final Long MAIN_MENU_ADV_SUBTYPE_ID = 5L;
     public static final String LIST_ADV_SUBTYPE = "节目列表广告";//
+    public static final Long LIST_ADV_SUBTYPE_ID = 6L;//
     public static final String POP_ADV_SUBTYPE = "弹出广告";//
+    public static final Long POP_ADV_SUBTYPE_ID = 7L;//
     public static final String BEFORE_MOVIE_ADV_SUBTYPE = "片头广告";//
+    public static final Long BEFORE_MOVIE_ADV_SUBTYPE_ID = 8L;//
     public static final String SUSPAND_MOVIE_ADV_SUBTYPE = "暂停广告";//
+    public static final Long SUSPAND_MOVIE_ADV_SUBTYPE_ID = 9L;//
 
     /**
      * 广告位
@@ -98,8 +107,8 @@ public class AdvContants {
     //频道分组状态标记
     public static final Long SERVICE_GROUP_STATUS_ACTIVE = 0L;//按频道分组标记
     public static final Long SERVICE_GROUP_STATUS_SLEEP = -1L;//不按频道进行分组
-    public static final Long SERVICE_GROUP_STATUS_LIVE = 1L;//不按频道进行分组，所有频道，点播
-    public static final Long SERVICE_GROUP_STATUS_VOD = 2L;//不按频道进行分组，所有频道，直播
+    public static final Long SERVICE_GROUP_STATUS_LIVE = 1L;//不按频道进行分组，所有频道，直播
+    public static final Long SERVICE_GROUP_STATUS_VOD = 2L;//不按频道进行分组，所有频道，点播
 
     //频道类型
     public static final Integer SERVICE_TYPE_LIVE = 0;
@@ -108,10 +117,17 @@ public class AdvContants {
 
     public static final Integer SERVICE_TYPE_ON_DEMAND_ALL = 2;
 
+
     //广告是否与频道广联
     public static final Long ADV_SERVICE_ASSOCIATE = 0L;//关联
     public static final Long ADV_SERVICE_NOT_ASSOCIATE = 1L;//直播不关联
     public static final Long ADV_CHANNEL_NOT_ASSOCIATE = 2L;//点播不关联
     public static final Long ADV_NOT_ASSOCIATE = -1L;//全部不关联
 
+    //广告请求常量
+    public static final String LOCATION_IS_NULL = "未填写广告位信息";
+    public static final String REGION_ID_IS_NULL = "未填写区域信息";
+    public static final String MATERIAL_IS_NULL = "未填写资源信息";
+    public static final String FLYWORDS_IS_NULL = "未填写字幕信息";
+    public static final String SERVICE_GROUP_IS_NULL = "未填写频道信息";
 }
