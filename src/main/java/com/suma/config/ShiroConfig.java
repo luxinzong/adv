@@ -127,7 +127,7 @@ public class ShiroConfig {
     public DefaultWebSessionManager defaultWebSessionManager() {
         DefaultWebSessionManager defaultWebSessionManager = new DefaultWebSessionManager();
         defaultWebSessionManager.setSessionDAO(mySessionDao());
-//        defaultWebSessionManager.setGlobalSessionTimeout();//配置session有效期，默认30min
+        //defaultWebSessionManager.setGlobalSessionTimeout();//配置session有效期，默认30min
         return defaultWebSessionManager;
     }
 

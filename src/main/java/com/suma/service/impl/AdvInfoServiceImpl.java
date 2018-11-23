@@ -107,7 +107,9 @@ public class AdvInfoServiceImpl extends BaseServiceImpl<AdvInfo, AdvInfoExample,
         AdvInfoExample example = new AdvInfoExample();
         AdvInfoExample.Criteria criteria = example.createCriteria();
         //弹出广告 播发
-        criteria.andAdvTypeIdEqualTo(advPutVO.getAdvTypeId());
+        if (advPutVO.getAdvTypeId() != null) {
+            criteria.andAdvTypeIdEqualTo(advPutVO.getAdvTypeId());
+        }
         if (advPutVO.getStatus() != null) {
             criteria.andStatusEqualTo(advPutVO.getStatus());
         } else {
@@ -115,12 +117,12 @@ public class AdvInfoServiceImpl extends BaseServiceImpl<AdvInfo, AdvInfoExample,
         }
         List<AdvInfo> list = selectByExample(example);
         List<Long> longList = list.stream().map(AdvInfo::getId).collect(Collectors.toList());
-        if (advPutVO.getAdvTypeId().equals(AdvContants.START_MACHINE_ADV_SUBTYPE_ID)) {
+       /* if (advPutVO.getAdvTypeId().equals(AdvContants.START_MACHINE_ADV_SUBTYPE_ID)) {
             //获取某个版本的播发广告
             if (advPutVO.getVersion() != null) {
                 longList = infoVersionService.getAdvPuttingByVersion(longList, advPutVO.getVersion());
             }
-        }
+        }*/
         //获取某个区域的播发状态的广告
         if (advPutVO.getRegionId() != null) {
             longList =  infoRegionService.getAdvPuttingByRegion(longList, advPutVO.getRegionId());
@@ -146,7 +148,7 @@ public class AdvInfoServiceImpl extends BaseServiceImpl<AdvInfo, AdvInfoExample,
     }
 
     private void getAdvInfoIdsByDate(AdvPutVO advPutVO, List<Long> longList) {
-        Map<String, Object> map = Maps.newConcurrentMap();
+        Map<String, Object> map = new HashMap<>();
         map.put("startDate", advPutVO.getStartDate());
         map.put("endDate", advPutVO.getEndDate());
         List<AdvInfo> advInfoList1 = selectAdvInfoByDate(map);
