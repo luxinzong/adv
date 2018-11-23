@@ -14,6 +14,7 @@ import com.suma.exception.AdvInfoException;
 import com.suma.exception.AdvLocationException;
 import com.suma.pojo.*;
 import com.suma.service.*;
+import com.suma.utils.Result;
 import com.suma.utils.StringUtil;
 import com.suma.vo.AdvPutVO;
 import org.apache.commons.lang3.StringUtils;
@@ -98,7 +99,7 @@ public class AdvInfoServiceImpl extends BaseServiceImpl<AdvInfo, AdvInfoExample,
     }
 
     @Override
-    public List<AdvInfo> getPuttingAdv(AdvPutVO advPutVO) {
+    public Result getPuttingAdv(AdvPutVO advPutVO) {
         if (advPutVO == null) {
             throw new AdvInfoException(ExceptionConstants.INFO_EXCEPTION_MISSING_REQUIRED_PARAMS);
         }
@@ -125,16 +126,21 @@ public class AdvInfoServiceImpl extends BaseServiceImpl<AdvInfo, AdvInfoExample,
             longList =  infoRegionService.getAdvPuttingByRegion(longList, advPutVO.getRegionId());
         }
         //ca卡号
-        longList = getAdvInfoIdsByCa(advPutVO, longList);
+        if (advPutVO.getCard() != null) {
+            longList = getAdvInfoIdsByCa(advPutVO, longList);
+        }
         //频道和播放类型
         getAdvInfoIdsByServiceAndType(advPutVO, longList);
         //起始时间
         getAdvInfoIdsByDate(advPutVO, longList);
+        Page<AdvInfo> page = PageHelper.startPage(advPutVO.getPageNum(), advPutVO.getPageSize());
         AdvInfoExample example1 = new AdvInfoExample();
         example1.createCriteria().andIdIn(longList);
         List<AdvInfo> advInfoList = selectByExample(example1);
         if (!CollectionUtils.isEmpty(advInfoList)) {
-            return advInfoList;
+            PageInfo<AdvInfo> pageInfo = new PageInfo<>(advInfoList);
+            pageInfo.setTotal(page.getTotal());
+            return Result.success(pageInfo);
         }
         return null;
     }
@@ -154,7 +160,7 @@ public class AdvInfoServiceImpl extends BaseServiceImpl<AdvInfo, AdvInfoExample,
     }
 
     private void getAdvInfoIdsByServiceAndType(AdvPutVO advPutVO, List<Long> longList) {
-        if (advPutVO.getServiceId() != null) {
+        if (advPutVO.getServiceId() != null && advPutVO.getType() != null) {
             List<ServiceGroup> serviceGroups = serviceInfoGroupService.findGroupBySId(advPutVO.getServiceId(), advPutVO.getType());
             if (!CollectionUtils.isEmpty(serviceGroups)) {
                 List<Long> serviceGroupIds = serviceGroups.stream().map(ServiceGroup::getSgid).collect(Collectors.toList());
@@ -177,7 +183,7 @@ public class AdvInfoServiceImpl extends BaseServiceImpl<AdvInfo, AdvInfoExample,
 
     @Override
     public List<AdvInfo> selectAdvInfoByDate(Map<String, Object> map) {
-        return null;
+        return selectAdvInfo(map);
     }
 
     @Override

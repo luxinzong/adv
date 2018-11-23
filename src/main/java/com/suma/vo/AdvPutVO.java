@@ -20,4 +20,6 @@ public class AdvPutVO {
     private Long serviceId;
     private Integer type;
     private String card;
+    private Integer pageSize;
+    private Integer pageNum;
 }

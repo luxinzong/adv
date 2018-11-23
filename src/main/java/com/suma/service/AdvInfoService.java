@@ -4,6 +4,7 @@ import com.suma.pojo.AdvInfo;
 import com.suma.pojo.AdvInfoExample;
 import com.suma.pojo.AdvItem;
 import com.suma.pojo.AdvMaterial;
+import com.suma.utils.Result;
 import com.suma.vo.AdvPutVO;
 import org.apache.ibatis.annotations.Param;
 import org.springframework.web.multipart.MultipartFile;
@@ -36,7 +37,7 @@ public interface AdvInfoService extends BaseService<AdvInfo, AdvInfoExample, Lon
 
     void setBootLocation(AdvInfo advInfo);
 
-    List<AdvInfo> getPuttingAdv(AdvPutVO advPutVO);
+    Result getPuttingAdv(AdvPutVO advPutVO);
 
     List<AdvInfo> selectAdvInfoByDate(Map<String, Object> map);
 

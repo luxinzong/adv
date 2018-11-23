@@ -42,7 +42,7 @@ public class AdvPutController extends BaseController {
      */
     @RequestMapping("query")
     public Result getAdvs(AdvPutVO advPutVO) {
-        return Result.success(advInfoService.getPuttingAdv(advPutVO));
+        return advInfoService.getPuttingAdv(advPutVO);
     }
 
     /***
