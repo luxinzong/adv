@@ -1,6 +1,7 @@
 package com.suma.constants;
 
 import org.apache.commons.collections.MultiMap;
+import org.omg.CORBA.PUBLIC_MEMBER;
 import org.omg.CORBA.StringHolder;
 
 import java.util.HashMap;
@@ -12,39 +13,6 @@ import java.util.Map;
  * @description
  */
 public class AdvContants {
-
-    public static Map<Integer, String> checkMap = new HashMap<>();//广告状态
-    public static Map<Long, Integer> typeMap = new HashMap<>();//点播直播
-    public static Map<Long, String> advTypeMap = new HashMap<>();//广告类型
-
-    public static Map<Integer, String> getCheckMap() {
-        checkMap.put(STATUS_EDIT, STATUS_EDIT_DSC);
-        checkMap.put(STATUS_PASS, STATUS_PASS_DSC);
-        checkMap.put(STATUS_WAIT_CHECK, STATUS_WAIT_CHECK_DSC);
-        checkMap.put(STATUS_NOT_PASS, STATUS_NOT_PASS_DSC);
-        return checkMap;
-    }
-
-    public static Map<Long, Integer> getTypeMap() {
-        typeMap.put(SERVICE_GROUP_STATUS_VOD, ADV_SERVICE_TYPE_2);
-        typeMap.put(SERVICE_GROUP_STATUS_LIVE, ADV_SERVICE_TYPE_1);
-        typeMap.put(SERVICE_GROUP_STATUS_SLEEP, ADV_SERVICE_TYPE_3);
-
-        return typeMap;
-    }
-
-    public static Map<Long, String> getAdvTypeMap() {
-        advTypeMap.put(1L, START_LOGO_ADV_SUBTYPE);
-        advTypeMap.put(2L, START_MACHINE_ADV_SUBTYPE);
-        advTypeMap.put(3L, CUT_CHANNEL_ADV_SUBTYPE);
-        advTypeMap.put(4L, VOLUM_ADV_SUBTYPE);
-        advTypeMap.put(5L, MAIN_MENU_ADV_SUBTYPE);
-        advTypeMap.put(6L, LIST_ADV_SUBTYPE);
-        advTypeMap.put(7L, POP_ADV_SUBTYPE);
-        advTypeMap.put(8L, BEFORE_MOVIE_ADV_SUBTYPE);
-        advTypeMap.put(9L, SUSPAND_MOVIE_ADV_SUBTYPE);
-        return advTypeMap;
-    }
 
     /**
      * 广告素材常量
@@ -94,6 +62,12 @@ public class AdvContants {
     public static final String STATUS_PASS_DSC = "审核通过";
     public static final Integer STATUS_NOT_PASS = 4;//审核不通过
     public static final String STATUS_NOT_PASS_DSC = "审核不通过";
+    public static final String STATUS_PUTTING_DSC = "播发状态";
+    public static final Integer STATUS_PUTTING = 5;//播发状态
+    public static final String STATUS_STOP_DSC = "停播状态";
+    public static final Integer STATUS_STOP = 6;//停播
+    public static final String STATUS_FAIL_DESC = "播发失败";
+    public static final Integer STATUS_FAIL = 7;//播发失败
 
 
     //点播直播

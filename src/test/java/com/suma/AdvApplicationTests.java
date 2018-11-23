@@ -24,18 +24,9 @@ public class AdvApplicationTests {
 
     @Test
     public void contextLoads() {
-        String a = "asdasbids.mp4";
-        String b = "asdbasiucdsnfsu.mp4";
-        String c = "asdasdasuiod.jpg";
-        String d = "asdhauica.jpg";
-        String e = "asdhauica.jpg";
-        List<String> list = new ArrayList<>();
-        list.add(a);
-        list.add(b);
-        list.add(c);
-        list.add(d);
-        list.stream().filter((p) -> p.substring(p.lastIndexOf(".")).equals("mp4"));
-        System.out.println(list);
+        Long s = 3L;
+        System.out.println(s.toString());
+
     }
 
 }

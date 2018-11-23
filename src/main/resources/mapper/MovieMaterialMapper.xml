@@ -1,0 +1,292 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.suma.dao.MovieMaterialMapper">
+  <resultMap id="BaseResultMap" type="com.suma.pojo.MovieMaterial">
+    <id column="ID" jdbcType="BIGINT" property="id" />
+    <result column="NAME" jdbcType="VARCHAR" property="name" />
+    <result column="URL" jdbcType="VARCHAR" property="url" />
+    <result column="TIME_LENGTH" jdbcType="VARCHAR" property="timeLength" />
+    <result column="TIME" jdbcType="TIME" property="time" />
+    <result column="UPDATE_TIME" jdbcType="TIME" property="updateTime" />
+    <result column="TITLE_NAME" jdbcType="VARCHAR" property="titleName" />
+    <result column="POSTER_URL" jdbcType="VARCHAR" property="posterUrl" />
+    <result column="EPISODE_ID" jdbcType="VARCHAR" property="episodeId" />
+    <result column="EPISODE_NAME" jdbcType="VARCHAR" property="episodeName" />
+  </resultMap>
+  <sql id="Example_Where_Clause">
+    <where>
+      <foreach collection="oredCriteria" item="criteria" separator="or">
+        <if test="criteria.valid">
+          <trim prefix="(" prefixOverrides="and" suffix=")">
+            <foreach collection="criteria.criteria" item="criterion">
+              <choose>
+                <when test="criterion.noValue">
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue">
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue">
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue">
+                  and ${criterion.condition}
+                  <foreach close=")" collection="criterion.value" item="listItem" open="(" separator=",">
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Update_By_Example_Where_Clause">
+    <where>
+      <foreach collection="example.oredCriteria" item="criteria" separator="or">
+        <if test="criteria.valid">
+          <trim prefix="(" prefixOverrides="and" suffix=")">
+            <foreach collection="criteria.criteria" item="criterion">
+              <choose>
+                <when test="criterion.noValue">
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue">
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue">
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue">
+                  and ${criterion.condition}
+                  <foreach close=")" collection="criterion.value" item="listItem" open="(" separator=",">
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Base_Column_List">
+    ID, NAME, URL, TIME_LENGTH, TIME, UPDATE_TIME, TITLE_NAME, POSTER_URL, EPISODE_ID, 
+    EPISODE_NAME
+  </sql>
+  <select id="selectByExample" parameterType="com.suma.pojo.MovieMaterialExample" resultMap="BaseResultMap">
+    select
+    <if test="distinct">
+      distinct
+    </if>
+    'true' as QUERYID,
+    <include refid="Base_Column_List" />
+    from movie_material
+    <if test="_parameter != null">
+      <include refid="Example_Where_Clause" />
+    </if>
+    <if test="orderByClause != null">
+      order by ${orderByClause}
+    </if>
+  </select>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from movie_material
+    where ID = #{id,jdbcType=BIGINT}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
+    delete from movie_material
+    where ID = #{id,jdbcType=BIGINT}
+  </delete>
+  <delete id="deleteByExample" parameterType="com.suma.pojo.MovieMaterialExample">
+    delete from movie_material
+    <if test="_parameter != null">
+      <include refid="Example_Where_Clause" />
+    </if>
+  </delete>
+  <insert id="insert" parameterType="com.suma.pojo.MovieMaterial">
+    insert into movie_material (ID, NAME, URL, 
+      TIME_LENGTH, TIME, UPDATE_TIME, 
+      TITLE_NAME, POSTER_URL, EPISODE_ID, 
+      EPISODE_NAME)
+    values (#{id,jdbcType=BIGINT}, #{name,jdbcType=VARCHAR}, #{url,jdbcType=VARCHAR}, 
+      #{timeLength,jdbcType=VARCHAR}, #{time,jdbcType=TIME}, #{updateTime,jdbcType=TIME}, 
+      #{titleName,jdbcType=VARCHAR}, #{posterUrl,jdbcType=VARCHAR}, #{episodeId,jdbcType=VARCHAR}, 
+      #{episodeName,jdbcType=VARCHAR})
+  </insert>
+  <insert id="insertSelective" parameterType="com.suma.pojo.MovieMaterial">
+    insert into movie_material
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        ID,
+      </if>
+      <if test="name != null">
+        NAME,
+      </if>
+      <if test="url != null">
+        URL,
+      </if>
+      <if test="timeLength != null">
+        TIME_LENGTH,
+      </if>
+      <if test="time != null">
+        TIME,
+      </if>
+      <if test="updateTime != null">
+        UPDATE_TIME,
+      </if>
+      <if test="titleName != null">
+        TITLE_NAME,
+      </if>
+      <if test="posterUrl != null">
+        POSTER_URL,
+      </if>
+      <if test="episodeId != null">
+        EPISODE_ID,
+      </if>
+      <if test="episodeName != null">
+        EPISODE_NAME,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        #{id,jdbcType=BIGINT},
+      </if>
+      <if test="name != null">
+        #{name,jdbcType=VARCHAR},
+      </if>
+      <if test="url != null">
+        #{url,jdbcType=VARCHAR},
+      </if>
+      <if test="timeLength != null">
+        #{timeLength,jdbcType=VARCHAR},
+      </if>
+      <if test="time != null">
+        #{time,jdbcType=TIME},
+      </if>
+      <if test="updateTime != null">
+        #{updateTime,jdbcType=TIME},
+      </if>
+      <if test="titleName != null">
+        #{titleName,jdbcType=VARCHAR},
+      </if>
+      <if test="posterUrl != null">
+        #{posterUrl,jdbcType=VARCHAR},
+      </if>
+      <if test="episodeId != null">
+        #{episodeId,jdbcType=VARCHAR},
+      </if>
+      <if test="episodeName != null">
+        #{episodeName,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <select id="countByExample" parameterType="com.suma.pojo.MovieMaterialExample" resultType="java.lang.Long">
+    select count(*) from movie_material
+    <if test="_parameter != null">
+      <include refid="Example_Where_Clause" />
+    </if>
+  </select>
+  <update id="updateByExampleSelective" parameterType="map">
+    update movie_material
+    <set>
+      <if test="record.id != null">
+        ID = #{record.id,jdbcType=BIGINT},
+      </if>
+      <if test="record.name != null">
+        NAME = #{record.name,jdbcType=VARCHAR},
+      </if>
+      <if test="record.url != null">
+        URL = #{record.url,jdbcType=VARCHAR},
+      </if>
+      <if test="record.timeLength != null">
+        TIME_LENGTH = #{record.timeLength,jdbcType=VARCHAR},
+      </if>
+      <if test="record.time != null">
+        TIME = #{record.time,jdbcType=TIME},
+      </if>
+      <if test="record.updateTime != null">
+        UPDATE_TIME = #{record.updateTime,jdbcType=TIME},
+      </if>
+      <if test="record.titleName != null">
+        TITLE_NAME = #{record.titleName,jdbcType=VARCHAR},
+      </if>
+      <if test="record.posterUrl != null">
+        POSTER_URL = #{record.posterUrl,jdbcType=VARCHAR},
+      </if>
+      <if test="record.episodeId != null">
+        EPISODE_ID = #{record.episodeId,jdbcType=VARCHAR},
+      </if>
+      <if test="record.episodeName != null">
+        EPISODE_NAME = #{record.episodeName,jdbcType=VARCHAR},
+      </if>
+    </set>
+    <if test="_parameter != null">
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByExample" parameterType="map">
+    update movie_material
+    set ID = #{record.id,jdbcType=BIGINT},
+      NAME = #{record.name,jdbcType=VARCHAR},
+      URL = #{record.url,jdbcType=VARCHAR},
+      TIME_LENGTH = #{record.timeLength,jdbcType=VARCHAR},
+      TIME = #{record.time,jdbcType=TIME},
+      UPDATE_TIME = #{record.updateTime,jdbcType=TIME},
+      TITLE_NAME = #{record.titleName,jdbcType=VARCHAR},
+      POSTER_URL = #{record.posterUrl,jdbcType=VARCHAR},
+      EPISODE_ID = #{record.episodeId,jdbcType=VARCHAR},
+      EPISODE_NAME = #{record.episodeName,jdbcType=VARCHAR}
+    <if test="_parameter != null">
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByPrimaryKeySelective" parameterType="com.suma.pojo.MovieMaterial">
+    update movie_material
+    <set>
+      <if test="name != null">
+        NAME = #{name,jdbcType=VARCHAR},
+      </if>
+      <if test="url != null">
+        URL = #{url,jdbcType=VARCHAR},
+      </if>
+      <if test="timeLength != null">
+        TIME_LENGTH = #{timeLength,jdbcType=VARCHAR},
+      </if>
+      <if test="time != null">
+        TIME = #{time,jdbcType=TIME},
+      </if>
+      <if test="updateTime != null">
+        UPDATE_TIME = #{updateTime,jdbcType=TIME},
+      </if>
+      <if test="titleName != null">
+        TITLE_NAME = #{titleName,jdbcType=VARCHAR},
+      </if>
+      <if test="posterUrl != null">
+        POSTER_URL = #{posterUrl,jdbcType=VARCHAR},
+      </if>
+      <if test="episodeId != null">
+        EPISODE_ID = #{episodeId,jdbcType=VARCHAR},
+      </if>
+      <if test="episodeName != null">
+        EPISODE_NAME = #{episodeName,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where ID = #{id,jdbcType=BIGINT}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.suma.pojo.MovieMaterial">
+    update movie_material
+    set NAME = #{name,jdbcType=VARCHAR},
+      URL = #{url,jdbcType=VARCHAR},
+      TIME_LENGTH = #{timeLength,jdbcType=VARCHAR},
+      TIME = #{time,jdbcType=TIME},
+      UPDATE_TIME = #{updateTime,jdbcType=TIME},
+      TITLE_NAME = #{titleName,jdbcType=VARCHAR},
+      POSTER_URL = #{posterUrl,jdbcType=VARCHAR},
+      EPISODE_ID = #{episodeId,jdbcType=VARCHAR},
+      EPISODE_NAME = #{episodeName,jdbcType=VARCHAR}
+    where ID = #{id,jdbcType=BIGINT}
+  </update>
+</mapper>

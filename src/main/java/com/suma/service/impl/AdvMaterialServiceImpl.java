@@ -3,11 +3,13 @@ package com.suma.service.impl;
 import com.suma.constants.CommonConstants;
 import com.suma.constants.ExceptionConstants;
 import com.suma.dao.AdvMaterialMapper;
+import com.suma.exception.AdvMaterialException;
 import com.suma.exception.MaterialException;
 import com.suma.pojo.AdvMaterial;
 import com.suma.pojo.AdvMaterialExample;
 import com.suma.pojo.MaterialType;
 import com.suma.service.AdvMaterialService;
+import com.suma.service.InfoMaterialService;
 import com.suma.service.MaterialTypeService;
 import com.suma.utils.CommonUtils;
 import org.slf4j.Logger;
@@ -15,6 +17,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.CollectionUtils;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.annotation.Resource;
@@ -43,6 +46,8 @@ public class AdvMaterialServiceImpl extends BaseServiceImpl<AdvMaterial, AdvMate
 
     @Autowired
     private MaterialTypeService materialTypeService;
+    @Autowired
+    private InfoMaterialService infoMaterialService;
 
 
     @Transactional(rollbackFor = Exception.class)
@@ -73,7 +78,6 @@ public class AdvMaterialServiceImpl extends BaseServiceImpl<AdvMaterial, AdvMate
             if (originalFilenameSplit.length > 0) {
                 suffix = "." + originalFilenameSplit[originalFilenameSplit.length - 1];
             }
-
             if (fileName == null)
                 fileName = file.getOriginalFilename();
             else

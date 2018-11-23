@@ -30,7 +30,7 @@ import java.util.List;
  */
 @RestController
 @RequestMapping("flywordAdv")
-public class FlyWordAdvController extends BaseController {
+public class PopAdvController extends BaseController {
 
     @Autowired
     private AdvInfoService advInfoService;
@@ -46,7 +46,7 @@ public class FlyWordAdvController extends BaseController {
     private InfoMaterialService infoMaterialService;
 
     /**
-     * 创建字幕广告接口
+     * 创建弹出广告
      * @param data
      * @return
      */
@@ -55,7 +55,7 @@ public class FlyWordAdvController extends BaseController {
     public Result insert(String data) {
         //将data转换成JSON对象
         AdvInfoVO advInfoVO = JSON.parseObject(data, AdvInfoVO.class);
-        //将广告信息保存到advInfo中
+        //判断请求参数
         if (advInfoVO.getName() == null || advInfoVO.getStartDate() == null ||
                 advInfoVO.getEndDate() == null || advInfoVO.getStatus() == null
                 || advInfoVO.getMaterialType() == null || advInfoVO.getAdvTypeId() == null){
@@ -65,6 +65,7 @@ public class FlyWordAdvController extends BaseController {
         if (!flag) {
             throw new AdvInfoException("请添加弹出广告");
         }
+        //将广告信息保存到advInfo中
         AdvInfo advInfo = new AdvInfo();
         BeanUtils.copyProperties(advInfoVO, advInfo);
         //判断广告信息是否存在
@@ -92,9 +93,20 @@ public class FlyWordAdvController extends BaseController {
         }
         if (advInfo.getMaterialType().equals(AdvContants.IMAGE_MATERIAL)) {
            List<InfoMaterialVO> infoMaterialVOS =  advInfoVO.getInfoMaterialVOS();
-            if (infoMaterialVOS.size() > 5) {
-                throw new AdvMaterialException("仅支持配置最多5张图片");
+            if (!CollectionUtils.isEmpty(infoMaterialVOS)) {
+                if (infoMaterialVOS.size() > 5) {
+                    throw new AdvMaterialException("仅支持配置最多5张图片");
+                }
             }
+            infoMaterialVOS.forEach(infoMaterialVO -> {
+                String fileName = infoMaterialVO.getFileName();
+                Boolean flag1 = StringUtils.equalsIgnoreCase(fileName.substring(fileName.lastIndexOf(".")), ".gif");
+                if (flag1) {
+                    if (infoMaterialVOS.size() > 1) {
+                        throw new AdvMaterialException("弹出广告动图不支持多张");
+                    }
+                }
+            });
             infoMaterialService.saveInfoMaterial(infoMaterialVOS, advInfoId);
         }
         //保存频道信息
@@ -108,7 +120,7 @@ public class FlyWordAdvController extends BaseController {
     }
 
     /**
-     * 删除字幕广告接口
+     * 删除弹出广告接口
      * @param str
      * @return
      */
@@ -119,23 +131,17 @@ public class FlyWordAdvController extends BaseController {
             throw new AdvInfoException(ExceptionConstants.INFO_EXCEPTION_MISSING_REQUIRED_PARAMS);
         }
         List<Long> advInfoIds = StringUtil.convertstr(str);
-        //删除广告信息
-        advInfoService.deleteByAdvInfoIds(advInfoIds);
-        //删除广告对应字幕列表
+        //删除弹出广告对应资源列表
         infoFlywordService.deleteByAdvInfoIds(advInfoIds);
         //删除广告信息对应频道信息
         advInfoServiceGroupService.deleteAdvServicenByAdvInfoId(advInfoIds);
-        //删除广告对应区域信息
-        infoRegionService.deleteByAdvInfoIds(advInfoIds);
-        //删除广告位
-        advInfoService.deleteAdvLocationByAdvInfoIds(advInfoIds);
-        //删除频道信息
-        advInfoServiceGroupService.deleteAdvServicenByAdvInfoId(advInfoIds);
+        //删除广告对应区域信息、广告位、广告信息
+        advInfoService.deleteAdvRelationInfo(advInfoIds);
         return Result.success();
     }
 
     /**
-     * 更新字幕广告接口
+     * 更新弹出广告接口
      * @param data
      * @return
      */
@@ -155,13 +161,6 @@ public class FlyWordAdvController extends BaseController {
         }
         if (advInfoService.findByPK(advInfoVO.getId()) == null) {
             throw new AdvInfoException(ExceptionConstants.INFO_EXCEPTION_INFO_IS_NOT_EXIT);
-        }
-        //获取广告位
-        AdvLocation advLocation = advInfoVO.getAdvLocation();
-        if (advLocation != null) {
-            advLocationService.updateByPrimaryKeySelective(advLocation);
-        } else {
-            throw new AdvInfoException(AdvContants.LOCATION_IS_NULL);
         }
         //设置编辑信息
         AdvInfo advInfo = new AdvInfo();
@@ -228,11 +227,7 @@ public class FlyWordAdvController extends BaseController {
         //设置有效区域ID
         advInfoVO.setRegionId(infoRegionService.getRegionIds(id));
         //设置直播或点播
-        if (advInfoVO.getReservedInt().equals(AdvContants.SERVICE_GROUP_STATUS_LIVE)) {
-            advInfoVO.setType(AdvContants.getTypeMap().get(AdvContants.SERVICE_GROUP_STATUS_LIVE));
-        } else if (advInfoVO.getReservedInt().equals(AdvContants.SERVICE_GROUP_STATUS_VOD)) {
-            advInfoVO.setType(AdvContants.getTypeMap().get(AdvContants.SERVICE_GROUP_STATUS_VOD));
-        } else if (advInfo.getReservedInt().equals(AdvContants.SERVICE_GROUP_STATUS_ACTIVE)) {
+        if (advInfo.getReservedInt().equals(AdvContants.SERVICE_GROUP_STATUS_ACTIVE)) {
             //设置频道信息
             advInfoServiceGroupService.getServiceGroup(advInfoVO);
         }

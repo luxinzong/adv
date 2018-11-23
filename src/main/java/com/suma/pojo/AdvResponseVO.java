@@ -3,6 +3,7 @@ package com.suma.pojo;
 import lombok.Data;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * @auther: zhangzhaoyuan
@@ -41,6 +42,7 @@ public class AdvResponseVO {
      * 广告实体内容
      */
     private List<AdvItem> advItem;
+
 
     /**
      * 广告版本号

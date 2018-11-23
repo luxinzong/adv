@@ -1,5 +1,6 @@
 package com.suma.service;
 
+import com.suma.pojo.AdvInfo;
 import com.suma.pojo.AdvInfoServiceGroup;
 import com.suma.pojo.AdvInfoServiceGroupExample;
 import com.suma.vo.AdvInfoVO;
@@ -19,5 +20,7 @@ public interface AdvInfoServiceGroupService extends BaseService<AdvInfoServiceGr
     void updateServiceGroup(AdvInfoVO advInfoVO);
     List<ServiceGroup> findGroupNamesByAdvId(Long advInfoId);
     void getServiceGroup(AdvInfoVO advInfoVO);
+
+    List<AdvInfo> getAdvInfo(List<Long> ids);
 }
 

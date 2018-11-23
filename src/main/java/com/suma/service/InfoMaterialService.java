@@ -1,12 +1,11 @@
 package com.suma.service;
 
-import com.suma.pojo.AdvItem;
-import com.suma.pojo.AdvMaterial;
-import com.suma.pojo.InfoMaterial;
-import com.suma.pojo.InfoMaterialExample;
+import com.suma.pojo.*;
 import com.suma.vo.InfoMaterialVO;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * @auther: luxinzong
@@ -33,4 +32,7 @@ public interface InfoMaterialService extends BaseService<InfoMaterial,InfoMateri
     List<InfoMaterialVO> getInfoMaterialVOS(List<InfoMaterial> infoMaterials);
 
     List<AdvItem> setAdvItem(List<InfoMaterial> infoMaterials,AdvItem advItem,List<AdvItem> itemList);
+
+    void setAdvItemByOne(List<InfoMaterial> infoMaterials, AdvItem advItem, Map<AdvItem, MultipartFile> map);
+
 }

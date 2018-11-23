@@ -196,12 +196,11 @@ public class AdvCheckCtroller extends BaseController {
         for (Long id : idsList) {
             AdvInfo advInfo = advInfoService.findByPK(id);
             advInfo.setStatus(status);
-            AdvCheckDetail advCheckDetail = advCheckService.select(advInfo.getId());
             if (status == AdvContants.STATUS_EDIT) {
                 advCheckService.deleteAll((Long[]) idsList.toArray());
             } else if (status == AdvContants.STATUS_PASS) {
-                if (advCheckDetail != null) {
-                    advCheckDetail.setMark(AdvContants.STATUS_PASS_DSC);
+                if (advInfo != null) {
+                    advInfo.setCheckNote(AdvContants.STATUS_PASS_DSC);
                 }
             }
             advInfoService.update(advInfo);

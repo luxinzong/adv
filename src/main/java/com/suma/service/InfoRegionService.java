@@ -1,5 +1,6 @@
 package com.suma.service;
 
+import com.suma.pojo.AdvInfo;
 import com.suma.pojo.InfoRegion;
 import com.suma.pojo.InfoRegionExample;
 
@@ -19,4 +20,7 @@ public interface InfoRegionService extends BaseService<InfoRegion,InfoRegionExam
 
     void deleteByAdvInfoIds(List<Long> advInfoIds);
     void saveInfoRegion(List<Integer> regionIds, Long advInfoId);
+    List<Long> getAdvPuttingByRegion(List<Long> ids,Integer region);
+
+    List<AdvInfo> getAdvByResion(List<Integer> region);
 }

@@ -4,6 +4,7 @@ import com.alibaba.fastjson.JSON;
 import com.suma.constants.AdvContants;
 import com.suma.constants.ExceptionConstants;
 import com.suma.exception.AdvInfoException;
+import com.suma.exception.AdvMaterialException;
 import com.suma.pojo.AdvInfo;
 import com.suma.pojo.AdvLocation;
 import com.suma.pojo.InfoMaterial;
@@ -91,6 +92,9 @@ public class MenuAdvController extends BaseController {
         if (CollectionUtils.isEmpty(menuAdvVO.getInfoMaterialVOS())) {
             throw new AdvInfoException("未添加资源列表");
         }
+        if (advInfo.getMaterialType().equals(AdvContants.VEDIO_MATERIAL)) {
+            throw new AdvMaterialException("菜单广告、节目列表、音量条广告仅支持图片");
+        }
         infoMaterialService.saveInfoMaterial(menuAdvVO.getInfoMaterialVOS(), advInfo.getId());
         return Result.success();
     }
@@ -118,13 +122,10 @@ public class MenuAdvController extends BaseController {
         BeanUtils.copyProperties(menuAdvVO, advInfo);
         advInfo = UserAndTimeUtils.setEditUserAndTime(advInfo);
         advInfoService.updateByPrimaryKeySelective(advInfo);
-        //更新广告位
-        AdvLocation advLocation = menuAdvVO.getAdvLocation();
-        if (advLocation == null) {
-            throw new AdvInfoException("未填写广告位信息");
-        }
-        advLocationService.update(advLocation);
         //更新有效区域
+        if (advInfo.getMaterialType().equals(AdvContants.VEDIO_MATERIAL)) {
+            throw new AdvMaterialException("菜单广告、节目列表、音量条广告仅支持图片");
+        }
         infoRegionService.deleteByAdvInfoId(advInfo.getId());
         if (CollectionUtils.isEmpty(menuAdvVO.getRegionId())) {
             throw new AdvInfoException("未填写区域信息");

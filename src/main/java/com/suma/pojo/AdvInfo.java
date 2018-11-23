@@ -36,7 +36,7 @@ public class AdvInfo{
 
     private Date createdTime;
 
-    private Date lastEditTime;
+    private String lastEditTime;
 
     private String lastEditUser;
 

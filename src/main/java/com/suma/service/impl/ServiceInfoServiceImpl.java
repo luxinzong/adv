@@ -117,6 +117,7 @@ public class ServiceInfoServiceImpl extends BaseServiceImpl<ServiceInfo, Service
         if (tIds.size() > 0) {
             criteria = criteria.andTidIn(tIds);
         }
+
         if (StringUtils.isNotBlank(serviceId)) {
             criteria.andServiceIdEqualTo(serviceId);
         }

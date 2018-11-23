@@ -9,16 +9,27 @@ import com.suma.exception.AdvMaterialException;
 import com.suma.pojo.*;
 import com.suma.service.AdvMaterialService;
 import com.suma.service.InfoMaterialService;
+import com.suma.utils.TransFileUtils;
 import com.suma.vo.InfoMaterialVO;
+import org.apache.tomcat.util.http.fileupload.FileItem;
 import org.omg.PortableServer.LIFESPAN_POLICY_ID;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
+import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.multipart.commons.CommonsMultipartFile;
 
 import javax.annotation.Resource;
-import java.util.ArrayList;
-import java.util.List;
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.*;
 
 /**
  * @auther: luxinzong
@@ -67,16 +78,37 @@ public class InfoMaterialServiceImpl extends BaseServiceImpl<InfoMaterial, InfoM
     @Override
     public List<AdvItem> setAdvItem(List<InfoMaterial> infoMaterials,AdvItem advItem,List<AdvItem> itemList) {
         if (!CollectionUtils.isEmpty(infoMaterials)) {
+            infoMaterials.sort(Comparator.comparingInt(InfoMaterial::getSequence));
             infoMaterials.forEach(infoMaterial -> {
+                AdvItem advItem1 = new AdvItem();
+                BeanUtils.copyProperties(advItem, advItem1);
                 AdvMaterial advMaterial = advMaterialService.findByPK(infoMaterial.getMaterialId());
-                advItem.setDuration(Long.valueOf(infoMaterial.getDuration()));
-                advItem.setHref(advMaterial.getHref());
-                advItem.setAdvURL(advMaterial.getFileUrl());
-                advItem.setMD5(advMaterial.getMd5());
+                advItem1.setDuration(Long.valueOf(infoMaterial.getDuration()));
+                advItem1.setHref(advMaterial.getHref());
+                advItem1.setAdvURL(advMaterial.getFileUrl());
+                advItem1.setMD5(advMaterial.getMd5());
                 itemList.add(advItem);
             });
         }
         return itemList;
+    }
+
+    @Override
+    public void setAdvItemByOne(List<InfoMaterial> infoMaterials, AdvItem advItem, Map<AdvItem, MultipartFile> map) {
+        if (!CollectionUtils.isEmpty(infoMaterials)) {
+            infoMaterials.sort(Comparator.comparingInt(InfoMaterial::getSequence));
+            infoMaterials.forEach(p->{
+                AdvMaterial advMaterial = advMaterialService.findByPK(p.getMaterialId());
+                advItem.setDuration(Long.valueOf(p.getDuration()));
+                advItem.setHref(advMaterial.getHref());
+                advItem.setAdvURL(advMaterial.getFileUrl());
+                advItem.setMD5(advMaterial.getMd5());
+                //获取资源文件
+                String filePath = advMaterial.getFilePath();
+                MultipartFile file = TransFileUtils.getMulFileByPath(filePath);
+                map.put(advItem, file);
+            });
+        }
     }
 
     @Override
@@ -146,7 +178,7 @@ public class InfoMaterialServiceImpl extends BaseServiceImpl<InfoMaterial, InfoM
         if (!CollectionUtils.isEmpty(infoMaterialVOS)) {
             infoMaterialVOS.forEach(infoMaterialVO -> {
                 InfoMaterial infoMaterial = new InfoMaterial();
-                BeanUtils.copyProperties(infoMaterialVO, infoMaterial);
+                infoMaterial.setMaterialId(getAdvMaterialByName(infoMaterialVO.getFileName()).getId());
                 infoMaterial.setAdvInfoId(advInfoId);
                 if (getAdvMaterialByName(infoMaterialVO.getFileName()) != null){
                     infoMaterial.setMaterialId(getAdvMaterialByName(infoMaterialVO.getFileName()).getId());

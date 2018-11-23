@@ -1,7 +1,7 @@
 #开发配置
 server:
   #默认端口
-  port: 16000
+  port: 16001
   servlet:
     context-path: /adv
   tomcat:

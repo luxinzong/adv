@@ -464,6 +464,15 @@
     </where>
   </select>
 
+  <select id="selectAdvInfoByDate" resultMap="BaseResultMap" parameterType="map">
+    select <include refid="Base_Column_List"/>
+    from adv_info
+    <where>
+      <if test="map.startDate != null and map.startDate != ''">and START_DATE &lt;=#{map.startDate}</if>
+      <if test="map.endDate != null and map.endDate != ''">and END_DATE &gt;= #{map.endDate}</if>
+    </where>
+  </select>
+
   <select id="findById" resultType="AdvInfo">
     select  <include refid="Base_Column_List"/>
     from adv_info

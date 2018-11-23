@@ -1,11 +1,14 @@
 package com.suma.service.impl;
 
 import com.google.common.collect.Lists;
+import com.suma.constants.AdvContants;
 import com.suma.dao.*;
 import com.suma.exception.AdvInfoException;
 import com.suma.pojo.AdvInfo;
+import com.suma.pojo.AdvInfoExample;
 import com.suma.pojo.InfoRegion;
 import com.suma.pojo.InfoRegionExample;
+import com.suma.service.AdvInfoService;
 import com.suma.service.InfoRegionService;
 import com.suma.service.ServiceGroupService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,6 +17,7 @@ import org.springframework.util.CollectionUtils;
 
 import javax.annotation.Resource;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * @auther: luxinzong
@@ -38,6 +42,8 @@ public class InfoRegionServiceImpl extends BaseServiceImpl<InfoRegion, InfoRegio
 
     @Autowired
     private ServiceGroupService serviceGroupService;
+    @Autowired
+    private AdvInfoService advInfoService;
 
     @Override
     public List<Long> selectAdvByRegion(Integer regionId) {
@@ -51,7 +57,16 @@ public class InfoRegionServiceImpl extends BaseServiceImpl<InfoRegion, InfoRegio
         return list;
     }
 
-
+    @Override
+    public List<Long> getAdvPuttingByRegion(List<Long> ids, Integer region) {
+        InfoRegionExample example = new InfoRegionExample();
+        example.createCriteria().andRegionIdEqualTo(region).andAdvInfoIdIn(ids);
+        List<InfoRegion> infoRegions = selectByExample(example);
+        if (!CollectionUtils.isEmpty(infoRegions)) {
+            return infoRegions.stream().map(InfoRegion::getAdvInfoId).collect(Collectors.toList());
+        }
+        return null;
+    }
 
     /**
      * 根据Id查出对应区域的名称
@@ -111,5 +126,27 @@ public class InfoRegionServiceImpl extends BaseServiceImpl<InfoRegion, InfoRegio
             list.add(infoRegion.getRegionId());
         }));
         return list;
+    }
+
+    @Override
+    public List<AdvInfo> getAdvByResion(List<Integer> region) {
+        if (!CollectionUtils.isEmpty(region)) {
+            InfoRegionExample example = new InfoRegionExample();
+            example.createCriteria().andRegionIdIn(region);
+            List<InfoRegion> infoRegions = selectByExample(example);
+            List<Long> list = infoRegions.stream().map(InfoRegion::getAdvInfoId).collect(Collectors.toList());
+            AdvInfoExample advInfoExample = new AdvInfoExample();
+            advInfoExample.createCriteria().andIdIn(list).andStatusEqualTo(AdvContants.STATUS_PUTTING);
+            List<AdvInfo> advInfoList = advInfoService.selectByExample(advInfoExample);
+            if (!CollectionUtils.isEmpty(advInfoList)) {
+                return advInfoList;
+            }
+        } else {
+            AdvInfoExample example = new AdvInfoExample();
+            example.createCriteria().andStatusEqualTo(AdvContants.STATUS_STOP);
+            List<AdvInfo> advInfoList = advInfoService.selectByExample(example);
+            return advInfoList;
+        }
+        return null;
     }
 }

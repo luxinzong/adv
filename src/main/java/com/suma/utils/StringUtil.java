@@ -1,6 +1,7 @@
 package com.suma.utils;
 
 import com.google.common.collect.Lists;
+import com.suma.pojo.AdvInfo;
 import org.apache.commons.beanutils.ConvertUtils;
 
 import java.util.ArrayList;
@@ -25,6 +26,12 @@ public class StringUtil {
         return Arrays.asList(ids);
     }
 
+    public static List<Integer> str2Int(String str) {
+        String[] strings = str.split(",");
+        Integer[] ids = (Integer[]) ConvertUtils.convert(strings, Integer.class);
+        return Arrays.asList(ids);
+    }
+
     /**
      * 将特定字符串转换成Integer集合，
      * @param string “1，2，3” “1”
@@ -41,6 +48,6 @@ public class StringUtil {
             return Arrays.asList(a);
         }
     }
-    //集合转字符串
+
 
 }

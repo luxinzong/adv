@@ -1,13 +1,13 @@
 package com.suma.service.impl;
 
 import com.google.common.collect.Lists;
+import com.google.common.collect.Sets;
 import com.suma.constants.AdvContants;
 import com.suma.dao.AdvInfoServiceGroupMapper;
 import com.suma.dao.BaseDAO;
 import com.suma.exception.AdvInfoException;
-import com.suma.pojo.AdvInfoServiceGroup;
-import com.suma.pojo.AdvInfoServiceGroupExample;
-import com.suma.pojo.ServiceGroup;
+import com.suma.pojo.*;
+import com.suma.service.AdvInfoService;
 import com.suma.service.AdvInfoServiceGroupService;
 import com.suma.service.ServiceGroupService;
 import com.suma.vo.AdvInfoVO;
@@ -16,10 +16,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 
 import javax.annotation.Resource;
+import java.util.*;
 import java.util.List;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
+import java.util.stream.Collectors;
 
 /**
  * @auther: luxinzong
@@ -35,6 +34,8 @@ public class AdvInfoServiceGroupServiceImpl extends BaseServiceImpl<AdvInfoServi
 
     @Autowired
     AdvInfoServiceGroupMapper advInfoServiceGroupMapper;
+    @Autowired
+    AdvInfoService advInfoService;
 
     @Override
     public void deleteAdvServiceByAdvInfoId(Long id) {
@@ -73,23 +74,24 @@ public class AdvInfoServiceGroupServiceImpl extends BaseServiceImpl<AdvInfoServi
             }else{
                 throw new AdvInfoException(AdvContants.SERVICE_GROUP_IS_NULL);
             }
-        } else if (advInfoVO.getReservedInt().equals(AdvContants.SERVICE_GROUP_STATUS_SLEEP)) {
-            AdvInfoServiceGroup advInfoServiceGroup = new AdvInfoServiceGroup();
-            advInfoServiceGroup.setAdvInfoId(advInfoId);
-            advInfoServiceGroup.setType(advInfoVO.getType());
-            advInfoServiceGroup.setServiceGroupId(0L);
-            advInfoServiceGroupMapper.insert(advInfoServiceGroup);
-        } else {
-            //查询所有的频道分组 //TODO
-            List<ServiceGroup> serviceGroups = serviceGroupService.findALL();
-            serviceGroups.forEach(serviceGroup -> {
-                AdvInfoServiceGroup advInfoServiceGroup = new AdvInfoServiceGroup();
-                advInfoServiceGroup.setAdvInfoId(advInfoId);
-                advInfoServiceGroup.setServiceGroupId(serviceGroup.getSgid());
-                advInfoServiceGroup.setType(advInfoVO.getType());
-                advInfoServiceGroupMapper.insert(advInfoServiceGroup);
-            });
         }
+    }
+
+    @Override
+    public List<AdvInfo> getAdvInfo(List<Long> ids) {
+        Set<Long> set = Sets.newConcurrentHashSet();
+        AdvInfoServiceGroupExample example = new AdvInfoServiceGroupExample();
+        example.createCriteria().andServiceGroupIdIn(ids);
+        List<AdvInfoServiceGroup> list = selectByExample(example);
+        List<Long> s = list.stream().map(AdvInfoServiceGroup::getAdvInfoId).collect(Collectors.toList());
+        set.addAll(s);
+        AdvInfoExample example1 = new AdvInfoExample();
+        example1.createCriteria().andIdIn(Lists.newArrayList(set));
+        List<AdvInfo> advInfoList = advInfoService.selectByExample(example1);
+        if (!CollectionUtils.isEmpty(advInfoList)) {
+            return advInfoList;
+        }
+        return null;
     }
 
     @Override
@@ -130,7 +132,7 @@ public class AdvInfoServiceGroupServiceImpl extends BaseServiceImpl<AdvInfoServi
         if (advInfoVO.getReservedInt().equals(AdvContants.SERVICE_GROUP_STATUS_ACTIVE)) {
             AdvInfoServiceGroupExample example2 = new AdvInfoServiceGroupExample();
             example2.createCriteria().andAdvInfoIdEqualTo(advInfoVO.getId());
-            List<AdvInfoServiceGroup> list = advInfoServiceGroupMapper.selectByExample(example2);
+            List<AdvInfoServiceGroup> list = selectByExample(example2);
             List<String> serviceGroupNames = Lists.newArrayList();
             List<Long> ServiceGroupIds = Lists.newArrayList();
             if (!CollectionUtils.isEmpty(list)) {
@@ -140,6 +142,7 @@ public class AdvInfoServiceGroupServiceImpl extends BaseServiceImpl<AdvInfoServi
                 });
                 //advInfoVO.setServiceGroupNames(serviceGroupNames);
                 advInfoVO.setServiceGroupIds(ServiceGroupIds);
+                System.out.println(list.get(0).getType()+"我们都是");
                 advInfoVO.setType(list.get(0).getType());
             }
         }

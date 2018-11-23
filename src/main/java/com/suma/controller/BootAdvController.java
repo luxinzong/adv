@@ -1,7 +1,6 @@
 package com.suma.controller;
 
 import com.alibaba.fastjson.JSON;
-import com.google.common.collect.Lists;
 import com.suma.constants.AdvContants;
 import com.suma.constants.ExceptionConstants;
 import com.suma.exception.AdvInfoException;
@@ -38,8 +37,6 @@ public class BootAdvController extends BaseController {
     @Autowired
     private InfoMaterialService infoMaterialService;
     @Autowired
-    private AdvLocationService advLocationService;
-    @Autowired
     private InfoVersionService infoVersionService;
     @Autowired
     private AdvRegionService advRegionService;
@@ -60,41 +57,37 @@ public class BootAdvController extends BaseController {
         if (!flag) {
             throw new AdvInfoException("请添加开机广告");
         }
-        try {
-            //读取广告信息
-            AdvInfo advInfo = new AdvInfo();
-            BeanUtils.copyProperties(bootAdvVO, advInfo);
-            //判断广告信息是否存在
-            advInfoService.judgeAdvInfo(advInfo);
-            advInfo = UserAndTimeUtils.setCreateUserAndTime(advInfo);
-            //设置开机广告位
-            advInfoService.setBootLocation(advInfo);
-            advInfoService.save(advInfo);
-            //获取广告信息ID
-            Long advInfoId = advInfo.getId();
-            //保存广告版本号
-            //获取并保存区域信息
-            List<Integer> regionIds = bootAdvVO.getRegionId();
-            infoRegionService.saveInfoRegion(regionIds, advInfoId);
-            //获取广告资源信息
-            List<InfoMaterialVO> infoMaterialVOS = bootAdvVO.getInfoMaterialVOS();
-            if (bootAdvVO.getMaterialType().equals(AdvContants.VEDIO_MATERIAL) & !CollectionUtils.isEmpty(infoMaterialVOS)) {
-                if (infoMaterialVOS.size() > 1) {
-                    throw new AdvMaterialException("开机视频广告仅支持单个视频");
-                }
+
+        //读取广告信息
+        AdvInfo advInfo = new AdvInfo();
+        BeanUtils.copyProperties(bootAdvVO, advInfo);
+        //判断广告信息是否存在
+        advInfoService.judgeAdvInfo(advInfo);
+        advInfo = UserAndTimeUtils.setCreateUserAndTime(advInfo);
+        //设置开机广告位
+        advInfoService.setBootLocation(advInfo);
+        advInfoService.save(advInfo);
+        //获取广告信息ID
+        Long advInfoId = advInfo.getId();
+        //获取并保存区域信息
+        List<Integer> regionIds = bootAdvVO.getRegionId();
+        infoRegionService.saveInfoRegion(regionIds, advInfoId);
+        //获取广告资源信息
+        List<InfoMaterialVO> infoMaterialVOS = bootAdvVO.getInfoMaterialVOS();
+        if (bootAdvVO.getMaterialType().equals(AdvContants.VEDIO_MATERIAL) & !CollectionUtils.isEmpty(infoMaterialVOS)) {
+            if (infoMaterialVOS.size() > 1) {
+                throw new AdvMaterialException("开机视频广告仅支持单个视频");
             }
-            if (bootAdvVO.getMaterialType().equals(AdvContants.IMAGE_MATERIAL) & !CollectionUtils.isEmpty(infoMaterialVOS)) {
-                if (infoMaterialVOS.size() > 5) {
-                    throw new AdvMaterialException("开机图片广告最多可配置5张图片");
-                }
-            }
-            infoMaterialService.saveInfoMaterial(infoMaterialVOS, advInfoId);
-            //保存软件版本号
-            infoVersionService.saveVersion(advInfoId,bootAdvVO.getVersion());
-        } catch (Exception e) {
-            e.printStackTrace();
-            throw e;
         }
+        if (bootAdvVO.getMaterialType().equals(AdvContants.IMAGE_MATERIAL) & !CollectionUtils.isEmpty(infoMaterialVOS)) {
+            if (infoMaterialVOS.size() > 5) {
+                throw new AdvMaterialException("开机图片广告最多可配置5张图片");
+            }
+        }
+        infoMaterialService.saveInfoMaterial(infoMaterialVOS, advInfoId);
+        //保存开机广告版本号
+        Integer version = advInfoService.getAdvInfoVersionByAdvTypeId(AdvContants.START_MACHINE_ADV_SUBTYPE_ID);
+        infoVersionService.saveVersion(advInfoId,version+1);
         return Result.success();
     }
 
@@ -115,26 +108,33 @@ public class BootAdvController extends BaseController {
         if (!flag) {
             throw new AdvInfoException("不是开机广告类型");
         }
-        try {
-            //获取广告信息
-            AdvInfo advInfo = new AdvInfo();
-            BeanUtils.copyProperties(bootAdvVO, advInfo);
-            advInfo = UserAndTimeUtils.setEditUserAndTime(advInfo);
-            advInfoService.updateByPrimaryKeySelective(advInfo);
-            Long advInfoId = advInfo.getId();
-            //删除原来的区域信息
-            infoRegionService.deleteByAdvInfoId(advInfoId);
-            //获取区域信息,并保存
-            List<Integer> regionIds = bootAdvVO.getRegionId();
-            infoRegionService.saveInfoRegion(regionIds, advInfoId);
-            //删除原来资源信息
-            infoMaterialService.deleteByAdvInfoId(advInfoId);
-            //获取资源对应信息
-            infoMaterialService.saveInfoMaterial(bootAdvVO.getInfoMaterialVOS(), advInfoId);
-        } catch (Exception e) {
-            e.printStackTrace();
-            throw e;
+
+        //获取广告信息
+        AdvInfo advInfo = new AdvInfo();
+        BeanUtils.copyProperties(bootAdvVO, advInfo);
+        advInfo = UserAndTimeUtils.setEditUserAndTime(advInfo);
+        advInfoService.updateByPrimaryKeySelective(advInfo);
+        Long advInfoId = advInfo.getId();
+        //删除原来的区域信息
+        infoRegionService.deleteByAdvInfoId(advInfoId);
+        //获取区域信息,并保存
+        List<Integer> regionIds = bootAdvVO.getRegionId();
+        infoRegionService.saveInfoRegion(regionIds, advInfoId);
+        //删除原来资源信息
+        infoMaterialService.deleteByAdvInfoId(advInfoId);
+        //获取资源对应信息
+        List<InfoMaterialVO> infoMaterialVOS = bootAdvVO.getInfoMaterialVOS();
+        if (bootAdvVO.getMaterialType().equals(AdvContants.VEDIO_MATERIAL) & !CollectionUtils.isEmpty(infoMaterialVOS)) {
+            if (infoMaterialVOS.size() > 1) {
+                throw new AdvMaterialException("开机视频广告仅支持单个视频");
+            }
         }
+        if (bootAdvVO.getMaterialType().equals(AdvContants.IMAGE_MATERIAL) & !CollectionUtils.isEmpty(infoMaterialVOS)) {
+            if (infoMaterialVOS.size() > 5) {
+                throw new AdvMaterialException("开机图片广告最多可配置5张图片");
+            }
+        }
+        infoMaterialService.saveInfoMaterial(infoMaterialVOS, advInfoId);
         return Result.success();
     }
 
@@ -154,6 +154,17 @@ public class BootAdvController extends BaseController {
             //将数组转换成list集合
             List<Long> advInfoIds = StringUtil.convertstr(str);
             if (!CollectionUtils.isEmpty(advInfoIds)) {
+                if (!CollectionUtils.isEmpty(advInfoIds)) {
+                    AdvInfoExample example = new AdvInfoExample();
+                    example.createCriteria().andIdIn(advInfoIds);
+                    List<AdvInfo> advInfoList = advInfoService.selectByExample(example);
+                    advInfoList.forEach(advInfo -> {
+                        Boolean flag = advInfo.getAdvTypeId().equals(AdvContants.START_MACHINE_ADV_SUBTYPE_ID);
+                        if (!flag) {
+                            throw new AdvMaterialException("请确认你要删除的广告类型");
+                        }
+                    });
+                }
                 advInfoService.deleteAdvRelationInfo(advInfoIds);
                 infoVersionService.deleteByAdvInfoIds(advInfoIds,null);
             }
@@ -195,9 +206,11 @@ public class BootAdvController extends BaseController {
         BeanUtils.copyProperties(advInfo,bootAdvVO);
         //将区域名称和子名称查询出来
         //所有区域
-        bootAdvVO.setAdvRegions(advRegionService.selectAdvRegionAll());
+        //bootAdvVO.setAdvRegions(advRegionService.selectAdvRegionAll());
         //有效区域ID
         bootAdvVO.setRegionId(infoRegionService.getRegionIds(advInfo.getId()));
+        //设置版本信息
+        bootAdvVO.setVersion(infoVersionService.getInfoVersionByAdvInfoId(id).getVersion());
         return Result.success(bootAdvVO);
     }
 }

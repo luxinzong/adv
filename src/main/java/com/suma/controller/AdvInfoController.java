@@ -7,6 +7,7 @@ import com.github.pagehelper.PageInfo;
 import com.suma.constants.AdvContants;
 import com.suma.constants.ExceptionConstants;
 import com.suma.exception.AdvInfoException;
+import com.suma.exception.AdvMaterialException;
 import com.suma.pojo.*;
 import com.suma.service.*;
 import com.suma.utils.Result;
@@ -24,7 +25,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.*;
 
 /**
- * PF条、音量条广告 增删改查 以及根据类型查询所有的广告
+ * PF条广告 增删改查 以及根据类型查询所有的广告
  * @auther: luxinzong
  * @date: 2018/10/15
  */
@@ -60,23 +61,21 @@ public class AdvInfoController extends BaseController {
         if (advInfo == null) {
             throw new AdvInfoException(ExceptionConstants.INFO_EXCEPTION_INFO_IS_NOT_EXIT);
         }
-        if (advInfo.getMaterialType().equals(AdvContants.IMAGE_MATERIAL)|| advInfo.getMaterialType().equals(AdvContants.VEDIO_MATERIAL)) {
+        if (advInfo.getMaterialType().equals(AdvContants.VEDIO_MATERIAL)) {
             throw new AdvInfoException("PF条仅支持图片广告");
         }
         List<InfoMaterial> infoMaterials = infoMaterialService.findByAdv(advInfo.getId());
         //创建一个前端显示资源列表的VO对象
         List<InfoMaterialVO> infoMaterialVOS =infoMaterialService.getInfoMaterialVOS(infoMaterials);
-        //将广告资源列表存储到前对显示的广告信息VO对象中
+        //将广告资源列表存储到前端显示的广告信息VO对象中
         advInfoVO.setInfoMaterialVOS(infoMaterialVOS);
         //将广告信息存储到前端显示VO对象中
-        System.out.println(advInfo);
         BeanUtils.copyProperties(advInfo, advInfoVO);
-        System.out.println(advInfoVO);
-        //将频道信息查询出来 只有区分频道的广告具有频道分组，其他不区分频道的对所有频道有效
+        //将频道信息查询出来 只有区分频道的广告具有频道分组
         advInfoServiceGroupService.getServiceGroup(advInfoVO);
         //将区域名称和子名称查询出来
         //所有区域
-        advInfoVO.setAdvRegions(advRegionService.selectAdvRegionAll());
+        //advInfoVO.setAdvRegions(advRegionService.selectAdvRegionAll());
         //有效区域ID
         advInfoVO.setRegionId(infoRegionService.getRegionIds(advInfo.getId()));
         //查询出对应的广告位
@@ -105,7 +104,7 @@ public class AdvInfoController extends BaseController {
         }
         //将查询参数存入map中
         Page page = PageHelper.startPage(pageNum,pageSize);
-        List<AdvInfo> advInfoList = advInfoService.selectAdvInfoByNameAndStatusAndOthor(status, name, startDate, endDate, pageNum, pageSize, advTypeId);
+        List<AdvInfo> advInfoList = advInfoService.selectAdvInfoByNameAndStatusAndOthor(status, name, startDate, endDate, advTypeId);
         //将广告信息和查询出来的总数存入PageInfo中返回给前端
         PageInfo<AdvInfo> listPageInfo = new PageInfo<>();
         listPageInfo.setList(advInfoList);
@@ -173,6 +172,9 @@ public class AdvInfoController extends BaseController {
         Long advInfoId = advInfo.getId();
         //获取广告信息与资源关系集合
         List<InfoMaterialVO> infoMaterialVOS = advInfoVO.getInfoMaterialVOS();
+        if (advInfo.getMaterialType().equals(AdvContants.VEDIO_MATERIAL)) {
+            throw new AdvMaterialException("切台广告仅支持图片广告");
+        }
         if (CollectionUtils.isEmpty(infoMaterialVOS)) {
             throw new AdvInfoException(AdvContants.MATERIAL_IS_NULL);
         }
@@ -194,28 +196,19 @@ public class AdvInfoController extends BaseController {
     public Result updateAdvInfo(String data){
         //将json字符串转换成json对象
         AdvInfoVO advInfoVO = JSON.parseObject(data, AdvInfoVO.class);
-        System.out.println(advInfoVO);
         //判断是否缺少参数
         if (advInfoVO.getId() == null || advInfoVO.getName() == null || advInfoVO.getStartDate() == null ||
                 advInfoVO.getEndDate() == null || advInfoVO.getStatus() == null
                 || advInfoVO.getMaterialType() == null || advInfoVO.getAdvTypeId() == null) {
             throw new AdvInfoException(ExceptionConstants.INFO_EXCEPTION_MISSING_REQUIRED_PARAMS);
         }
+        //判断广告类型
         Boolean flag = advInfoVO.getAdvTypeId().equals(AdvContants.CUT_CHANNEL_ADV_SUBTYPE_ID);
         if (!flag) {
             throw new AdvInfoException("请添加切台广告");
         }
         if (advInfoService.findByPK(advInfoVO.getId()) == null) {
             throw new AdvInfoException(ExceptionConstants.INFO_EXCEPTION_INFO_IS_NOT_EXIT);
-        }
-        //获取广告位
-        AdvLocation advLocation = advInfoVO.getAdvLocation();
-        if (advLocation == null) {
-            throw new AdvInfoException(AdvContants.LOCATION_IS_NULL);
-        }
-        //更新广告位信息
-        if (advLocation != null) {
-            advLocationService.update(advLocation);
         }
         //更新广告信息
         AdvInfo advInfo = new AdvInfo();
@@ -239,17 +232,12 @@ public class AdvInfoController extends BaseController {
         return Result.success();
     }
 
+
     /**
-     * 获取视频源接口（模拟）
+     * 提交审核接口
+     * @param data
      * @return
      */
-    @RequestMapping(value = "getVedioMaterial")
-    public Result getVedioMaterial() {
-        List<AdvMaterial> list = advInfoService.getVedioMaterial();
-        return Result.success(list);
-    }
-
-    //TODO 提交审核接口
     @Transactional(rollbackFor = Exception.class)
     @RequestMapping("submit")
     public Result submitCheck(String data) {

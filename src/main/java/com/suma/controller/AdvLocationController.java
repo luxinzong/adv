@@ -17,7 +17,7 @@ import java.util.List;
 
 
 /**
- * @auther: zhangzhaoyuan
+ * @author : zhangzhaoyuan
  * @date: 2018/10/12
  * @description: 广告位置增删改查
  */

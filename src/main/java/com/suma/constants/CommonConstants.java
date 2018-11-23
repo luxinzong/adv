@@ -45,13 +45,14 @@ public class CommonConstants {
     /**
      * 文件上传路径
      */
-    //public static final String MATERIAL_FILE_PATH = "/usr/share/nginx/html/download/adv/";
-    public static final String MATERIAL_FILE_PATH = "D:/";
+    public static final String MATERIAL_FILE_PATH = "/usr/share/nginx/html/download/adv/";
+    //public static final String MATERIAL_FILE_PATH = "D:/";
 
     /**
      * 文件获取路径
      */
     public static final String MATERIAL_FILE_URL = "http://192.166.65.174:80/download/adv/";
+    //public static final String MATERIAL_FILE_URL = "http://192.166.65.174:80/D/";
 
     public static final String LOGIN_SUCCESS = "登陆成功";
 

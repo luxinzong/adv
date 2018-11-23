@@ -2,7 +2,11 @@ package com.suma.service;
 
 import com.suma.pojo.AdvInfo;
 import com.suma.pojo.AdvInfoExample;
+import com.suma.pojo.AdvItem;
 import com.suma.pojo.AdvMaterial;
+import com.suma.vo.AdvPutVO;
+import org.apache.ibatis.annotations.Param;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 import java.util.Map;
@@ -22,15 +26,29 @@ public interface AdvInfoService extends BaseService<AdvInfo, AdvInfoExample, Lon
 
     void judgeAdvInfo(AdvInfo advInfo);
 
-    List<AdvInfo> getAdvInfoByRegionIdAndAdvTypeId(List<Long> advInfoIds,Long advTypeId);
+    List<AdvInfo> getAdvInfoByAdvInfoIdIdAndAdvTypeId(List<Long> advInfoIds,Long advTypeId);
 
-    List<AdvInfo> selectAdvInfoByNameAndStatusAndOthor(Integer status, String name, String startDate, String endDate,
-                                                       Integer pageNum, Integer pageSize, String advTypeId);
+    List<AdvInfo> selectAdvInfoByNameAndStatusAndOthor(Integer status, String name, String startDate, String endDate, String advTypeId);
 
     int deleteAdvRelationInfo(List<Long> advInfoIds);
 
     int deleteAdvLocationByAdvInfoIds(List<Long> advInfoId);
 
     void setBootLocation(AdvInfo advInfo);
+
+    List<AdvInfo> getPuttingAdv(AdvPutVO advPutVO);
+
+    List<AdvInfo> selectAdvInfoByDate(Map<String, Object> map);
+
+    List<AdvInfo> getAdvByIds(List<Long> ids);
+
+    void getMaterials(Long advTypeId, List<AdvItem> list, List<AdvInfo> advInfoList);
+    void setAdvLocation(AdvInfo advInfo, AdvItem advItem);
+
+    void setAdvMapByOne(Map<AdvItem, MultipartFile> map, AdvInfo advInfo);
+
+    Integer getAdvInfoVersionByAdvTypeId(Long advTypeId);
+
+
 
 }

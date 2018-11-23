@@ -13,6 +13,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
@@ -61,6 +62,7 @@ public class AdvMaterialController extends BaseController {
         return Result.success(pageInfoResult);
     }
 
+    @Transactional(rollbackFor = Exception.class)
     @RequestMapping("add")
     public Result uploadMaterial(String typeIds, AdvMaterialVO materialVO, MultipartFile file) {
         if (typeIds == null || file == null || materialVO.getMaterialType() == null) {
@@ -70,6 +72,7 @@ public class AdvMaterialController extends BaseController {
         return Result.success();
     }
 
+    @Transactional(rollbackFor = Exception.class)
     @RequestMapping("update")
     public Result updateMaterial(AdvMaterialVO materialVO) {
         if (materialVO.getTypeIds() == null || materialVO.getFileName() == null || materialVO.getId() == null) {
@@ -85,6 +88,7 @@ public class AdvMaterialController extends BaseController {
         return Result.success();
     }
 
+    @Transactional(rollbackFor = Exception.class)
     @RequestMapping("delete")
     public Result deleteMaterial(Long[] ids) {
         if (ids == null) {

@@ -16,9 +16,9 @@ public class UserAndTimeUtils {
      * @return
      */
     public static AdvInfo setCreateUserAndTime(AdvInfo advInfo) {
-        advInfo.setCreatedUser("ASD");//todo
+        advInfo.setCreatedUser(ShiroUtils.getLoginName());
         advInfo.setCreatedTime(new Date());
-        advInfo.setLastEditUser("ASD");//todo
+        advInfo.setLastEditUser(ShiroUtils.getLoginName());
         return advInfo;
     }
 
@@ -28,7 +28,7 @@ public class UserAndTimeUtils {
      */
     public static AdvInfo setEditUserAndTime(AdvInfo advInfo) {
         advInfo.setLastEditModule("");
-        advInfo.setLastEditUser("asda");
+        advInfo.setLastEditUser(ShiroUtils.getLoginName());
         return advInfo;
     }
 }

@@ -23,4 +23,5 @@ public interface AdvMaterialService extends BaseService<AdvMaterial, AdvMaterial
     void cascadeDelete(Long id);
 
     List<AdvMaterial> findListByMaterialType(Long[] ids, Integer materialType);
+
 }

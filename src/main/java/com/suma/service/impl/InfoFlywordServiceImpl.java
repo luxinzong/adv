@@ -1,5 +1,6 @@
 package com.suma.service.impl;
 
+import com.suma.constants.AdvContants;
 import com.suma.dao.AdvFlyWordMapper;
 import com.suma.dao.InfoFlyWordMapper;
 import com.suma.pojo.*;
@@ -42,7 +43,7 @@ public class InfoFlywordServiceImpl extends BaseServiceImpl<InfoFlyWord,InfoFlyW
     }
 
     /**
-     * 根据广告Id删除字幕信息
+     * 根据广告Id删除弹出广告对应资源信息
      * @param advInfoIds
      */
     @Override
@@ -51,16 +52,15 @@ public class InfoFlywordServiceImpl extends BaseServiceImpl<InfoFlyWord,InfoFlyW
             advInfoIds.forEach(advInfoId ->{
                 AdvInfo advInfo = advInfoService.findByPK(advInfoId);
                 Integer materialType = advInfo.getMaterialType();
-                if (materialType == 1) {
+                if (materialType.equals(AdvContants.TEXT_MATERIAL)) {
                     InfoFlyWordExample example = new InfoFlyWordExample();
                     example.createCriteria().andAdvInfoIdIn(advInfoIds);
                     infoFlyWordMapper.deleteByExample(example);
                 }
-                if (materialType == 2) {
+                if (materialType.equals(AdvContants.VEDIO_MATERIAL)) {
                     infoMaterialService.deleteByAdvInfoId(advInfoId);
                 }
             });
-
         }
     }
 
@@ -75,13 +75,14 @@ public class InfoFlywordServiceImpl extends BaseServiceImpl<InfoFlyWord,InfoFlyW
     public void saveFlyWords(List<AdvFlyWord> advFlyWords,Long advInfoId) {
         if (!CollectionUtils.isEmpty(advFlyWords)) {
             for (AdvFlyWord advFlyWord : advFlyWords) {
-                advFlyWordMapper.insert(advFlyWord);
+                advFlyWordMapper.updateByPrimaryKeySelective(advFlyWord);
                 InfoFlyWord infoFlyWord = new InfoFlyWord();
                 infoFlyWord.setFlywordId(advFlyWord.getId());
                 infoFlyWord.setAdvInfoId(advInfoId);
                 infoFlyWordMapper.insert(infoFlyWord);
             }
         }
+
     }
 
     @Override
@@ -95,5 +96,9 @@ public class InfoFlywordServiceImpl extends BaseServiceImpl<InfoFlyWord,InfoFlyW
             advFlyWords = advFlyWordMapper.selectByExample(example1);
         }
         return advFlyWords;
+    }
+
+    public void setFlyWordByOne() {
+
     }
 }

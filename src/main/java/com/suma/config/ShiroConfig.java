@@ -2,6 +2,7 @@ package com.suma.config;
 
 import com.suma.realm.AuthenticationFilter;
 import com.suma.realm.UserRealm;
+import lombok.extern.log4j.Log4j;
 import org.apache.shiro.codec.Base64;
 import org.apache.shiro.mgt.SecurityManager;
 import org.apache.shiro.session.Session;
@@ -20,6 +21,9 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 import javax.servlet.Filter;
+import javax.servlet.ServletRequest;
+import javax.servlet.ServletResponse;
+import java.security.AccessController;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
@@ -29,6 +33,7 @@ import java.util.Map;
  * @Description Shiro配置项
  **/
 @Configuration
+@Log4j
 public class ShiroConfig {
     // 设置Cookie的域名
     @Value("${shiro.cookie.domain}")
@@ -75,6 +80,8 @@ public class ShiroConfig {
         return cookie;
     }
 
+
+
     /**
      * 记住我
      *
@@ -85,7 +92,6 @@ public class ShiroConfig {
         cookieRememberMeManager.setCookie(remeberCookie());
         //对cookie进行加密
         cookieRememberMeManager.setCipherKey(Base64.decode("fCq+/xW488hMTCD+cmJ3aQ=="));
-
         return cookieRememberMeManager;
     }
 
@@ -143,15 +149,18 @@ public class ShiroConfig {
         shiroFilterFactoryBean.setFilters(filtersMap);
         //必须通过认证才能访问
 //       filterChainDefinitionMap.put("/**","authc");
-       /* Map<String,String> filterChainDefinitionMap = new LinkedHashMap<String,String>();
+        Map<String,String> filterChainDefinitionMap = new LinkedHashMap<String,String>();
         filterChainDefinitionMap.put("/index","anon");
         filterChainDefinitionMap.put("/logout","anon");
+        //过滤掉终端请求路径，不需登陆
+        filterChainDefinitionMap.put("/getAdvShow", "anon");
+        filterChainDefinitionMap.put("/bootAdv","anon");
+
         filterChainDefinitionMap.put("/**","myAccessControlFilter");
         shiroFilterFactoryBean.setUnauthorizedUrl(unauthorizedUrl);
         shiroFilterFactoryBean.setSuccessUrl("/index");
         shiroFilterFactoryBean.setLoginUrl(loginUrl);
-
-        shiroFilterFactoryBean.setFilterChainDefinitionMap(filterChainDefinitionMap);*/
+        shiroFilterFactoryBean.setFilterChainDefinitionMap(filterChainDefinitionMap);
         return shiroFilterFactoryBean;
     }
 

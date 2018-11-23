@@ -11,4 +11,6 @@ import org.apache.ibatis.annotations.Param;
 public interface AdvInfoMapper extends BaseDAO<AdvInfo,AdvInfoExample,Long> {
     AdvInfo findById(@Param("id") Long id);
     List<AdvInfo> selectAdvInfo(@Param("map") Map<String,Object> map);
+
+    List<AdvInfo> selectAdvInfoByDate(@Param("map") Map<String, Object> map);
 }

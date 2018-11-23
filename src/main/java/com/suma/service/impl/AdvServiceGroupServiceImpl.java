@@ -1,5 +1,6 @@
 package com.suma.service.impl;
 
+import com.google.common.collect.Sets;
 import com.suma.constants.AdvContants;
 import com.suma.dao.AdvInfoServiceGroupMapper;
 import com.suma.pojo.*;
@@ -38,7 +39,7 @@ public class AdvServiceGroupServiceImpl extends BaseServiceImpl<AdvInfoServiceGr
 
     @Override
     public List<AdvInfo> findAdvByGroups(List<ServiceGroup> groups, AdvType advType, Integer serviceParamType, String regionCode, String clientId) {
-        List<AdvInfo> advInfos = new ArrayList<>();
+        Set<AdvInfo> advInfos = Sets.newConcurrentHashSet();
         for (ServiceGroup group : groups) {
             AdvInfoServiceGroupExample example = new AdvInfoServiceGroupExample();
             example.createCriteria().andServiceGroupIdEqualTo(group.getSgid());
@@ -46,7 +47,8 @@ public class AdvServiceGroupServiceImpl extends BaseServiceImpl<AdvInfoServiceGr
             if (!CollectionUtils.isEmpty(advInfoServiceGroups)) {
                 for (AdvInfoServiceGroup advInfoServiceGroup : advInfoServiceGroups) {
                     AdvInfoExample advInfoExample = new AdvInfoExample();
-                    AdvInfoExample.Criteria criteria = advInfoExample.createCriteria().andAdvTypeIdEqualTo(advType.getId()).andIdEqualTo(advInfoServiceGroup.getAdvInfoId());
+                    AdvInfoExample.Criteria criteria = advInfoExample.createCriteria().andAdvTypeIdEqualTo(advType.getId())
+                            .andIdEqualTo(advInfoServiceGroup.getAdvInfoId()).andStatusEqualTo(AdvContants.STATUS_PUTTING);
                     List<AdvInfo> list = advInfoService.selectByExample(advInfoExample);
 
                     //处理区域
@@ -86,7 +88,7 @@ public class AdvServiceGroupServiceImpl extends BaseServiceImpl<AdvInfoServiceGr
         advInfoServiceGroupExample.createCriteria().andAdvInfoIdEqualTo(id).andTypeEqualTo(AdvContants.SERVICE_TYPE_ON_DEMAND);
         List<AdvInfoServiceGroup> advInfoServiceGroups = selectByExample(advInfoServiceGroupExample);
 
-        Set<String> channelIdList = new HashSet<>();
+        Set<String> channelIdList = Sets.newConcurrentHashSet();
 
         for (AdvInfoServiceGroup advInfoServiceGroup : advInfoServiceGroups) {
             channelIdList.addAll(serviceInfoGroupService.findChannelIdsByGroupId(advInfoServiceGroup.getServiceGroupId()));
@@ -109,7 +111,7 @@ public class AdvServiceGroupServiceImpl extends BaseServiceImpl<AdvInfoServiceGr
         return result;
     }
 
-    private List<AdvInfo> handleCAOrSerial(List<AdvInfo> allAdvInfo, String clientId) {
+    private List<AdvInfo> handleCAOrSerial(Set<AdvInfo> allAdvInfo, String clientId) {
         List<AdvInfo> result = new ArrayList<>();
         for (AdvInfo advInfo : allAdvInfo) {
             String caOrigin = advInfo.getReservedString();
