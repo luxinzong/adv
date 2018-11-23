@@ -110,7 +110,7 @@ public class AdvInfoServiceImpl extends BaseServiceImpl<AdvInfo, AdvInfoExample,
         if (advPutVO.getStatus() != null) {
             criteria.andStatusEqualTo(advPutVO.getStatus());
         } else {
-            criteria.andStatusIn(Lists.newArrayList(AdvContants.STATUS_STOP, AdvContants.STATUS_PUTTING));
+            criteria.andStatusIn(Lists.newArrayList(AdvContants.STATUS_STOP, AdvContants.STATUS_PUTTING,AdvContants.STATUS_FAIL));
         }
         List<AdvInfo> list = selectByExample(example);
         List<Long> longList = list.stream().map(AdvInfo::getId).collect(Collectors.toList());

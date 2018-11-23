@@ -143,7 +143,7 @@ public class InfoRegionServiceImpl extends BaseServiceImpl<InfoRegion, InfoRegio
             }
         } else {
             AdvInfoExample example = new AdvInfoExample();
-            example.createCriteria().andStatusEqualTo(AdvContants.STATUS_STOP);
+            example.createCriteria().andStatusEqualTo(AdvContants.STATUS_PUTTING);
             List<AdvInfo> advInfoList = advInfoService.selectByExample(example);
             return advInfoList;
         }

@@ -85,7 +85,9 @@ public class AdvPutController extends BaseController {
     public Result stopByRegion(String str) {
         List<Integer> regions = StringUtil.str2Int(str);
         List<AdvInfo> advInfoList = infoRegionService.getAdvByResion(regions);
-        advInfoList.forEach(p->p.setStatus(AdvContants.STATUS_STOP));
+        if (!CollectionUtils.isEmpty(advInfoList)) {
+            advInfoList.forEach(p->p.setStatus(AdvContants.STATUS_STOP));
+        }
         return Result.success();
     }
 
@@ -101,7 +103,9 @@ public class AdvPutController extends BaseController {
         AdvInfoExample example = new AdvInfoExample();
         example.createCriteria().andIdIn(advInfoIds).andStatusEqualTo(AdvContants.STATUS_FAIL);
         List<AdvInfo> advInfoList = advInfoService.selectByExample(example);
-        advInfoList.forEach(p->p.setStatus(status));
+        if (!CollectionUtils.isEmpty(advInfoList)) {
+            advInfoList.forEach(p->p.setStatus(status));
+        }
         return Result.success();
     }
 
