@@ -88,7 +88,21 @@ public class AdvInfoServiceImpl extends BaseServiceImpl<AdvInfo, AdvInfoExample,
     }
 
     @Override
+    public List<AdvInfo> getAdvSByIds(List<Long> advInfoIds) {
+        if (!CollectionUtils.isEmpty(advInfoIds)) {
+            AdvInfoExample example = new AdvInfoExample();
+            example.createCriteria().andIdIn(advInfoIds).andStatusEqualTo(AdvContants.STATUS_PUTTING);
+            return selectByExample(example);
+        }
+        return null;
+    }
+
+    @Override
     public List<AdvInfo> getPuttingAdv(AdvPutVO advPutVO) {
+        if (advPutVO == null) {
+            throw new AdvInfoException(ExceptionConstants.INFO_EXCEPTION_MISSING_REQUIRED_PARAMS);
+        }
+        System.out.println(advPutVO+"哈哈");
         AdvInfoExample example = new AdvInfoExample();
         AdvInfoExample.Criteria criteria = example.createCriteria();
         //弹出广告 播发

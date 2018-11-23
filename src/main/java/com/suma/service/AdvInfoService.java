@@ -49,6 +49,5 @@ public interface AdvInfoService extends BaseService<AdvInfo, AdvInfoExample, Lon
 
     Integer getAdvInfoVersionByAdvTypeId(Long advTypeId);
 
-
-
+    List<AdvInfo> getAdvSByIds(List<Long> advInfoIds);
 }

@@ -57,7 +57,7 @@ public class AdvGathererController extends BaseController {
 
         //首先获取某一区域的所有发布状态的广告信息
         List<Long> list = infoRegionService.selectAdvByRegion(Integer.valueOf(advRequestVO.getRegionCode()));
-        List<AdvInfo> advInfoList = advInfoService.getAdvByIds(list);
+        List<AdvInfo> advInfoList = advInfoService.getAdvSByIds(list);
         //advInfoList = advInfoList.stream().filter(p -> p.getStatus().equals(AdvContants.STATUS_PUTTING)).collect(Collectors.toList());
         //创建导入器
         Map<String,Map<AdvItem, MultipartFile>> map = new MultiValueMap();
