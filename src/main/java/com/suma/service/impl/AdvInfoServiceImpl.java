@@ -72,10 +72,16 @@ public class AdvInfoServiceImpl extends BaseServiceImpl<AdvInfo, AdvInfoExample,
 
 
     @Override
-    public List<AdvInfo> getAdvByIds(List<Long> ids) {
+    public List<AdvInfo> getAdvByIds(List<Long> ids,Integer status) {
         if (!CollectionUtils.isEmpty(ids)) {
             AdvInfoExample example = new AdvInfoExample();
-            example.createCriteria().andIdIn(ids);
+            if (status.equals(AdvContants.STATUS_PUTTING)) {
+                example.createCriteria().andIdIn(ids).andStatusEqualTo(AdvContants.STATUS_PASS);
+            }
+            if (status.equals(AdvContants.STATUS_STOP)) {
+                example.createCriteria().andIdIn(ids).andStatusEqualTo(AdvContants.STATUS_PUTTING);
+            }
+
             return selectByExample(example);
         }
         return null;

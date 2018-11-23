@@ -40,7 +40,7 @@ public interface AdvInfoService extends BaseService<AdvInfo, AdvInfoExample, Lon
 
     List<AdvInfo> selectAdvInfoByDate(Map<String, Object> map);
 
-    List<AdvInfo> getAdvByIds(List<Long> ids);
+    List<AdvInfo> getAdvByIds(List<Long> ids,Integer status);
 
     void getMaterials(Long advTypeId, List<AdvItem> list, List<AdvInfo> advInfoList);
     void setAdvLocation(AdvInfo advInfo, AdvItem advItem);

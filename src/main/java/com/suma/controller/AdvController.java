@@ -33,7 +33,7 @@ import java.util.stream.Collectors;
  */
 @RestController
 @Log4j
-public class AdvController {
+public class     AdvController {
 
     @Autowired
     private AdvTypeService advTypeService;

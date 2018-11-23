@@ -81,6 +81,8 @@
       order by ${orderByClause}
     </if>
   </select>
+
+
   <delete id="deleteByExample" parameterType="com.suma.pojo.InfoFlyWordExample">
     delete from info_flyword
     <if test="_parameter != null">

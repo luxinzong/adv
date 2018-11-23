@@ -37,7 +37,7 @@
       <if test="region != null and region != ''">
        and REGION = #{region}
       </if>
-      <if test="ckeckUser != null and username != ''">
+      <if test="checkUser != null and username != ''">
         and CHECKUSER = #{checkUser}
       </if>
       <if test="advInfoId != null and advInfoId != ''">

@@ -2,6 +2,7 @@ package com.suma.controller;
 
 import com.suma.constants.AdvContants;
 import com.suma.constants.ExceptionConstants;
+import com.suma.exception.AdvInfoException;
 import com.suma.pojo.AdvInfo;
 import com.suma.pojo.AdvInfoExample;
 import com.suma.service.AdvInfoService;
@@ -12,6 +13,7 @@ import com.suma.utils.UserAndTimeUtils;
 import com.suma.vo.AdvPutVO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.CollectionUtils;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -52,7 +54,10 @@ public class AdvPutController extends BaseController {
     @RequestMapping("putAndStop")
     public Result putAdvs(String ids,Integer status) {
         List<Long> advInfoIds = StringUtil.convertstr(ids);
-        List<AdvInfo> advInfoList = advInfoService.getAdvByIds(advInfoIds);
+        List<AdvInfo> advInfoList = advInfoService.getAdvByIds(advInfoIds,status);
+        if (CollectionUtils.isEmpty(advInfoIds)) {
+            throw new AdvInfoException("操作错误，请重新选择");
+        }
         try {
             advInfoList.forEach(p -> {
                 p.setStatus(status);
